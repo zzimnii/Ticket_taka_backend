@@ -1,0 +1,6 @@
+# we can have the specific settings in here for develop server
+
+server:
+  port: 8080
+
+# below should be written with the aws RDS or something associated with develop environment
