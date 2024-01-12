@@ -7,7 +7,6 @@ spring:
     activate:
       on-profile: local # 환경이름설정
 
-  # below should be written with the aws RDS or something associated with develop environment
   jpa:
     open-in-view: false
     show-sql: true
