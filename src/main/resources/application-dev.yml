@@ -1,4 +1,8 @@
 # we can have the specific settings in here for develop server
+spring:
+  config:
+    activate:
+      on-profile: dev # 환경이름설정
 
 server:
   port: 8080

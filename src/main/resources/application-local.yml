@@ -5,11 +5,15 @@ server:
 
 # settings for database such as mysql
 spring:
+  config:
+    activate:
+      on-profile: local # 환경이름설정
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/ticket # ticket is the name of my db not yours. so it can be different
-    username: #[your username]
-    password: #[your password]
+    url: ${DB_URL_local} # ticket is the name of my db not yours. so it can be different
+    username: ${DB_USERNAME_local}
+    password: ${DB_PW_local}
 
 # settings for spring jpa
   jpa:
