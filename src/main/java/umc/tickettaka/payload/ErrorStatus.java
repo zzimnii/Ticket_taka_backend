@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 @Getter
 @RequiredArgsConstructor
-public enum Code {
+public enum ErrorStatus {
 
     OK(2000, HttpStatus.OK, "Ok"),
 
@@ -39,7 +39,7 @@ public enum Code {
                 .orElse(this.getMessage());
     }
 
-    public static Code valueOf(HttpStatus httpStatus) {
+    public static ErrorStatus valueOf(HttpStatus httpStatus) {
         if (httpStatus == null) {
             throw new GeneralException("HttpStatus is null.");
         }
@@ -49,11 +49,11 @@ public enum Code {
                 .findFirst()
                 .orElseGet(() -> {
                     if (httpStatus.is4xxClientError()) {
-                        return Code.BAD_REQUEST;
+                        return ErrorStatus.BAD_REQUEST;
                     } else if (httpStatus.is5xxServerError()) {
-                        return Code.INTERNAL_ERROR;
+                        return ErrorStatus.INTERNAL_ERROR;
                     } else {
-                        return Code.OK;
+                        return ErrorStatus.OK;
                     }
                 });
     }

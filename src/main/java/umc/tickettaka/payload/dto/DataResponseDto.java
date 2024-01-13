@@ -1,7 +1,7 @@
 package umc.tickettaka.payload.dto;
 
 import lombok.Getter;
-import umc.tickettaka.payload.Code;
+import umc.tickettaka.payload.ErrorStatus;
 
 @Getter
 public class DataResponseDto<T> extends ResponseDto {
@@ -9,12 +9,12 @@ public class DataResponseDto<T> extends ResponseDto {
     private final T data;
 
     private DataResponseDto(T data) {
-        super(true, Code.OK.getCode(), Code.OK.getMessage());
+        super(true, ErrorStatus.OK.getCode(), ErrorStatus.OK.getMessage());
         this.data = data;
     }
 
     private DataResponseDto(T data, String message) {
-        super(true, Code.OK.getCode(), message);
+        super(true, ErrorStatus.OK.getCode(), message);
         this.data = data;
     }
 
