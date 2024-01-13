@@ -1,31 +1,31 @@
 package umc.tickettaka.payload.dto;
 
-import umc.tickettaka.payload.Code;
+import umc.tickettaka.payload.ErrorStatus;
 
 public class ErrorResponseDto extends ResponseDto {
 
-    private ErrorResponseDto(Code errorCode) {
-        super(false, errorCode.getCode(), errorCode.getMessage());
+    private ErrorResponseDto(ErrorStatus errorErrorStatus) {
+        super(false, errorErrorStatus.getCode(), errorErrorStatus.getMessage());
     }
 
-    private ErrorResponseDto(Code errorCode, Exception e) {
-        super(false, errorCode.getCode(), errorCode.getMessage(e));
+    private ErrorResponseDto(ErrorStatus errorErrorStatus, Exception e) {
+        super(false, errorErrorStatus.getCode(), errorErrorStatus.getMessage(e));
     }
 
-    private ErrorResponseDto(Code errorCode, String message) {
-        super(false, errorCode.getCode(), errorCode.getMessage(message));
+    private ErrorResponseDto(ErrorStatus errorErrorStatus, String message) {
+        super(false, errorErrorStatus.getCode(), errorErrorStatus.getMessage(message));
     }
 
 
-    public static ErrorResponseDto of(Code errorCode) {
-        return new ErrorResponseDto(errorCode);
+    public static ErrorResponseDto of(ErrorStatus errorErrorStatus) {
+        return new ErrorResponseDto(errorErrorStatus);
     }
 
-    public static ErrorResponseDto of(Code errorCode, Exception e) {
-        return new ErrorResponseDto(errorCode, e);
+    public static ErrorResponseDto of(ErrorStatus errorErrorStatus, Exception e) {
+        return new ErrorResponseDto(errorErrorStatus, e);
     }
 
-    public static ErrorResponseDto of(Code errorCode, String message) {
-        return new ErrorResponseDto(errorCode, message);
+    public static ErrorResponseDto of(ErrorStatus errorErrorStatus, String message) {
+        return new ErrorResponseDto(errorErrorStatus, message);
     }
 }
