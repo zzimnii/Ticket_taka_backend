@@ -1,8 +1,10 @@
-package umc.tickettaka.payload;
+package umc.tickettaka.payload.status;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import umc.tickettaka.payload.BaseErrorCode;
+import umc.tickettaka.payload.dto.ErrorReasonDto;
 import umc.tickettaka.payload.exception.GeneralException;
 
 import java.util.Arrays;
@@ -11,20 +13,19 @@ import java.util.function.Predicate;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorStatus {
+public enum ErrorStatus implements BaseErrorCode {
 
-    OK(2000, HttpStatus.OK, "Ok"),
+    OK("COMMON2000", HttpStatus.OK, "Ok"),
+    BAD_REQUEST("COMMON4000", HttpStatus.BAD_REQUEST, "Bad request"),
+    VALIDATION_ERROR("COMMON4001", HttpStatus.BAD_REQUEST, "Validation error"),
+    NOT_FOUND("COMMON4002", HttpStatus.NOT_FOUND, "Requested resource is not found"),
+    INTERNAL_ERROR("COMMON5000", HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
+    DATA_ACCESS_ERROR("COMMON5001", HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
 
-    BAD_REQUEST(4000, HttpStatus.BAD_REQUEST, "Bad request"),
-    UNAUTHORIZED(4001, HttpStatus.UNAUTHORIZED, "User unauthorized"),
-    VALIDATION_ERROR(4003, HttpStatus.BAD_REQUEST, "Validation error"),
-    NOT_FOUND(4004, HttpStatus.NOT_FOUND, "Requested resource is not found"),
+    //MEMBER Error
+    UNAUTHORIZED("MEMBER4000", HttpStatus.UNAUTHORIZED, "Member unauthorized");
 
-    INTERNAL_ERROR(5000, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
-    DATA_ACCESS_ERROR(5001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error");
-
-
-    private final Integer code;
+    private final String code;
     private final HttpStatus httpStatus;
     private final String message;
 
@@ -58,8 +59,23 @@ public enum ErrorStatus {
                 });
     }
 
+
     @Override
-    public String toString() {
-        return String.format("%s (%d)", this.name(), this.getCode());
+    public ErrorReasonDto getReason() {
+        return ErrorReasonDto.builder()
+            .message(message)
+            .code(code)
+            .isSuccess(false)
+            .build();
+    }
+
+    @Override
+    public ErrorReasonDto getReasonHttpStatus() {
+        return ErrorReasonDto.builder()
+            .message(message)
+            .code(code)
+            .isSuccess(false)
+            .httpStatus(httpStatus)
+            .build();
     }
 }

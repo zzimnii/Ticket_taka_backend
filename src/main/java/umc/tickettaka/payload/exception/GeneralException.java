@@ -1,50 +1,43 @@
 package umc.tickettaka.payload.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import umc.tickettaka.payload.ErrorStatus;
+import umc.tickettaka.payload.BaseErrorCode;
+import umc.tickettaka.payload.dto.ErrorReasonDto;
+import umc.tickettaka.payload.status.ErrorStatus;
 
 @Getter
+@AllArgsConstructor
 public class GeneralException extends RuntimeException {
 
-    private final ErrorStatus errorErrorStatus;
+    private final ErrorStatus errorStatus;
+    private BaseErrorCode code;
 
-    public GeneralException() {
-        super(ErrorStatus.INTERNAL_ERROR.getMessage());
-        this.errorErrorStatus = ErrorStatus.INTERNAL_ERROR;
-    }
 
     public GeneralException(String message) {
         super(ErrorStatus.INTERNAL_ERROR.getMessage(message));
-        this.errorErrorStatus = ErrorStatus.INTERNAL_ERROR;
+        this.errorStatus = ErrorStatus.INTERNAL_ERROR;
     }
 
     public GeneralException(String message, Throwable cause) {
         super(ErrorStatus.INTERNAL_ERROR.getMessage(message), cause);
-        this.errorErrorStatus = ErrorStatus.INTERNAL_ERROR;
+        this.errorStatus = ErrorStatus.INTERNAL_ERROR;
     }
 
-    public GeneralException(Throwable cause) {
-        super(ErrorStatus.INTERNAL_ERROR.getMessage(cause));
-        this.errorErrorStatus = ErrorStatus.INTERNAL_ERROR;
+
+
+    public GeneralException(ErrorStatus errorStatus, String message) {
+        super(errorStatus.getMessage(message));
+        this.errorStatus = errorStatus;
     }
 
-    public GeneralException(ErrorStatus errorErrorStatus) {
-        super(errorErrorStatus.getMessage());
-        this.errorErrorStatus = errorErrorStatus;
+    public GeneralException(ErrorStatus errorStatus, String message, Throwable cause) {
+        super(errorStatus.getMessage(message), cause);
+        this.errorStatus = errorStatus;
     }
 
-    public GeneralException(ErrorStatus errorErrorStatus, String message) {
-        super(errorErrorStatus.getMessage(message));
-        this.errorErrorStatus = errorErrorStatus;
-    }
 
-    public GeneralException(ErrorStatus errorErrorStatus, String message, Throwable cause) {
-        super(errorErrorStatus.getMessage(message), cause);
-        this.errorErrorStatus = errorErrorStatus;
-    }
-
-    public GeneralException(ErrorStatus errorErrorStatus, Throwable cause) {
-        super(errorErrorStatus.getMessage(cause), cause);
-        this.errorErrorStatus = errorErrorStatus;
+    public ErrorReasonDto getErrorReasonHttpStatus() {
+        return this.code.getReasonHttpStatus();
     }
 }
