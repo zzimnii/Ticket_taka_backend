@@ -15,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import umc.tickettaka.domain.common.BaseEntity;
+import umc.tickettaka.domain.enums.ProviderType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +44,13 @@ public class Member extends BaseEntity {
 
     @Column(length = 500)
     private String imageUrl;
+
+    // providerType, providerId is for the oauth2
+    // with this, we will check whether oauth2 or general login. and also whethere there is already data with sns login
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType;
+
+    private String providerId;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
