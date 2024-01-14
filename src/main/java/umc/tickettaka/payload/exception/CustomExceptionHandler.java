@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -19,29 +20,24 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestControllerAdvice(annotations = {RestController.class})
-public class ExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler
+
+    @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
         return handleExceptionInternal(e, ErrorStatus.VALIDATION_ERROR, request);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ExceptionHandler
     public ResponseEntity<Object> general(GeneralException e, WebRequest request) {
         return handleExceptionInternal(e, e.getErrorErrorStatus(), request);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
         return handleExceptionInternal(e, ErrorStatus.INTERNAL_ERROR, request);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = GeneralException.class)
-    public ResponseEntity<Object> onThrowException(GeneralException generalException, HttpServletRequest request) {
-        System.out.println("ExceptionAdvice.onThrowException");
-        ErrorStatus errorReasonHttpStatus = generalException.getErrorErrorStatus();
-        return handleExceptionInternal(generalException,errorReasonHttpStatus, (WebRequest) request);
-    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatusCode status, WebRequest request)  {
