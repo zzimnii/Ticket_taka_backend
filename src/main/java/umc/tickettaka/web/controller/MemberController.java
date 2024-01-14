@@ -19,12 +19,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/sign-in")
-    public JwtToken signIn(@RequestBody RequestDto.SignIn signInDto) {
-        String userName = signInDto.getUserName();
-        String password = signInDto.getPassWord();
+    public JwtToken signIn(@RequestBody RequestDto.SignInDto signInDto) {
+        String username = signInDto.getUsername();
+        String password = signInDto.getPassword();
 
-        JwtToken jwtToken = memberService.signIn(userName , password);
-        log.info("request username = {}, password = {}", userName, password);
+        JwtToken jwtToken = memberService.signIn(username , password);
+        log.info("request username = {}, password = {}", username, password);
         log.info("jwtToken accessToken = {}", jwtToken.getAccessToken());
         return jwtToken;
     }

@@ -15,11 +15,11 @@ public class RequestDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Schema(name = "jwt request dto")
-    public static class SignIn {
+    public static class SignInDto {
 
-        private String userName;
+        private String username;
 
-        private String passWord;
+        private String password;
 
     }
 }
