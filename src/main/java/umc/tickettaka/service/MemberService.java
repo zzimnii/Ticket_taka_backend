@@ -1,4 +1,4 @@
-package umc.tickettaka.web.service;
+package umc.tickettaka.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
-import umc.tickettaka.domain.CustomUserDetails;
-import umc.tickettaka.web.repository.MemberRepository;
-
-import java.util.Objects;
+import umc.tickettaka.repository.MemberRepository;
 
 @Service
 @RequiredArgsConstructor

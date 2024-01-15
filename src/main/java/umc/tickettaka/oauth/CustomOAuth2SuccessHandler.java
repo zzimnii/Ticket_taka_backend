@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
-import umc.tickettaka.web.service.CustomUserDetailService;
+import umc.tickettaka.service.CustomUserDetailService;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package umc.tickettaka.web.repository;
+package umc.tickettaka.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import umc.tickettaka.domain.Member;
