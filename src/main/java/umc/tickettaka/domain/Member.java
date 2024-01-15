@@ -11,16 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.ProviderType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import umc.tickettaka.domain.mapping.MemberTeam;
 
 @Entity
 @Getter
@@ -45,8 +41,6 @@ public class Member extends BaseEntity {
     @Column(length = 500)
     private String imageUrl;
 
-    // providerType, providerId is for the oauth2
-    // with this, we will check whether oauth2 or general login. and also whethere there is already data with sns login
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
@@ -55,4 +49,7 @@ public class Member extends BaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberTeam> memberTeamList = new ArrayList<>();
 }
