@@ -1,4 +1,4 @@
-package umc.tickettaka.web.service;
+package umc.tickettaka.service;
 
 import umc.tickettaka.domain.Team;
 import java.util.Optional;

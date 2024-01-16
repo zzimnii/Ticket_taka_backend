@@ -1,10 +1,10 @@
-package umc.tickettaka.web.service;
+package umc.tickettaka.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.domain.Team;
-import umc.tickettaka.web.repository.TeamRepository;
+import umc.tickettaka.repository.TeamRepository;
 
 import java.util.Optional;
 

@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.payload.ApiResponse;
-import umc.tickettaka.web.dto.teamDto.RequestDto;
-import umc.tickettaka.web.dto.teamDto.ResponseDto;
-import umc.tickettaka.web.repository.TeamRepository;
-import umc.tickettaka.web.service.TeamCommandService;
+import umc.tickettaka.repository.TeamRepository;
+import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.web.dto.request.TeamRequestDto;
+import umc.tickettaka.web.dto.response.TeamResponseDto;
+import umc.tickettaka.service.TeamCommandService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,19 +22,22 @@ import java.util.Optional;
 public class TeamController {
 
     private final TeamCommandService teamCommandService;
+    private final TeamQueryService teamQueryService;
     private final TeamRepository teamRepository;
 
     @PostMapping("/create")
     @Operation(summary = "Team 생성 API", description = "Team 생성하는 API")
-    public ApiResponse<ResponseDto.TeamResponseDto> createTeam(@RequestBody RequestDto.TeamRequestDto request) {
+    public ApiResponse<TeamResponseDto.TeamDto> createTeam(@RequestBody TeamRequestDto.TeamDto request) {
         Team team = teamCommandService.createTeam(request);
-        return ApiResponse.onSuccess(TeamConverter.toResultDto(team));
+        return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
     }
 
     @GetMapping("/")
     @Operation(summary = "생성된 Team 조회 API", description = "생성된 Team 조회하는 API")
-    public ApiResponse<List<Team>> getTeamList() {
-        return ApiResponse.onSuccess(teamRepository.findAll());
+    public ApiResponse<TeamResponseDto.TeamListDto> getTeamList() {
+        List<Team> teamList = teamRepository.findAll();
+        TeamResponseDto.TeamListDto teamListDto = TeamConverter.toTeamListDto(teamList);
+        return ApiResponse.onSuccess(teamListDto);
     }
 
     @GetMapping("/{teamsId}")
@@ -42,7 +45,8 @@ public class TeamController {
     @Parameters({
             @Parameter(name = "teamsId", description = "팀의 아이디, path variable 입니다.")
     })
-    public ApiResponse<Optional<Team>> getTeam(@PathVariable(name = "teamsId") Long teamsId) {
-        return ApiResponse.onSuccess(teamRepository.findById(teamsId));
+    public ApiResponse<TeamResponseDto.TeamDto> getTeam(@PathVariable(name = "teamsId") Long teamsId ) {
+        Team team = teamQueryService.findTeam(teamsId).get();
+        return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
     }
 }
