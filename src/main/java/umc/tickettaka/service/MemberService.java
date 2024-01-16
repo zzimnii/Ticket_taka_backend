@@ -36,15 +36,15 @@ public class MemberService {
 
 
     @Transactional
-    public JwtToken signIn(String userName, String password) {
+    public JwtToken signIn(String username, String password) {
         // DB에서 회원정보를 가져온 후 -> CustomUserDetail로 변환한 객체를 받는다.
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(userName);
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
 
         // 비밀번호가 다른 경우 UNAUTHORIZED 응답을 보낸다.
-        if (userName == null || password == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (username == null || password == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         // 1.사용자가 아이디와 비밀번호를 입력하면 UsernamePasswordAuthentication 토큰을 생성한다.
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userName, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -54,7 +54,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Long save(SignRequestDto.SignUpDto signUpDto) {
+    public Member save(SignRequestDto.SignUpDto signUpDto) {
         // parse values
         String username = signUpDto.getUsername();
         String password = signUpDto.getPassword();
@@ -78,9 +78,7 @@ public class MemberService {
                 .providerId(providerId)
                 .build();
 
-        memberRepository.save(member);
-
-        return member.getId();
+        return memberRepository.save(member);
 
     }
 

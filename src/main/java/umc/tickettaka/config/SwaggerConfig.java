@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI ESFJServerAPI() {
+    public OpenAPI TicketTakaServerAPI() {
         Info info = new Info()
             .title("Ticket-Taka API")
             .description("Ticket-Taka API 명세서")
