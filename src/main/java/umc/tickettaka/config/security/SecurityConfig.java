@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import umc.tickettaka.config.security.jwt.JwtAuthenticationFilter;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
 import umc.tickettaka.oauth.CustomOAuth2SuccessHandler;
@@ -29,6 +30,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authHttp -> authHttp.requestMatchers("/*").permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/health")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(
