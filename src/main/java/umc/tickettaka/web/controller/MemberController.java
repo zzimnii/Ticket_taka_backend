@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.converter.MemberConverter;
+import umc.tickettaka.domain.CustomUserDetailsAdapter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.MemberService;
@@ -45,7 +46,9 @@ public class MemberController {
     }
 
     @GetMapping("/token-test")
-    public ApiResponse<Long> test(@AuthenticationPrincipal Member member) {
+    public ApiResponse<Long> test(@AuthenticationPrincipal CustomUserDetailsAdapter customUserDetails) {
+        Member member = customUserDetails.getMember();
+
         return ApiResponse.onSuccess(member.getId());
     }
 }

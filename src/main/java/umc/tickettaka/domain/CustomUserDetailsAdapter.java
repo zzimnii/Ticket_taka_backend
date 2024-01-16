@@ -1,7 +1,5 @@
 package umc.tickettaka.domain;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.FetchType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,12 +16,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetailsAdapter implements UserDetails {
 
-    private Long id;
+    private Member member;
+
     private String username;
     private String password;
-
     private List<String> roles;
 
     @Override
