@@ -48,7 +48,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private Map<String, Object> parseTargetAttributes(Map<String, Object> attributes, String registrationId) {
         Map<String, Object> targetAttributes = new HashMap<>();
-
         if (registrationId.equals("kakao")) {
             Long id = (Long) attributes.get("id");
             String providerId = String.valueOf(id);
@@ -59,6 +58,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             targetAttributes.put("nickname", nickname);
 
             log.info("nickname = {}", nickname);
+        }
+        else if (registrationId.equals("naver")) {
+            Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+            targetAttributes.put("id", response.get("id")); // provider Id
+            targetAttributes.put("email", response.get("email"));
+            targetAttributes.put("response", "response");
         }
 
         return targetAttributes;
