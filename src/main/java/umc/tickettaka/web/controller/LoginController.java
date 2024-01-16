@@ -10,12 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
 
 
-    @GetMapping("/oauth2/sign-up")
-    public String loadOAuthSignUp() {
-        log.info("oauth2/signUp");
-
-        return "signUp";
-    }
 
     @GetMapping("/login")
     public String login() {

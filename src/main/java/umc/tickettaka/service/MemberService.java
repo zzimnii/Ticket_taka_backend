@@ -13,7 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
+import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.enums.ProviderType;
+import umc.tickettaka.payload.exception.GeneralException;
+import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
+import umc.tickettaka.web.dto.request.SignRequestDto;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,4 +53,56 @@ public class MemberService {
         return jwtToken;
     }
 
+    @Transactional
+    public Long save(SignRequestDto.SignUpDto signUpDto) {
+        // parse values
+        String username = signUpDto.getUsername();
+        String password = signUpDto.getPassword();
+        String email = signUpDto.getEmail();
+        String imageUrl = signUpDto.getImageUrl();
+        String providerType = signUpDto.getProviderType();
+        String providerId = signUpDto.getProviderId();
+
+        ProviderType providerTypeEnum = null;
+        if (providerType != null) providerTypeEnum = ProviderType.valueOf(providerType);
+
+        // duplicate check
+        checkDuplicateMember(username, email);
+
+        Member member = Member.builder()
+                .username(username)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .imageUrl(imageUrl)
+                .providerType(providerTypeEnum)
+                .providerId(providerId)
+                .build();
+
+        memberRepository.save(member);
+
+        return member.getId();
+
+    }
+
+    private void checkDuplicateMember(String username, String email) {
+        Optional<Member> memberByUsername = memberRepository.findByUsername(username);
+        if(memberByUsername.isPresent()) throw new GeneralException(ErrorStatus.MEMBER_ALREADY_EXIST, "멤버가 이미 존재합니다.");
+        Optional<Member> memberByEmail = memberRepository.findByEmail(email);
+        if(memberByEmail.isPresent()) throw new GeneralException(ErrorStatus.MEMBER_ALREADY_EXIST, "멤버가 이미 존재합니다.");
+    }
+
+    public Member findByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "해당 email을 가진 회원이 없습니다."));
+
+        return member;
+
+    }
+
+    public Member findByUsername(String username) {
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "해당 username을 가진 회원이 없습니다."));
+
+        return member;
+    }
 }

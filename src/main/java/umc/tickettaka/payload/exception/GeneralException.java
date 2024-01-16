@@ -10,30 +10,16 @@ import umc.tickettaka.payload.status.ErrorStatus;
 @AllArgsConstructor
 public class GeneralException extends RuntimeException {
 
-    private final ErrorStatus errorStatus;
-    private BaseErrorCode code;
-
-
-    public GeneralException(String message) {
-        super(ErrorStatus.INTERNAL_ERROR.getMessage(message));
-        this.errorStatus = ErrorStatus.INTERNAL_ERROR;
-    }
-
-    public GeneralException(String message, Throwable cause) {
-        super(ErrorStatus.INTERNAL_ERROR.getMessage(message), cause);
-        this.errorStatus = ErrorStatus.INTERNAL_ERROR;
-    }
-
-
+    private final BaseErrorCode code;
 
     public GeneralException(ErrorStatus errorStatus, String message) {
         super(errorStatus.getMessage(message));
-        this.errorStatus = errorStatus;
+        this.code = errorStatus;
     }
 
     public GeneralException(ErrorStatus errorStatus, String message, Throwable cause) {
         super(errorStatus.getMessage(message), cause);
-        this.errorStatus = errorStatus;
+        this.code = errorStatus;
     }
 
 

@@ -17,12 +17,15 @@ public enum ErrorStatus implements BaseErrorCode {
 
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON4000", "Bad request"),
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "COMMON4001",  "Validation error"),
-    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON4002", "Requested resource is not found"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON4002", "Requested resource not found"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON5000",  "Internal error"),
     DATA_ACCESS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON5001",  "Data access error"),
 
     //MEMBER Error
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER4000", "Member unauthorized");
+    MEMBER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER4000", "Member unauthorized"),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4001", "Member Not found"),
+    MEMBER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "Member already exists");
+
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -29,11 +29,19 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 기획상 로그인 입력시 아이디와 같음
+    // https://www.figma.com/file/PqaiMaXZED8IeWM4CD4Riw/Ticket-Taka?type=design&node-id=55-929&mode=design&t=zIGwjIheIWnB6A2r-0
     @Column(length = 50)
     private String username;
 
+    // nickName
+    @Column(length = 50)
+    private String name;
+
     @Column(length = 500)
     private String password;
+
+
 
     @Column(length = 50)
     private String email;
