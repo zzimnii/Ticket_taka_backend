@@ -39,31 +39,38 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
         // 각 social 로그인에 따른 parsing 한 attributes 들
-        Map<String, Object> targetAttributes = parseTargetAttributes(attributes, registrationId);
+        Map<String, Object> targetAttributes = parseTargetAttributes(attributes, registrationId, oAuth2User);
 
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 targetAttributes,
                 userNameAttributeName);
     }
 
-    private Map<String, Object> parseTargetAttributes(Map<String, Object> attributes, String registrationId) {
+    private Map<String, Object> parseTargetAttributes(Map<String, Object> attributes, String registrationId, OAuth2User oAuth2User) {
         Map<String, Object> targetAttributes = new HashMap<>();
+
+        targetAttributes.put("provider", registrationId);
+
         if (registrationId.equals("kakao")) {
-            Long id = (Long) attributes.get("id");
-            String providerId = String.valueOf(id);
-            targetAttributes.put("id", providerId);  // defaultOAuth2User 생성을 위한 targetAttributes에는 userNameAttributeName이 포함되어있어야 한다. ( 코드가 그렇게 되어있음)
+            targetAttributes.put("id", "id");  // defaultOAuth2User 생성을 위한 targetAttributes에는 userNameAttributeName이 포함되어있어야 한다. ( 코드가 그렇게 되어있음)
+            targetAttributes.put("providerId", oAuth2User.getAttribute("id"));
+
             Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
             Map<String, Object> profile = (Map<String, Object>) kakao_account.get("profile");
             String nickname = (String) profile.get("nickname");
             targetAttributes.put("nickname", nickname);
-
-            log.info("nickname = {}", nickname);
         }
         else if (registrationId.equals("naver")) {
+            targetAttributes.put("response", "response"); //userNameAttributeName
             Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-            targetAttributes.put("id", response.get("id")); // provider Id
+            targetAttributes.put("providerId", response.get("id"));
             targetAttributes.put("email", response.get("email"));
-            targetAttributes.put("response", "response");
+        }
+        else if (registrationId.equals("google")) {
+            targetAttributes.put("providerId", oAuth2User.getAttribute("sub"));
+            targetAttributes.put("sub", "sub"); //userNameAttributeName
+            targetAttributes.put("email", oAuth2User.getAttribute("email"));
+
         }
 
         return targetAttributes;
