@@ -15,18 +15,17 @@ import java.util.function.Predicate;
 @RequiredArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 
-    OK("COMMON2000", HttpStatus.OK, "Ok"),
-    BAD_REQUEST("COMMON4000", HttpStatus.BAD_REQUEST, "Bad request"),
-    VALIDATION_ERROR("COMMON4001", HttpStatus.BAD_REQUEST, "Validation error"),
-    NOT_FOUND("COMMON4002", HttpStatus.NOT_FOUND, "Requested resource is not found"),
-    INTERNAL_ERROR("COMMON5000", HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
-    DATA_ACCESS_ERROR("COMMON5001", HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON4000", "Bad request"),
+    VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "COMMON4001",  "Validation error"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON4002", "Requested resource is not found"),
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON5000",  "Internal error"),
+    DATA_ACCESS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON5001",  "Data access error"),
 
     //MEMBER Error
-    UNAUTHORIZED("MEMBER4000", HttpStatus.UNAUTHORIZED, "Member unauthorized");
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER4000", "Member unauthorized");
 
-    private final String code;
     private final HttpStatus httpStatus;
+    private final String code;
     private final String message;
 
     public String getMessage(Throwable e) {
@@ -39,26 +38,6 @@ public enum ErrorStatus implements BaseErrorCode {
                 .filter(Predicate.not(String::isBlank))
                 .orElse(this.getMessage());
     }
-
-    public static ErrorStatus valueOf(HttpStatus httpStatus) {
-        if (httpStatus == null) {
-            throw new GeneralException("HttpStatus is null.");
-        }
-
-        return Arrays.stream(values())
-                .filter(errorCode -> errorCode.getHttpStatus() == httpStatus)
-                .findFirst()
-                .orElseGet(() -> {
-                    if (httpStatus.is4xxClientError()) {
-                        return ErrorStatus.BAD_REQUEST;
-                    } else if (httpStatus.is5xxServerError()) {
-                        return ErrorStatus.INTERNAL_ERROR;
-                    } else {
-                        return ErrorStatus.OK;
-                    }
-                });
-    }
-
 
     @Override
     public ErrorReasonDto getReason() {

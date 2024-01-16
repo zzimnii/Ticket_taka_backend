@@ -9,8 +9,8 @@ import umc.tickettaka.payload.dto.ReasonDto;
 @Getter
 @AllArgsConstructor
 public enum SuccessStatus implements BaseCode {
-    _OK(HttpStatus.OK, "COMMON200", "Your request has been successfully performed."),
-    _CREATED(HttpStatus.CREATED, "COMMON201", "Resource creation successfully performed.");
+    OK(HttpStatus.OK, "COMMON200", "Your request has been successfully performed."),
+    CREATED(HttpStatus.CREATED, "COMMON201", "Resource creation successfully performed.");
 
     private final HttpStatus httpStatus;
     private final String code;

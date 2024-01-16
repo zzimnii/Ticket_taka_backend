@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import umc.tickettaka.payload.status.SuccessStatus;
 
 @Getter
 @AllArgsConstructor
 @JsonPropertyOrder
+@Builder
 public class ApiResponse<T> {
 
     @JsonProperty("isSuccess")
@@ -22,7 +24,7 @@ public class ApiResponse<T> {
 
 
     public static <T> ApiResponse<T> onSuccess(T result) {
-        return new ApiResponse<>(true, SuccessStatus._OK.getCode(), SuccessStatus._OK.getMessage(), result);
+        return new ApiResponse<>(true, SuccessStatus.OK.getCode(), SuccessStatus.OK.getMessage(), result);
     }
 
     public static <T> ApiResponse<T> of(BaseCode code, T result) {
