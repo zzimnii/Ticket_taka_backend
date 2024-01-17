@@ -28,7 +28,11 @@ public enum ErrorStatus implements BaseErrorCode {
     MEMBER_WRONG_INFORMATION(HttpStatus.BAD_REQUEST, "MEMBER4003", "Member information you entered is not valid."),
 
     //TEAM Error
-    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM4001", "TEAM Not found");
+    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM4001", "TEAM Not found"),
+
+    //SNS LOGIN Error
+    SNS_LOGIN_WRONG_INFORMATION(HttpStatus.BAD_REQUEST, "SNS4003", "SNS information you entered is not valid.");
+
 
     private final HttpStatus httpStatus;
     private final String code;
