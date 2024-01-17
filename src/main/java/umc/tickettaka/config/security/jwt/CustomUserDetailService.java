@@ -1,11 +1,11 @@
-package umc.tickettaka.service;
+package umc.tickettaka.config.security.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import umc.tickettaka.domain.CustomUserDetailsAdapter;
+import umc.tickettaka.domain.CustomUserDetails;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.repository.MemberRepository;
 
@@ -28,9 +28,8 @@ public class CustomUserDetailService implements UserDetailsService {
         return createUserDetails(member);
 
     }
-    private CustomUserDetailsAdapter createUserDetails(Member member) {
-        return CustomUserDetailsAdapter.builder()
-                .member(member)
+    private CustomUserDetails createUserDetails(Member member) {
+        return CustomUserDetails.builder()
                 .username(member.getUsername())
                 .password(member.getPassword())
                 .roles(member.getRoles())

@@ -1,15 +1,16 @@
-package umc.tickettaka.service;
+package umc.tickettaka.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Team;
+import umc.tickettaka.service.TeamCommandService;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
 import umc.tickettaka.repository.TeamRepository;
 
 @Service
 @RequiredArgsConstructor
-public class TeamCommandServiceImpl implements TeamCommandService{
+public class TeamCommandServiceImpl implements TeamCommandService {
 
     private final TeamRepository teamRepository;
 

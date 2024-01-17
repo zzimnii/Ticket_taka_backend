@@ -1,4 +1,4 @@
-package umc.tickettaka.service;
+package umc.tickettaka.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -8,13 +8,14 @@ import umc.tickettaka.domain.Team;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.TeamRepository;
+import umc.tickettaka.service.TeamQueryService;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class TeamQueryServiceImpl implements TeamQueryService{
+public class TeamQueryServiceImpl implements TeamQueryService {
 
     private final TeamRepository teamRepository;
 

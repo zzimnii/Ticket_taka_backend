@@ -16,9 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CustomUserDetailsAdapter implements UserDetails {
-
-    private Member member;
+public class CustomUserDetails implements UserDetails {
 
     private String username;
     private String password;

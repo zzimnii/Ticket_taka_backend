@@ -1,4 +1,4 @@
-package umc.tickettaka.service;
+package umc.tickettaka.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,7 @@ import umc.tickettaka.domain.Member;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
+import umc.tickettaka.service.MemberQueryService;
 
 
 @Service

@@ -1,4 +1,4 @@
-package umc.tickettaka.service;
+package umc.tickettaka.service.impl;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,8 @@ import umc.tickettaka.domain.Member;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
+import umc.tickettaka.config.security.jwt.CustomUserDetailService;
+import umc.tickettaka.service.MemberCommandService;
 import umc.tickettaka.web.dto.request.SignRequestDto;
 
 @Service
