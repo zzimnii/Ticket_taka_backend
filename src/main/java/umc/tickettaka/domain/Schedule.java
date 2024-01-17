@@ -1,6 +1,5 @@
 package umc.tickettaka.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,6 +39,6 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule")
     private List<ScheduleTeam> scheduleTeamList = new ArrayList<>();
 }

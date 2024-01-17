@@ -18,16 +18,16 @@ public class TeamConverter {
                 .build();
     }
 
-    public static Team toTeam(TeamRequestDto.TeamDto request) {
+    public static Team toTeam(TeamRequestDto.TeamDto request, String imageUrl) {
         return Team.builder()
                 .name(request.getName())
-                .imageUrl(request.getImageUrl())
+                .imageUrl(imageUrl)
                 .build();
     }
 
     public static TeamResponseDto.TeamListDto toTeamListDto(List<Team> teamList) {
         List<TeamResponseDto.TeamDto> teamDtoList = teamList.stream()
-                .map(team -> toTeamResultDto(team))
+                .map(TeamConverter::toTeamResultDto)
                 .collect(Collectors.toList());
 
         return TeamResponseDto.TeamListDto.builder()

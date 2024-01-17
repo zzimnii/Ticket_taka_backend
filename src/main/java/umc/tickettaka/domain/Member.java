@@ -16,7 +16,6 @@ import umc.tickettaka.domain.enums.ProviderType;
 
 import java.util.ArrayList;
 import java.util.List;
-import umc.tickettaka.domain.mapping.MemberTeam;
 
 @Entity
 @Getter
@@ -41,8 +40,6 @@ public class Member extends BaseEntity {
     @Column(length = 500)
     private String password;
 
-
-
     @Column(length = 50)
     private String email;
 
@@ -58,6 +55,6 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<MemberTeam> memberTeamList = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    private List<MemberTeam> memberTeamList = new ArrayList<>();
 }

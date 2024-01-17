@@ -24,7 +24,6 @@ public class MemberQueryServiceImpl implements MemberQueryService {
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "해당 email을 가진 회원이 없습니다."));
-
     }
 
     public Member findByUsername(String username) {
