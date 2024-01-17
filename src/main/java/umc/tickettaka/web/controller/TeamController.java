@@ -28,7 +28,7 @@ public class TeamController {
     private final TeamCommandService teamCommandService;
     private final TeamQueryService teamQueryService;
 
-    @PostMapping(name = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "Team 생성 API", description = "Team 생성하는 API")
     public ApiResponse<TeamResponseDto.TeamDto> createTeam(
         @AuthUser Member member,

@@ -6,4 +6,5 @@ import umc.tickettaka.domain.Project;
 public interface ProjectQueryService {
 
     List<Project> findAllByTeamId(Long teamId);
+    Project findById(Long id);
 }

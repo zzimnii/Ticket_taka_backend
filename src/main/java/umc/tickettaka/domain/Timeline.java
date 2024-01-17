@@ -26,6 +26,10 @@ public class Timeline extends BaseEntity {
     private Long id;
     @Column(length = 50)
     private String name;
+
+    @Column(length = 500)
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
