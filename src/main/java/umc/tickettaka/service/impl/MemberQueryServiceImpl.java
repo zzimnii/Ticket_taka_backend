@@ -10,6 +10,8 @@ import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
 import umc.tickettaka.service.MemberQueryService;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +30,10 @@ public class MemberQueryServiceImpl implements MemberQueryService {
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username)
             .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "해당 username을 가진 회원이 없습니다."));
+    }
+
+    @Override
+    public Optional<Member> findByProviderId(String providerId) {
+        return memberRepository.findByProviderId(providerId);
     }
 }

@@ -53,7 +53,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         if (registrationId.equals("kakao")) {
             targetAttributes.put("id", "id");  // defaultOAuth2User 생성을 위한 targetAttributes에는 userNameAttributeName이 포함되어있어야 한다. ( 코드가 그렇게 되어있음)
-            targetAttributes.put("providerId", oAuth2User.getAttribute("id"));
+            targetAttributes.put("providerId", String.valueOf((Long) oAuth2User.getAttribute("id")));
 
             Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
             Map<String, Object> profile = (Map<String, Object>) kakao_account.get("profile");
