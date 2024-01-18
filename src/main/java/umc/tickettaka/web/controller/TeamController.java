@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import java.io.IOException;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +35,6 @@ public class TeamController {
         @RequestPart(value = "image", required = false) MultipartFile image,
         @RequestPart(value = "request") TeamRequestDto.TeamDto request) throws IOException {
         Team team = teamCommandService.createTeam(member, image, request);
-        System.out.println(member);
-        System.out.println(image);
-        System.out.println(request);
         return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
     }
 

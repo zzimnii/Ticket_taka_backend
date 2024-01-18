@@ -56,14 +56,12 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     @Override
     public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException {
         Team team = teamQueryService.findTeam(id);
-        String imageUrl = null;
+        String imageUrl = team.getImageUrl();
         if (image != null) {
             imageUrl = imageUploadService.uploadImage(image);
         }
 
-        System.out.println(imageUrl);
         team = Team.builder()
-                .id(id)
                 .name(request.getName())
                 .imageUrl(imageUrl)
                 .build();

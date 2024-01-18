@@ -2,6 +2,12 @@ package umc.tickettaka.domain;
 
 import jakarta.persistence.*;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -12,7 +18,6 @@ import lombok.NoArgsConstructor;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.domain.mapping.ScheduleTeam;
-import umc.tickettaka.domain.ticket.Ticket;
 
 @Entity
 @Getter
