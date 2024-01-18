@@ -17,6 +17,7 @@ public class TeamResponseDto {
     public static class TeamDto{
         Long teamId;
         String name;
+        String imageUrl;
         LocalDateTime createdAt;
     }
 

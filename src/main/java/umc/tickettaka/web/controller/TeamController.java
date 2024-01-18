@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import java.io.IOException;
+
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,9 @@ public class TeamController {
         @RequestPart(value = "image", required = false) MultipartFile image,
         @RequestPart(value = "request") TeamRequestDto.TeamDto request) throws IOException {
         Team team = teamCommandService.createTeam(member, image, request);
+        System.out.println(member);
+        System.out.println(image);
+        System.out.println(request);
         return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
     }
 
@@ -54,5 +59,30 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> getTeam(@PathVariable(name = "teamsId") Long teamsId ) {
         Team team = teamQueryService.findTeam(teamsId);
         return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
+    }
+
+    @PatchMapping(value = "/{teamsId}/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "팀 정보 수정 API", description = "팀 정보를 업데이트하는 API")
+    @Parameters({
+            @Parameter(name = "teamsId", description = "팀의 아이디, path variable 입니다.")
+    })
+    public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
+            @PathVariable(name = "teamsId") Long teamsId,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart TeamRequestDto.TeamDto request) throws IOException{
+        Team updatedTeam = teamCommandService.updateTeam(teamsId, image, request);
+        return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(updatedTeam));
+    }
+
+    @DeleteMapping("/{teamsId}")
+    @Operation(summary = "팀 삭제 API", description = "팀을 삭제하는 API, 삭제하면 Response는 가입된 전체 팀이 조회됩니다.")
+    @Parameters({
+            @Parameter(name = "teamsId", description = "팀의 아이디, path variable 입니다.")
+    })
+    public ApiResponse<TeamResponseDto.TeamListDto> deleteTeam(@PathVariable(name = "teamsId") Long teamsId) throws IOException{
+        teamCommandService.deleteTeam(teamsId);
+        List<Team> teamList = teamQueryService.findAll();
+        TeamResponseDto.TeamListDto teamListDto = TeamConverter.toTeamListDto(teamList);
+        return ApiResponse.onSuccess(teamListDto);
     }
 }

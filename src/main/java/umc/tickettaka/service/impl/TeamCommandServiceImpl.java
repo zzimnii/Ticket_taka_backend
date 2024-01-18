@@ -15,6 +15,7 @@ import umc.tickettaka.repository.MemberTeamRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.service.TeamCommandService;
+import umc.tickettaka.service.TeamQueryService;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
 import umc.tickettaka.repository.TeamRepository;
 
@@ -27,6 +28,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     private final ImageUploadService imageUploadService;
     private final MemberTeamRepository memberTeamRepository;
     private final MemberQueryService memberQueryService;
+    private final TeamQueryService teamQueryService;
 
     @Override
     @Transactional
@@ -49,5 +51,29 @@ public class TeamCommandServiceImpl implements TeamCommandService {
 
         memberTeamList.add(MemberTeam.builder().team(team).member(creator).build());
         memberTeamRepository.saveAll(memberTeamList);
+    }
+
+    @Override
+    public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException {
+        Team team = teamQueryService.findTeam(id);
+        String imageUrl = null;
+        if (image != null) {
+            imageUrl = imageUploadService.uploadImage(image);
+        }
+
+        System.out.println(imageUrl);
+        team = Team.builder()
+                .id(id)
+                .name(request.getName())
+                .imageUrl(imageUrl)
+                .build();
+
+        return teamRepository.save(team);
+    }
+
+    @Override
+    public void deleteTeam(Long id) throws IOException {
+        Team team = teamQueryService.findTeam(id);
+        teamRepository.delete(team);
     }
 }
