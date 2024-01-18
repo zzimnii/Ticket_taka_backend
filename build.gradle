@@ -2,6 +2,82 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
+
+}
+// https://techblog.woowahan.com/2661/ jacoco 관련 reference
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+test {
+    useJUnitPlatform() // junit을 사용해 test를 한다.
+    finalizedBy 'jacocoTestReport'
+}
+
+jacocoTestReport {
+    // html, xml, csv 형식으로 report를 받을 수 있는데 그 옵션 설정
+    reports {
+        html.required = true
+        xml.required = false
+        csv.required = false
+    }
+
+    def Qdomains = []
+    for(qPattern in "**/QA" .. "**/QZ") {
+        Qdomains.add(qPattern+"*")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [] + Qdomains)
+        }))
+    }
+
+    finalizedBy 'jacocoTestCoverageVerification'
+
+}
+
+jacocoTestCoverageVerification {
+    def Qdomains = []
+    // 패키지 + 클래스명 exclude Qdomain created by QueryDsl
+    for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+        Qdomains.add(qPattern + '*')
+    }
+
+    violationRules {
+        rule {
+            enabled = true // rule 활성화,비활성화 버튼
+            element = 'CLASS' // rule 체크 단위 class
+            // includes = []
+
+            // 라인 커버리지 제한 설정
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0
+            }
+
+            // 브랜치 커버리지 제한 설정
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0
+            }
+
+//            // 빈 줄을 제외한 코드의 라인수를 최대 200라인으로 제한
+//            limit {
+//                counter = 'LINE'
+//                value = 'TOTALCOUNT'
+//                maximum = 200
+//            }
+
+
+            excludes = [] + Qdomains // 제외할 Qdomains 패턴 추가
+        }
+
+    }
 }
 
 group = 'umc'
