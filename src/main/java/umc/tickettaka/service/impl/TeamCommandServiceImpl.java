@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.domain.mapping.ScheduleTeam;
 import umc.tickettaka.repository.MemberTeamRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberQueryService;
@@ -57,13 +59,21 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException {
         Team team = teamQueryService.findTeam(id);
         String imageUrl = team.getImageUrl();
+        List<MemberTeam> memberTeamList = team.getMemberTeamList();
+        List<Project> projectList = team.getProjectList();
+        List<ScheduleTeam> scheduleTeamList = team.getScheduleTeamList();
+
         if (image != null) {
             imageUrl = imageUploadService.uploadImage(image);
         }
 
         team = Team.builder()
+                .id(id)
                 .name(request.getName())
                 .imageUrl(imageUrl)
+                .memberTeamList(memberTeamList)
+                .projectList(projectList)
+                .scheduleTeamList(scheduleTeamList)
                 .build();
 
         return teamRepository.save(team);
