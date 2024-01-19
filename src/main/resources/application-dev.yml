@@ -1,0 +1,24 @@
+# we can have the specific settings in here for develop server
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: dev # 환경이름설정
+
+  # below should be written with the aws RDS or something associated with develop environment
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_DEV} # ticket is the name of my db not yours. so it can be different
+    username: ${DB_USERNAME_DEV}
+    password: ${DB_PW_DEV}
