@@ -16,6 +16,15 @@ public class ProjectConverter {
             .build();
     }
 
+    public static ProjectResponseDto.ShowProjectDto toShowProjectDto(Project project) {
+        return ShowProjectDto.builder()
+                .projectId(project.getId())
+                .name(project.getName())
+                .imageUrl(project.getImageUrl())
+                .modifiedTime(project.getUpdatedTime())
+                .build();
+    }
+
     public static ProjectResponseDto.ShowProjectListDto toShowProjectListDto(List<Project> projectList) {
         List<ShowProjectDto> showProjectDtoList = projectList.stream()
             .map(project -> ShowProjectDto.builder()

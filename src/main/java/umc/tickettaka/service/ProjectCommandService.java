@@ -8,4 +8,6 @@ import umc.tickettaka.web.dto.request.ProjectRequestDto;
 public interface ProjectCommandService{
 
     Project createProject(Long teamId, MultipartFile image, ProjectRequestDto.CreateProjectDto request) throws IOException;
+    Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.CreateProjectDto update) throws IOException;
+    void deleteProject(Long teamId, Long projectId);
 }
