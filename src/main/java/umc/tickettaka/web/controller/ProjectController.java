@@ -5,12 +5,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.ProjectConverter;
 import umc.tickettaka.domain.Project;
@@ -31,7 +27,7 @@ public class ProjectController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<ProjectResponseDto.CreateResultDto> createProject(
-        @PathVariable Long teamId,
+        @PathVariable(name="teamId") Long teamId,
         @RequestPart(value = "image", required = false) MultipartFile image,
         @RequestPart(value = "request") ProjectRequestDto.CreateProjectDto request) throws IOException {
 
@@ -45,4 +41,33 @@ public class ProjectController {
 
         return ApiResponse.onSuccess(ProjectConverter.toShowProjectListDto(projectList));
     }
+
+    @GetMapping("/{projectId}")
+    public ApiResponse<ProjectResponseDto.ShowProjectDto> project(@PathVariable Long teamId, @PathVariable Long projectId) {
+        Project project = projectQueryService.findById(projectId);
+
+        return ApiResponse.onSuccess(ProjectConverter.toShowProjectDto(project));
+    }
+
+    @PatchMapping(value="/{projectId}/update", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<ProjectResponseDto.ShowProjectDto> updateProject(
+            @PathVariable(name = "teamId") Long teamId,
+            @PathVariable(name = "projectId") Long projectId,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "request", required = false) ProjectRequestDto.CreateProjectDto request) throws IOException{
+        Project project = projectCommandService.updateProject(teamId,projectId,image,request);
+
+        return ApiResponse.onSuccess(ProjectConverter.toShowProjectDto(project));
+    }
+
+    @DeleteMapping
+    public ApiResponse<ProjectResponseDto.ShowProjectListDto> deleteProject(
+            @PathVariable Long teamId,
+            @RequestParam Long projectId) {
+        projectCommandService.deleteProject(teamId, projectId);
+        List<Project> projectList = projectQueryService.findAllByTeamId(teamId);
+
+        return ApiResponse.onSuccess(ProjectConverter.toShowProjectListDto(projectList));
+    }
+
 }
