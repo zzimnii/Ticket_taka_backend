@@ -1,6 +1,8 @@
 package umc.tickettaka.service.impl;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,4 +39,16 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
         return timelineRepository.save(timeline);
     }
 
+    @Override
+    @Transactional
+    public void deleteTimeline(Long projectId, Long timelineId) {
+        Optional<Timeline> optionalTimeline = timelineRepository.findById(timelineId);
+
+        if(optionalTimeline.isPresent()) {
+            Timeline timeline = optionalTimeline.get();
+            timelineRepository.delete(timeline);
+        } else {
+            throw new IllegalArgumentException("Timeline not found.");
+        }
+    }
 }
