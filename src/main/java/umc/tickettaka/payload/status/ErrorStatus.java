@@ -36,8 +36,9 @@ public enum ErrorStatus implements BaseErrorCode {
     TICKET_TIME_ERROR(HttpStatus.BAD_REQUEST, "TICKET4002", "Error assigning worker or reviewer to the ticket"),
     INVALID_TICKET_TIME(HttpStatus.BAD_REQUEST, "TICKET4003", "end time is faster than start time"),
     //TIMELINE Error
-    TIMELINE_NAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "TIMELINE4000", "Name hasn't entered"),
-    INVALID_PROJECT_ASSOCIATION(HttpStatus.BAD_REQUEST, "TIMELINE4001", "Invalid project association for the timeline"),
+    TIMELINE_NOT_FOUND(HttpStatus.NOT_FOUND,"TIMELINE4000","Timeline Not found"),
+    TIMELINE_NAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "TIMELINE4001", "Name hasn't entered"),
+    INVALID_PROJECT_ASSOCIATION(HttpStatus.BAD_REQUEST, "TIMELINE4002", "Invalid project association for the timeline"),
     //PROJECT Error
     PROJECT_NAME_NOT_EXIST(HttpStatus.BAD_REQUEST,"PROJECT4000","Name hasn't entered"),
     INVALID_TEAM_ASSOCIATION(HttpStatus.BAD_REQUEST, "PROJECT4001", "Invalid team association for the project"),

@@ -6,4 +6,5 @@ import umc.tickettaka.domain.Timeline;
 public interface TimelineQueryService {
 
     List<Timeline> findAllByProjectId(Long projectId);
+    Timeline findById(Long timelineId);
 }

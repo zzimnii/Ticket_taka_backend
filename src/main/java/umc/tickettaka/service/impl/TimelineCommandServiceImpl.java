@@ -13,6 +13,7 @@ import umc.tickettaka.repository.TimelineRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.ProjectQueryService;
 import umc.tickettaka.service.TimelineCommandService;
+import umc.tickettaka.service.TimelineQueryService;
 import umc.tickettaka.web.dto.request.TimelineRequestDto;
 
 @Service
@@ -21,6 +22,7 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
 
 
     private final TimelineRepository timelineRepository;
+    private final TimelineQueryService timelineQueryService;
     private final ProjectQueryService projectQueryService;
     private final ImageUploadService imageUploadService;
 
@@ -41,14 +43,8 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
 
     @Override
     @Transactional
-    public void deleteTimeline(Long projectId, Long timelineId) {
-        Optional<Timeline> optionalTimeline = timelineRepository.findById(timelineId);
-
-        if(optionalTimeline.isPresent()) {
-            Timeline timeline = optionalTimeline.get();
-            timelineRepository.delete(timeline);
-        } else {
-            throw new IllegalArgumentException("Timeline not found.");
-        }
+    public void deleteTimeline(Long timelineId) {
+        Timeline timeline = timelineQueryService.findById(timelineId);
+        timelineRepository.delete(timeline);
     }
 }

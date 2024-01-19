@@ -46,7 +46,7 @@ public class TimelineController {
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteTimelines(
             @PathVariable(name = "projectId") Long projectId,
             @RequestParam(value = "timelineId") Long timelineId) {
-        timelineCommandService.deleteTimeline(projectId,timelineId);
+        timelineCommandService.deleteTimeline(timelineId);
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
 
         return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(timelineList));
