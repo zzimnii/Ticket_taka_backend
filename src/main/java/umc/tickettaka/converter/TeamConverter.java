@@ -14,6 +14,7 @@ public class TeamConverter {
         return TeamResponseDto.TeamDto.builder()
                 .teamId(team.getId())
                 .name(team.getName())
+                .imageUrl(team.getImageUrl())
                 .createdAt(LocalDateTime.now())
                 .build();
     }

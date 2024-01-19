@@ -9,12 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.domain.mapping.ScheduleTeam;
 import umc.tickettaka.repository.MemberTeamRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.service.TeamCommandService;
+import umc.tickettaka.service.TeamQueryService;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
 import umc.tickettaka.repository.TeamRepository;
 
@@ -27,6 +30,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     private final ImageUploadService imageUploadService;
     private final MemberTeamRepository memberTeamRepository;
     private final MemberQueryService memberQueryService;
+    private final TeamQueryService teamQueryService;
 
     @Override
     @Transactional
@@ -49,5 +53,35 @@ public class TeamCommandServiceImpl implements TeamCommandService {
 
         memberTeamList.add(MemberTeam.builder().team(team).member(creator).build());
         memberTeamRepository.saveAll(memberTeamList);
+    }
+
+    @Override
+    public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException {
+        Team team = teamQueryService.findTeam(id);
+        String imageUrl = team.getImageUrl();
+        List<MemberTeam> memberTeamList = team.getMemberTeamList();
+        List<Project> projectList = team.getProjectList();
+        List<ScheduleTeam> scheduleTeamList = team.getScheduleTeamList();
+
+        if (image != null) {
+            imageUrl = imageUploadService.uploadImage(image);
+        }
+
+        team = Team.builder()
+                .id(id)
+                .name(request.getName())
+                .imageUrl(imageUrl)
+                .memberTeamList(memberTeamList)
+                .projectList(projectList)
+                .scheduleTeamList(scheduleTeamList)
+                .build();
+
+        return teamRepository.save(team);
+    }
+
+    @Override
+    public void deleteTeam(Long id) throws IOException {
+        Team team = teamQueryService.findTeam(id);
+        teamRepository.delete(team);
     }
 }
