@@ -1,7 +1,6 @@
 package umc.tickettaka.service.impl;
 
 import java.io.IOException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,37 +67,11 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
         return projectRepository.save(project);
     }
 
-    /**
-     * Optional<Project> optionalProject = projectRepository.findById(projectId);
-     *
-     *         if (optionalProject.isPresent()) {
-     *             Project project = optionalProject.get();
-     *
-     *             String updatedName = update.getName();
-     *             String updatedDescription = update.getDescription();
-     *
-     *             if (updatedName != null) {
-     *                 project.changeName(updatedName);
-     *             }
-     *             if (updatedDescription != null) {
-     *                 project.changeDescription(updatedDescription);
-     *             }
-     *
-     *             return projectRepository.save(project);
-     *         } else {
-     *             throw new IllegalArgumentException("Project not found");
-     *         }
-     */
     @Override
     @Transactional
     public void deleteProject(Long teamId, Long projectId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
 
-        if (optionalProject.isPresent()) {
-            Project project = optionalProject.get();
-            projectRepository.delete(project);
-        } else {
-            throw new IllegalArgumentException("Project not found");
-        }
+        Project project = projectQueryService.findById(projectId);
+        projectRepository.delete(project);
     }
 }
