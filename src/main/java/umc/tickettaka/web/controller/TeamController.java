@@ -38,7 +38,7 @@ public class TeamController {
         return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @Operation(summary = "생성된 Team 조회 API", description = "생성된 Team 조회하는 API")
     public ApiResponse<TeamResponseDto.TeamListDto> getTeamList() {
         List<Team> teamList = teamQueryService.findAll();

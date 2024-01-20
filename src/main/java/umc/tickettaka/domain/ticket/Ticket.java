@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +34,8 @@ public class Ticket extends BaseEntity {
     private String title;
     @Column(length = 500)
     private String description;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startTime;
+    private LocalDate endTime;
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,9 +44,6 @@ public class Ticket extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "worker_id")
     private Member worker;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewer_id")
-    private Member reviewer;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_ticket_id")
     private Ticket nextTicket;
