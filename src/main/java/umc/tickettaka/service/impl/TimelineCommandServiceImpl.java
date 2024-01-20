@@ -1,6 +1,8 @@
 package umc.tickettaka.service.impl;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import umc.tickettaka.repository.TimelineRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.ProjectQueryService;
 import umc.tickettaka.service.TimelineCommandService;
+import umc.tickettaka.service.TimelineQueryService;
 import umc.tickettaka.web.dto.request.TimelineRequestDto;
 
 @Service
@@ -19,6 +22,7 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
 
 
     private final TimelineRepository timelineRepository;
+    private final TimelineQueryService timelineQueryService;
     private final ProjectQueryService projectQueryService;
     private final ImageUploadService imageUploadService;
 
@@ -37,4 +41,10 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
         return timelineRepository.save(timeline);
     }
 
+    @Override
+    @Transactional
+    public void deleteTimeline(Long timelineId) {
+        Timeline timeline = timelineQueryService.findById(timelineId);
+        timelineRepository.delete(timeline);
+    }
 }

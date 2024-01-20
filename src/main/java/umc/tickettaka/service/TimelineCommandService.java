@@ -8,5 +8,5 @@ import umc.tickettaka.web.dto.request.TimelineRequestDto;
 public interface TimelineCommandService {
 
     Timeline createTimeline(Long projectId, MultipartFile image, TimelineRequestDto.CreateTimelineDto request) throws IOException;
-
+    void deleteTimeline(Long timelineId);
 }
