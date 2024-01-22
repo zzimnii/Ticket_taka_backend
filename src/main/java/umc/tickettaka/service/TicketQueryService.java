@@ -6,5 +6,6 @@ import umc.tickettaka.domain.ticket.Ticket;
 public interface TicketQueryService {
 
     List<Ticket> findAllByTimelineId(Long timelineId);
+    Ticket findById(Long id);
 
 }
