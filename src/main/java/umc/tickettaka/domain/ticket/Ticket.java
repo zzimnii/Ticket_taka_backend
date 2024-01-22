@@ -34,6 +34,7 @@ public class Ticket extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long sequence;
     @Column(length = 50)
     private String title;
     @Column(length = 500)
