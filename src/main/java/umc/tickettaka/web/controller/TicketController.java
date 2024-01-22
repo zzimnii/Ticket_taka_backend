@@ -5,8 +5,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +18,7 @@ import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.TicketCommandService;
+import umc.tickettaka.service.TicketQueryService;
 import umc.tickettaka.web.dto.request.TicketRequestDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 
@@ -25,6 +29,7 @@ import umc.tickettaka.web.dto.response.TicketResponseDto;
 public class TicketController {
 
     private final TicketCommandService ticketCommandService;
+    private final TicketQueryService ticketQueryService;
 
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<TicketResponseDto.CreateTicketResultDto> createTicket(
@@ -33,8 +38,24 @@ public class TicketController {
         @RequestPart(value = "request") TicketRequestDto.CreateTicketDto request
     ) throws IOException {
 
-        log.info("created Ticket");
         Ticket ticket = ticketCommandService.createTicket(timelineId, files, request);
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
+    }
+
+    @GetMapping("")
+    public ApiResponse<List<TicketResponseDto.ShowTicketDto>> showAllTickets(
+        @PathVariable(name = "timelineId") Long timelineId
+    ) {
+        List<Ticket> ticketList = ticketQueryService.findAllByTimelineId(timelineId);
+        return ApiResponse.onSuccess(TicketConverter.toShowTicketDtoList(ticketList));
+    }
+
+    @DeleteMapping("")
+    public ApiResponse<List<TicketResponseDto.ShowTicketDto>> deleteTicket(
+        @RequestBody TicketRequestDto.DeleteTicketDto request
+    ) {
+
+        ticketCommandService.deleteTicket(request);
+        return ApiResponse.onSuccess(null);
     }
 }

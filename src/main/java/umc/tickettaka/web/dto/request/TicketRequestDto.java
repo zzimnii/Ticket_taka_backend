@@ -18,4 +18,9 @@ public class TicketRequestDto {
         int endMonth;
         int endDay;
     }
+
+    @Getter
+    public static class DeleteTicketDto {
+        Long ticketId;
+    }
 }

@@ -19,8 +19,10 @@ import umc.tickettaka.repository.TicketReviewerRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.service.TicketCommandService;
+import umc.tickettaka.service.TicketQueryService;
 import umc.tickettaka.service.TimelineQueryService;
 import umc.tickettaka.web.dto.request.TicketRequestDto.CreateTicketDto;
+import umc.tickettaka.web.dto.request.TicketRequestDto.DeleteTicketDto;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class TicketCommandServiceImpl implements TicketCommandService {
     private final FileRepository fileRepository;
     private final MemberQueryService memberQueryService;
     private final TicketReviewerRepository ticketReviewerRepository;
+    private final TicketQueryService ticketQueryService;
     private final TicketRepository ticketRepository;
 
     @Override
@@ -67,4 +70,15 @@ public class TicketCommandServiceImpl implements TicketCommandService {
             fileRepository.save(fileEntity);
         }
     }
+
+    @Override
+    @Transactional
+    public void deleteTicket(DeleteTicketDto request) {
+        Ticket ticket = ticketQueryService.findById(request.getTicketId());
+        ticketRepository.delete(ticket);
+
+        List<TicketReviewer> ticketReviewerList = ticketReviewerRepository.findAllByTicket(ticket);
+        ticketReviewerRepository.deleteAll(ticketReviewerList);
+    }
+
 }
