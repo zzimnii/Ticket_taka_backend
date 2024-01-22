@@ -16,6 +16,7 @@ public class TicketResponseDto {
     @AllArgsConstructor
     public static class CreateTicketResultDto {
         Long id;
+        Long sequence;
         LocalDateTime createdTime;
     }
 
@@ -25,6 +26,7 @@ public class TicketResponseDto {
     @AllArgsConstructor
     public static class ShowTicketDto {
         Long ticketId;
+        Long sequence;
         String title;
         String description;
         List<String> fileUrlList;

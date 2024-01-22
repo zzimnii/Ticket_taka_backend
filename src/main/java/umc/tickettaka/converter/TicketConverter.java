@@ -19,11 +19,12 @@ public class TicketConverter {
     public static TicketResponseDto.CreateTicketResultDto toCreateTicketResultDto(Ticket ticket) {
         return CreateTicketResultDto.builder()
             .id(ticket.getId())
+            .sequence(ticket.getSequence())
             .createdTime(ticket.getCreatedTime())
             .build();
     }
 
-    public static Ticket toTicket(Timeline timeline, CreateTicketDto request, Member worker) {
+    public static Ticket toTicket(Timeline timeline, Member worker, Long sequence, CreateTicketDto request) {
         LocalDate startTime = LocalDate.of(request.getStartYear(), request.getStartMonth(), request.getStartDay());
         LocalDate endTime = LocalDate.of(request.getEndYear(), request.getEndMonth(), request.getEndDay());
         if (startTime.isAfter(endTime)) {
@@ -33,6 +34,7 @@ public class TicketConverter {
         return Ticket.builder()
             .title(request.getTitle())
             .description(request.getDescription())
+            .sequence(sequence)
             .worker(worker)
             .status(TicketStatus.TODO)
             .timeline(timeline)
@@ -48,6 +50,7 @@ public class TicketConverter {
         return ticketList.stream()
             .map(ticket -> ShowTicketDto.builder()
                 .ticketId(ticket.getId())
+                .sequence(ticket.getSequence())
                 .title(ticket.getTitle())
                 .description(ticket.getDescription())
                 .fileUrlList(getFileUrlList(ticket.getFileList()))

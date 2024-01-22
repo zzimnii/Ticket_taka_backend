@@ -42,9 +42,9 @@ public class TicketCommandServiceImpl implements TicketCommandService {
 
         Timeline timeline = timelineQueryService.findById(timelineId);
         Member worker = memberQueryService.findByUsername(request.getWorkerName());
-        Ticket ticket = TicketConverter.toTicket(timeline, request, worker);
+        Long sequence = ticketRepository.countByTimeline(timeline) + 1;
+        Ticket ticket = TicketConverter.toTicket(timeline, worker, sequence, request);
         Ticket newTicket = ticketRepository.save(ticket);
-
         setReviewers(request, ticket);
         setFiles(files, ticket);
 
