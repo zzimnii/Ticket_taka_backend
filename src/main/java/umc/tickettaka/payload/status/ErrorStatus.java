@@ -24,6 +24,9 @@ public enum ErrorStatus implements BaseErrorCode {
     EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"MEMBER4003", "Email already exists"),
     MEMBER_WRONG_INFORMATION(HttpStatus.BAD_REQUEST, "MEMBER4004", "Member information you entered is not valid."),
     TEAM_ALREADY_ASSIGNED(HttpStatus.BAD_REQUEST,"MEMBER4005", "Team is already assigned to the member"),
+    USERNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "MEMBER4006", "Username already exists"),
+    PASSWORD_SAME(HttpStatus.BAD_REQUEST, "MEMBER4007", "password is same"),
+
 
     //MEMBER_TOKEN Error
     INVALID_TOKEN(HttpStatus.BAD_REQUEST,"TOKEN4001", "Invalid token"),
