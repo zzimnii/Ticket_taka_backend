@@ -1,5 +1,7 @@
 package umc.tickettaka.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
 import umc.tickettaka.converter.MemberConverter;
+import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Team;
+import umc.tickettaka.domain.Timeline;
+import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
 import umc.tickettaka.config.security.jwt.CustomUserDetailService;
 import umc.tickettaka.service.MemberCommandService;
+import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.web.dto.common.CommonMemberDto;
 import umc.tickettaka.web.dto.request.SignRequestDto;
 
 @Service
@@ -31,6 +40,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final TeamQueryService teamQueryService;
 
     @Override
     @Transactional
@@ -83,5 +93,32 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         if (memberByEmail.isPresent()) {
             throw new GeneralException(ErrorStatus.MEMBER_ALREADY_EXIST, "멤버가 이미 존재합니다.");
         }
+    }
+
+    @Override
+    @Transactional
+    public CommonMemberDto.ShowMemberProfileListDto getCommonMemberDto (Long teamId) {
+        Team team = teamQueryService.findTeam(teamId);
+        List<CommonMemberDto.ShowMemberProfileDto> showMemberProfileDtoList = new ArrayList<>();
+
+        for (MemberTeam memberTeam : team.getMemberTeamList()) {
+            Member member = memberTeam.getMember();
+
+            String memberName = member.getName();
+            String imageUrl = member.getImageUrl();
+            String memberHex = memberTeam.getColor().getHex();
+
+            CommonMemberDto.ShowMemberProfileDto showMemberProfileDto = CommonMemberDto.ShowMemberProfileDto.builder()
+                    .imageUrl(imageUrl)
+                    .name(memberName)
+                    .memberHex(memberHex)
+                    .build();
+
+            showMemberProfileDtoList.add(showMemberProfileDto);
+        }
+
+        return CommonMemberDto.ShowMemberProfileListDto.builder()
+                .showMemberProfileDtoList(showMemberProfileDtoList)
+                .build();
     }
 }
