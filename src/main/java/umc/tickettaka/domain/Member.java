@@ -11,8 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.ProviderType;
+import umc.tickettaka.web.dto.request.MemberRequestDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,24 @@ public class Member extends BaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    public Member update(String imageUrl, MemberRequestDto.UpdateDto memberUpdateDto, String password) {
+
+        this.imageUrl = imageUrl;
+
+        String updateName = memberUpdateDto.getName();
+        if(updateName != null) this.name = updateName;
+
+        String updateUsername = memberUpdateDto.getUsername();
+        if(updateUsername != null) this.username = updateUsername;
+
+        String updateEmail = memberUpdateDto.getEmail();
+        if(updateEmail != null) this.email = updateEmail;
+
+        if(password != null) this.password = password;
+
+        return this;
+    }
 
 //    @OneToMany(mappedBy = "member")
 //    private List<MemberTeam> memberTeamList = new ArrayList<>();
