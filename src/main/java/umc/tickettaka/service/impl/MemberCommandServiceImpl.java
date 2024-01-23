@@ -124,6 +124,9 @@ public class MemberCommandServiceImpl implements MemberCommandService {
             throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS, "해당 멤버 email이 이미 존재합니다.");
 
         String password = memberUpdateDto.getPassword();
+
+//        if (password == null) return;
+
         if(passwordEncoder.matches(password, member.getPassword()))
             throw new GeneralException(ErrorStatus.PASSWORD_SAME, "변경할 password가 기존과 같습니다");
     }
