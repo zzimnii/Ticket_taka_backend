@@ -5,6 +5,7 @@ import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.web.dto.request.SignRequestDto.SignUpDto;
+import umc.tickettaka.web.dto.response.MemberResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto.SignInResultDto;
 import umc.tickettaka.web.dto.response.SignResponseDto.SignUpResultDto;
@@ -46,5 +47,15 @@ public class MemberConverter {
             .providerId(providerId)
             .roles(Collections.singletonList("ROLE_USER"))
             .build();
+    }
+
+    public static MemberResponseDto.ShowMemberDto toShowProjectDto(Member member) {
+        return MemberResponseDto.ShowMemberDto.builder()
+                .memberId(member.getId())
+                .name(member.getName())
+                .username(member.getUsername())
+                .email(member.getEmail())
+                .imageUrl(member.getImageUrl())
+                .build();
     }
 }

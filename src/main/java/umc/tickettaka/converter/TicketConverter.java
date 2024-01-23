@@ -10,9 +10,9 @@ import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.web.dto.request.TicketRequestDto.CreateTicketDto;
+import umc.tickettaka.web.dto.response.CommonTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto.CreateTicketResultDto;
-import umc.tickettaka.web.dto.response.TicketResponseDto.ShowTicketDto;
 
 public class TicketConverter {
 
@@ -44,11 +44,11 @@ public class TicketConverter {
         //todo next ticket?
     }
 
-    public static List<TicketResponseDto.ShowTicketDto> toShowTicketDtoList(List<Ticket> ticketList) {
+    public static List<CommonTicketDto> toCommonTicketDtoList(List<Ticket> ticketList) {
 
 
         return ticketList.stream()
-            .map(ticket -> ShowTicketDto.builder()
+            .map(ticket -> CommonTicketDto.builder()
                 .ticketId(ticket.getId())
                 .sequence(ticket.getSequence())
                 .title(ticket.getTitle())
