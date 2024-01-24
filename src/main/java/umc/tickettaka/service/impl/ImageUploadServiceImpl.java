@@ -21,6 +21,11 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 
     @Override
     public String uploadImage(MultipartFile file) throws IOException {
+
+        if (file == null) {
+            return null;
+        }
+
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());

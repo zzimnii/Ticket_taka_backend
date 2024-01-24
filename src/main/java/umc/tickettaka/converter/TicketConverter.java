@@ -25,8 +25,9 @@ public class TicketConverter {
     }
 
     public static Ticket toTicket(Timeline timeline, Member worker, Long sequence, CreateTicketDto request) {
-        LocalDate startTime = LocalDate.of(request.getStartYear(), request.getStartMonth(), request.getStartDay());
-        LocalDate endTime = LocalDate.of(request.getEndYear(), request.getEndMonth(), request.getEndDay());
+
+        LocalDate startTime = LocalDate.parse(request.getStartTime());
+        LocalDate endTime = LocalDate.parse(request.getEndTime());
         if (startTime.isAfter(endTime)) {
             throw new GeneralException(ErrorStatus.INVALID_TICKET_TIME);
         }

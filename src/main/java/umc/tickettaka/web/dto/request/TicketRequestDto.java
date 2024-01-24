@@ -1,5 +1,6 @@
 package umc.tickettaka.web.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.List;
 import lombok.Getter;
 
@@ -11,12 +12,10 @@ public class TicketRequestDto {
         String description;
         String workerName;
         List<String> reviewerNameList;
-        int startYear;
-        int startMonth;
-        int startDay;
-        int endYear;
-        int endMonth;
-        int endDay;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        String startTime;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        String endTime;
     }
 
     @Getter

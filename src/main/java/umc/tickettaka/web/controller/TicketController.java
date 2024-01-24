@@ -17,20 +17,30 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
+import umc.tickettaka.service.MemberCommandService;
 import umc.tickettaka.service.TicketCommandService;
 import umc.tickettaka.service.TicketQueryService;
+import umc.tickettaka.web.dto.common.CommonMemberDto;
 import umc.tickettaka.web.dto.request.TicketRequestDto;
 import umc.tickettaka.web.dto.common.CommonTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/teams/{teamsId}/projects/{projectId}/timelines/{timelineId}")
+@RequestMapping("/teams/{teamId}/projects/{projectId}/timelines/{timelineId}")
 @Slf4j
 public class TicketController {
 
     private final TicketCommandService ticketCommandService;
     private final TicketQueryService ticketQueryService;
+    private final MemberCommandService memberCommandService;
+
+    @GetMapping("/create")
+    public ApiResponse<CommonMemberDto.ShowMemberProfileListDto> createTicketPage(
+        @PathVariable(name = "teamId") Long teamId
+    ) {
+        return ApiResponse.onSuccess(memberCommandService.getCommonMemberDto(teamId));
+    }
 
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<TicketResponseDto.CreateTicketResultDto> createTicket(
