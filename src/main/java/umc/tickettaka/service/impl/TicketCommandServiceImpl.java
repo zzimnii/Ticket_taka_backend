@@ -46,7 +46,9 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         Ticket ticket = TicketConverter.toTicket(timeline, worker, sequence, request);
         Ticket newTicket = ticketRepository.save(ticket);
         setReviewers(request, ticket);
-        setFiles(files, ticket);
+        if (files != null) {
+            setFiles(files, ticket);
+        }
 
         return newTicket;
     }
