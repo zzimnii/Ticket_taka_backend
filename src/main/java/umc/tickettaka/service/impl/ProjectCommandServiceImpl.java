@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
+import umc.tickettaka.payload.exception.GeneralException;
+import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.ProjectRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.ProjectCommandService;
@@ -41,30 +43,17 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
     @Override
     @Transactional
-    public Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.CreateProjectDto update) throws IOException {
-        Team team = teamQueryService.findTeam(teamId);
+    public Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.CreateProjectDto updateProjectDto) throws IOException {
         Project project = projectQueryService.findById(projectId);
         String imageUrl = project.getImageUrl();
-        String updatedName = project.getName();
-        String updatedDescription = project.getDescription();
 
         if (image != null) {
             imageUrl = imageUploadService.uploadImage(image);
         }
-        if (update != null) {
-            updatedName = update.getName();
-            updatedDescription = update.getDescription();
+        if (updateProjectDto == null) {
+            throw new GeneralException(ErrorStatus.INVALID_UPDATE_INFO, "변경 NAME과 DESCRIPTION이 입력되지 않았습니다.");
         }
-
-        project = Project.builder()
-                .id(projectId)
-                .name(updatedName)
-                .description(updatedDescription)
-                .imageUrl(imageUrl)
-                .team(team)
-                .build();
-
-        return projectRepository.save(project);
+        return project.update(imageUrl, updateProjectDto);
     }
 
     @Override
