@@ -10,7 +10,7 @@ import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.service.TicketQueryService;
-import umc.tickettaka.web.dto.response.CommonTicketDto;
+import umc.tickettaka.web.dto.common.CommonTicketDto;
 
 @Service
 @RequiredArgsConstructor

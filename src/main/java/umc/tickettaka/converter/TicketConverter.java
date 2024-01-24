@@ -10,7 +10,7 @@ import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.web.dto.request.TicketRequestDto.CreateTicketDto;
-import umc.tickettaka.web.dto.response.CommonTicketDto;
+import umc.tickettaka.web.dto.common.CommonTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto.CreateTicketResultDto;
 

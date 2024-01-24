@@ -20,7 +20,7 @@ import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.TicketCommandService;
 import umc.tickettaka.service.TicketQueryService;
 import umc.tickettaka.web.dto.request.TicketRequestDto;
-import umc.tickettaka.web.dto.response.CommonTicketDto;
+import umc.tickettaka.web.dto.common.CommonTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 
 @RestController
