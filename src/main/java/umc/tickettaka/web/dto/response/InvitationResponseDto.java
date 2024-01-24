@@ -8,16 +8,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TeamResponseDto {
-
+public class InvitationResponseDto {
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamDto{
-        Long teamId;
-        String name;
-        String imageUrl;
+    public static class InvitationDto {
+        Long id;
+        Long teamsId;
         LocalDateTime createdAt;
     }
 
@@ -25,8 +23,7 @@ public class TeamResponseDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamAndInvitationListDto {
-        List<TeamDto> teamDtoList;
-        List<InvitationResponseDto.InvitationDto> invitationDtoList;
+    public static class InvitationListDto {
+        List<InvitationDto> invitationDtoList;
     }
 }
