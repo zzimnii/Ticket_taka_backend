@@ -21,8 +21,8 @@ import umc.tickettaka.service.MemberCommandService;
 import umc.tickettaka.service.TicketCommandService;
 import umc.tickettaka.service.TicketQueryService;
 import umc.tickettaka.web.dto.common.CommonMemberDto;
+import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
 import umc.tickettaka.web.dto.request.TicketRequestDto;
-import umc.tickettaka.web.dto.common.CommonTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 
 @RestController
@@ -54,14 +54,15 @@ public class TicketController {
     }
 
     @GetMapping("")
-    public ApiResponse<List<CommonTicketDto>> showAllTickets(
+    public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
+        @PathVariable(name = "teamId") Long teamId,
         @PathVariable(name = "timelineId") Long timelineId
     ) {
-        return ApiResponse.onSuccess(ticketQueryService.getCommonTicketDto(timelineId));
+        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(teamId, timelineId));
     }
 
     @DeleteMapping("")
-    public ApiResponse<List<CommonTicketDto>> deleteTicket(
+    public ApiResponse<List<ShowTicketDto>> deleteTicket(
         @RequestBody TicketRequestDto.DeleteTicketDto request
     ) {
 
