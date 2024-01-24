@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.tickettaka.domain.common.BaseEntity;
+import umc.tickettaka.web.dto.request.ProjectRequestDto;
 
 @Entity
 @Getter
@@ -33,4 +34,16 @@ public class Project extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    public Project update(String imageUrl, ProjectRequestDto.CreateProjectDto projectUpdateDto) {
+        this.imageUrl = imageUrl;
+
+        String updateName = projectUpdateDto.getName();
+        if(updateName != null) this.name = updateName;
+
+        String updateDescription = projectUpdateDto.getDescription();
+        if(updateDescription != null) this.description = updateDescription;
+
+        return this;
+    }
 }
