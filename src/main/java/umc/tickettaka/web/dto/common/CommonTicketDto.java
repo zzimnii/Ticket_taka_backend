@@ -7,16 +7,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class CommonTicketDto {
-        Long ticketId;
-        Long sequence;
-        String title;
-        String description;
-        List<String> fileUrlList;
-        String status;
-        LocalDate endTime;
+
+        @Builder
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+            public static class ShowTicketDto {
+                Long ticketId;
+                String workerName;
+                Long sequence;
+                String title;
+                String description;
+                List<String> fileUrlList;
+                String status;
+                LocalDate endTime;
+
+                ShowTicketDto nextTicket;
+        }
 }

@@ -23,6 +23,7 @@ public class TimelineResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ShowTimelineListDto {
+        String projectName;
         List<TimelineResponseDto.ShowTimelineDto> showTimelineDtoList;
     }
 
@@ -34,6 +35,5 @@ public class TimelineResponseDto {
         Long timelineId;
         String name;
         String imageUrl;
-        LocalDateTime modifiedTime;
     }
 }

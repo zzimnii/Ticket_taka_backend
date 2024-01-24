@@ -9,10 +9,12 @@ import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
+import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileListDto;
+import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
 import umc.tickettaka.web.dto.request.TicketRequestDto.CreateTicketDto;
-import umc.tickettaka.web.dto.common.CommonTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto.CreateTicketResultDto;
+import umc.tickettaka.web.dto.response.TicketResponseDto.ShowAllTicketListDto;
 
 public class TicketConverter {
 
@@ -45,18 +47,21 @@ public class TicketConverter {
         //todo next ticket?
     }
 
-    public static List<CommonTicketDto> toCommonTicketDtoList(List<Ticket> ticketList) {
+    public static List<ShowTicketDto> toShowTicketDtoList(List<Ticket> ticketList) {
 
 
         return ticketList.stream()
-            .map(ticket -> CommonTicketDto.builder()
+            .map(ticket -> ShowTicketDto.builder()
                 .ticketId(ticket.getId())
+                .workerName(ticket.getWorker().getName())
                 .sequence(ticket.getSequence())
                 .title(ticket.getTitle())
                 .description(ticket.getDescription())
                 .fileUrlList(getFileUrlList(ticket.getFileList()))
                 .status(String.valueOf(ticket.getStatus()))
                 .endTime(ticket.getEndTime())
+                //todo nextTicket
+                .nextTicket(null)
                 .build()
             ).toList();
     }
@@ -64,5 +69,17 @@ public class TicketConverter {
     private static List<String> getFileUrlList(List<File> fileList) {
         return fileList.stream()
             .map(File::getUrl).toList();
+    }
+
+    public static ShowAllTicketListDto toShowAllTicketListDto(
+        String timelineName,
+        ShowMemberProfileListDto memberProfileListDto,
+        List<ShowTicketDto> ticketDtoList) {
+
+        return ShowAllTicketListDto.builder()
+            .timelineName(timelineName)
+            .ticketDtoList(ticketDtoList)
+            .memberProfileListDto(memberProfileListDto)
+            .build();
     }
 }

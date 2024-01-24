@@ -22,11 +22,19 @@ public class TimelineConverter {
                 .timelineId(timeline.getId())
                 .name(timeline.getName())
                 .imageUrl(timeline.getImageUrl())
-                .modifiedTime(timeline.getUpdatedTime())
                 .build()).toList();
 
         return ShowTimelineListDto.builder()
+            .projectName(getProjectName(timelineList))
             .showTimelineDtoList(showTimelineDtoList)
             .build();
+    }
+
+    private static String getProjectName(List<Timeline> timelineList) {
+        if (!timelineList.isEmpty()) {
+            return timelineList.get(0).getProject().getName();
+        }
+
+        return null;
     }
 }
