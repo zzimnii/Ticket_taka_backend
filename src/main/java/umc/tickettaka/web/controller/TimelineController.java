@@ -17,7 +17,7 @@ import umc.tickettaka.web.dto.response.TimelineResponseDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/teams/{teamsId}/projects/{projectId}/timelines")
+@RequestMapping("/teams/{teamId}/projects/{projectId}/timelines")
 @Slf4j
 public class TimelineController {
 
@@ -45,8 +45,8 @@ public class TimelineController {
     @DeleteMapping
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteTimelines(
             @PathVariable(name = "projectId") Long projectId,
-            @RequestParam(value = "timelineId") Long timelineId) {
-        timelineCommandService.deleteTimeline(timelineId);
+            @RequestBody TimelineRequestDto.DeleteTimelineDto request) {
+        timelineCommandService.deleteTimeline(request);
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
 
         return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(timelineList));

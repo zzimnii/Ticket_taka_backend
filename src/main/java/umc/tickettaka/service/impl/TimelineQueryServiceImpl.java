@@ -17,7 +17,7 @@ public class TimelineQueryServiceImpl implements TimelineQueryService {
 
     @Override
     public List<Timeline> findAllByProjectId(Long projectId) {
-        return timelineRepository.findAllByProjectId(projectId);
+        return timelineRepository.findAllByProjectIdOrderByUpdatedTime(projectId);
     }
 
     @Override

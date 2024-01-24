@@ -8,4 +8,9 @@ public class TimelineRequestDto {
     public static class CreateTimelineDto {
         String name;
     }
+
+    @Getter
+    public static class DeleteTimelineDto {
+        Long timelineId;
+    }
 }

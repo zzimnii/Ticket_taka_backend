@@ -1,7 +1,6 @@
 package umc.tickettaka.service.impl;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,8 +42,8 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
 
     @Override
     @Transactional
-    public void deleteTimeline(Long timelineId) {
-        Timeline timeline = timelineQueryService.findById(timelineId);
+    public void deleteTimeline(TimelineRequestDto.DeleteTimelineDto request) {
+        Timeline timeline = timelineQueryService.findById(request.getTimelineId());
         timelineRepository.delete(timeline);
     }
 }
