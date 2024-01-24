@@ -1,4 +1,4 @@
-package umc.tickettaka.web.dto.response;
+package umc.tickettaka.web.dto.common;
 
 import java.time.LocalDate;
 import java.util.List;
