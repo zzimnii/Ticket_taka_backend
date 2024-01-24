@@ -58,6 +58,16 @@ public class InvitationCommandServiceImpl implements InvitationCommandService {
     }
 
     @Override
+    @Transactional
+    public void isAcceptedInvitation(Long invitationId, Member receiver, Boolean isAccepted) {
+        if (isAccepted) {
+            acceptInvitation(invitationId, receiver);
+        } else {
+            rejectInvitation(invitationId, receiver);
+        }
+    }
+
+    @Override
     public void acceptInvitation(Long id, Member receiver) {
         Invitation invitation = invitationQueryService.findInvitation(id);
         Team team = teamQueryService.findTeam(invitation.getTeam().getId());

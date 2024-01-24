@@ -119,11 +119,7 @@ public class TeamController {
             @RequestParam(name = "isAccepted") boolean isAccepted,
             @AuthUser Member receiver) {
 
-        if (isAccepted) {
-            invitationCommandService.acceptInvitation(invitationId, receiver);
-        } else {
-            invitationCommandService.rejectInvitation(invitationId, receiver);
-        }
+        invitationCommandService.isAcceptedInvitation(invitationId, receiver, isAccepted);
 
         List<Invitation> invitationList = invitationQueryService.findAll();
         List<Team> teamList = teamQueryService.findTeamsByMember(receiver);
