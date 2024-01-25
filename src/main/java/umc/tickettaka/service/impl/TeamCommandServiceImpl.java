@@ -69,6 +69,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     }
 
     @Override
+    @Transactional
     public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
         Team team = teamQueryService.findTeam(id);
         String imageUrl = team.getImageUrl();
@@ -76,6 +77,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
         if (image != null) {
             imageUrl = imageUploadService.uploadImage(image);
         }
+
         if (updateTeamDto == null) {
             throw new GeneralException(ErrorStatus.INVALID_UPDATE_TEAM, "변경 NAME이 입력되지 않았습니다");
         }

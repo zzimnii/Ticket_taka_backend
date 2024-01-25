@@ -71,9 +71,10 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
             @PathVariable(name = "teamsId") Long teamsId,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart TeamRequestDto.CreateTeamDto request) throws IOException {
+            @RequestPart(value = "request", required = false) TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
 
-        Team updatedTeam = teamCommandService.updateTeam(teamsId, image, request);
+        Team updatedTeam = teamCommandService.updateTeam(teamsId, image, updateTeamDto);
+
         return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(updatedTeam));
     }
 
