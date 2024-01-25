@@ -40,7 +40,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
 
     @Override
     @Transactional
-    public Team createTeam(Member member, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException {
+    public Team createTeam(Member member, MultipartFile image, TeamRequestDto.CreateTeamDto request) throws IOException {
         String imageUrl = imageUploadService.uploadImage(image);
         Team team = TeamConverter.toTeam(request, imageUrl);
         Team newTeam = teamRepository.save(team);
@@ -67,7 +67,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     }
 
     @Override
-    public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException {
+    public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.CreateTeamDto request) throws IOException {
         Team team = teamQueryService.findTeam(id);
         String imageUrl = team.getImageUrl();
         List<MemberTeam> memberTeamList = team.getMemberTeamList();

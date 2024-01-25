@@ -46,6 +46,6 @@ public class ProjectResponseDto {
         String projectName;
         List<TicketResponseDto.MemberAchieveLevelDto> memberListDto;
         String projectDescription;
-        List<String> linkUrls;
+        List<String> linkList;
     }
 }

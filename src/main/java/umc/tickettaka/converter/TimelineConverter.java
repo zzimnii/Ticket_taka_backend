@@ -16,7 +16,7 @@ public class TimelineConverter {
             .build();
     }
 
-    public static TimelineResponseDto.ShowTimelineListDto toShowTimelineListDto(List<Timeline> timelineList) {
+    public static TimelineResponseDto.ShowTimelineListDto toShowTimelineListDto(String projectName, List<Timeline> timelineList) {
         List<ShowTimelineDto> showTimelineDtoList = timelineList.stream()
             .map(timeline -> ShowTimelineDto.builder()
                 .timelineId(timeline.getId())
@@ -25,16 +25,9 @@ public class TimelineConverter {
                 .build()).toList();
 
         return ShowTimelineListDto.builder()
-            .projectName(getProjectName(timelineList))
+            .projectName(projectName)
             .showTimelineDtoList(showTimelineDtoList)
             .build();
     }
 
-    private static String getProjectName(List<Timeline> timelineList) {
-        if (!timelineList.isEmpty()) {
-            return timelineList.get(0).getProject().getName();
-        }
-
-        return null;
-    }
 }

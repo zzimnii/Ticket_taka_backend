@@ -40,7 +40,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> createTeam(
         @AuthUser Member member,
         @RequestPart(value = "image", required = false) MultipartFile image,
-        @RequestPart(value = "request") TeamRequestDto.TeamDto request) throws IOException {
+        @RequestPart(value = "request") TeamRequestDto.CreateTeamDto request) throws IOException {
         Team team = teamCommandService.createTeam(member, image, request);
         return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
     }
@@ -73,7 +73,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
             @PathVariable(name = "teamsId") Long teamsId,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart TeamRequestDto.TeamDto request) throws IOException{
+            @RequestPart TeamRequestDto.CreateTeamDto request) throws IOException{
         Team updatedTeam = teamCommandService.updateTeam(teamsId, image, request);
         return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(updatedTeam));
     }
@@ -104,7 +104,7 @@ public class TeamController {
         return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
     }
 
-    @GetMapping("/invite/")
+    @GetMapping("/invite")
     @Operation(summary = "초대된 팀 목록", description = "초대된 팀 목록(수락/거절) 조회하기")
     public ApiResponse<InvitationResponseDto.InvitationListDto> getInvitationList(
             @AuthUser Member member) {

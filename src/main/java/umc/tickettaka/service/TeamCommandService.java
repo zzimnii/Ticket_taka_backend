@@ -7,9 +7,9 @@ import umc.tickettaka.domain.Team;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
 
 public interface TeamCommandService {
-    Team createTeam(Member member, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException;
+    Team createTeam(Member member, MultipartFile image, TeamRequestDto.CreateTeamDto request) throws IOException;
 
-    Team updateTeam(Long id, MultipartFile image, TeamRequestDto.TeamDto request) throws IOException;
+    Team updateTeam(Long id, MultipartFile image, TeamRequestDto.CreateTeamDto request) throws IOException;
 
     void deleteTeam(Long id) throws IOException;
 }

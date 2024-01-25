@@ -22,7 +22,7 @@ public class TeamConverter {
                 .build();
     }
 
-    public static Team toTeam(TeamRequestDto.TeamDto request, String imageUrl) {
+    public static Team toTeam(TeamRequestDto.CreateTeamDto request, String imageUrl) {
         return Team.builder()
                 .name(request.getName())
                 .imageUrl(imageUrl)

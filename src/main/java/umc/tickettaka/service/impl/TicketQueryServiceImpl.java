@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.ticket.Ticket;
@@ -20,6 +21,7 @@ import umc.tickettaka.web.dto.response.TicketResponseDto.ShowAllTicketListDto;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class TicketQueryServiceImpl implements TicketQueryService {
 
     private final TicketRepository ticketRepository;
@@ -45,19 +47,18 @@ public class TicketQueryServiceImpl implements TicketQueryService {
     @Override
     public List<ShowTicketDto> getShowTicketDto(Member member) {
         List<Ticket> ticketList = findAllByWorker(member);
-        return TicketConverter.toShowTicketDtoList(ticketList);
+        return TicketConverter.toShowTicketDtoList(member, ticketList);
     }
 
     @Override
-    public List<ShowTicketDto> getShowTicketDto(Long timelineId) {
+    public List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId) {
         List<Ticket> ticketList = findAllByTimelineId(timelineId);
-        return TicketConverter.toShowTicketDtoList(ticketList);
+        return TicketConverter.toShowTicketDtoList(member, ticketList);
     }
 
     @Override
-    public ShowAllTicketListDto getShowAllTicketListDto(Long teamId, Long timelineId) {
-        List<ShowTicketDto> ticketDtoList = getShowTicketDto(timelineId);
-        log.info("getShowTicketDto");
+    public ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId) {
+        List<ShowTicketDto> ticketDtoList = getShowTicketDto(member, timelineId);
         String timelineName = timelineQueryService.findById(timelineId).getName();
         ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
 

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import umc.tickettaka.config.security.jwt.AuthUser;
 import umc.tickettaka.converter.TicketConverter;
+import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.MemberCommandService;
@@ -55,10 +57,11 @@ public class TicketController {
 
     @GetMapping("")
     public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
+        @AuthUser Member member,
         @PathVariable(name = "teamId") Long teamId,
         @PathVariable(name = "timelineId") Long timelineId
     ) {
-        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(teamId, timelineId));
+        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(member, teamId, timelineId));
     }
 
     @DeleteMapping("")

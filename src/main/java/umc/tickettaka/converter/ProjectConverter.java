@@ -45,14 +45,14 @@ public class ProjectConverter {
             String projectName,
             List<TicketResponseDto.MemberAchieveLevelDto> memberAchieveLevelDtoList,
             String projectDescription,
-            List<String> linkUrlList) {
+            List<String> linkList) {
 
         return ProjectResponseDto.ProjectMainDto.builder()
                 .teamName(teamName)
                 .projectName(projectName)
                 .memberListDto(memberAchieveLevelDtoList)
                 .projectDescription(projectDescription)
-                .linkUrls(linkUrlList)
+                .linkList(linkList)
                 .build();
     }
 }
