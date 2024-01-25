@@ -1,20 +1,25 @@
 package umc.tickettaka.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.tickettaka.converter.ProjectConverter;
+import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
+import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.ProjectRepository;
-import umc.tickettaka.service.ImageUploadService;
-import umc.tickettaka.service.ProjectCommandService;
-import umc.tickettaka.service.ProjectQueryService;
-import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.service.*;
 import umc.tickettaka.web.dto.request.ProjectRequestDto;
+import umc.tickettaka.web.dto.response.ProjectResponseDto;
+import umc.tickettaka.web.dto.response.TicketResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,7 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
     private final ImageUploadService imageUploadService;
     private final ProjectRepository projectRepository;
     private final ProjectQueryService projectQueryService;
+    private final TicketCommandService ticketCommandService;
 
     @Override
     @Transactional
@@ -39,6 +45,23 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
             .build();
 
         return projectRepository.save(project);
+    }
+
+    @Override
+    @Transactional
+    public ProjectResponseDto.ProjectMainDto getProjectMainDto(Long teamId, Long projectId, List<String> linkUrlList) {
+        Team team = teamQueryService.findTeam(teamId);
+        Project project = projectQueryService.findById(projectId);
+        List<TicketResponseDto.MemberAchieveLevelDto> memberAchieveLevelDtoList = new ArrayList<>();
+
+        for(MemberTeam memberTeam : team.getMemberTeamList()) {
+            Member member = memberTeam.getMember();
+
+            TicketResponseDto.MemberAchieveLevelDto memberAchieveLevelDto = ticketCommandService.showMemberAchieve(member,teamId);
+            memberAchieveLevelDtoList.add(memberAchieveLevelDto);
+        }
+
+        return ProjectConverter.toShowProjectMainDto(team.getName(), project.getName(), memberAchieveLevelDtoList, project.getDescription(), linkUrlList);
     }
 
     @Override

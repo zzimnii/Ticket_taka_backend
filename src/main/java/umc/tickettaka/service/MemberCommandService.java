@@ -14,5 +14,6 @@ public interface MemberCommandService {
     Member save(SignRequestDto.SignUpDto signUpDto);
 
     CommonMemberDto.ShowMemberProfileListDto getCommonMemberDto(Long teamId);
+    CommonMemberDto.ShowMemberProfileDto getMemberProfileDto(Member member, Long teamId);
     Member updateMember(Long memberId, MultipartFile image, MemberRequestDto.UpdateDto memberUpdateDto) throws IOException;
 }

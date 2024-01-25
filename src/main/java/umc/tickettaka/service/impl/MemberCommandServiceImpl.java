@@ -17,12 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
 import umc.tickettaka.converter.MemberConverter;
-import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
-import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.mapping.MemberTeam;
-import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
@@ -144,6 +141,30 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     @Override
     @Transactional
+    public CommonMemberDto.ShowMemberProfileDto getMemberProfileDto(Member member, Long teamId) {
+        Team team = teamQueryService.findTeam(teamId);
+        String memberName = member.getName();
+        String imageUrl = member.getImageUrl();
+        MemberTeam memberTeam = team.getMemberTeamList().stream()
+                .filter(mt -> mt.getMember().equals(member))
+                .findFirst()
+                .orElse(null);
+
+        if (memberTeam == null) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        String memberHex=memberTeam.getColor().getHex();
+
+        CommonMemberDto.ShowMemberProfileDto showMemberProfileDto = CommonMemberDto.ShowMemberProfileDto.builder()
+                .imageUrl(imageUrl)
+                .name(memberName)
+                .memberHex(memberHex)
+                .build();
+        return showMemberProfileDto;
+    }
+
+    @Override
+    @Transactional
     public CommonMemberDto.ShowMemberProfileListDto getCommonMemberDto (Long teamId) {
         Team team = teamQueryService.findTeam(teamId);
         List<CommonMemberDto.ShowMemberProfileDto> showMemberProfileDtoList = new ArrayList<>();
@@ -151,15 +172,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         for (MemberTeam memberTeam : team.getMemberTeamList()) {
             Member member = memberTeam.getMember();
 
-            String memberName = member.getName();
-            String imageUrl = member.getImageUrl();
-            String memberHex = memberTeam.getColor().getHex();
-
-            CommonMemberDto.ShowMemberProfileDto showMemberProfileDto = CommonMemberDto.ShowMemberProfileDto.builder()
-                    .imageUrl(imageUrl)
-                    .name(memberName)
-                    .memberHex(memberHex)
-                    .build();
+            CommonMemberDto.ShowMemberProfileDto showMemberProfileDto = getMemberProfileDto(member,teamId);
 
             showMemberProfileDtoList.add(showMemberProfileDto);
         }

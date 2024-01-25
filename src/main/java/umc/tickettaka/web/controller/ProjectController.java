@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.ProjectConverter;
@@ -36,17 +35,19 @@ public class ProjectController {
     }
 
     @GetMapping("")
-    public ApiResponse<ProjectResponseDto.ShowProjectListDto> allProjects(@PathVariable Long teamId) {
+    public ApiResponse<ProjectResponseDto.ShowProjectListDto> allProjects(@PathVariable(name = "teamId") Long teamId) {
         List<Project> projectList = projectQueryService.findAllByTeamId(teamId);
 
         return ApiResponse.onSuccess(ProjectConverter.toShowProjectListDto(projectList));
     }
 
     @GetMapping("/{projectId}")
-    public ApiResponse<ProjectResponseDto.ShowProjectDto> project(@PathVariable Long teamId, @PathVariable Long projectId) {
-        Project project = projectQueryService.findById(projectId);
+    public ApiResponse<ProjectResponseDto.ProjectMainDto> project(
+            @PathVariable(name = "teamId") Long teamId,
+            @PathVariable(name = "projectId") Long projectId,
+            @RequestParam(value = "linkUrls") List<String> linkUrls) {
 
-        return ApiResponse.onSuccess(ProjectConverter.toShowProjectDto(project));
+        return ApiResponse.onSuccess(projectCommandService.getProjectMainDto(teamId,projectId,linkUrls));
     }
 
     @PatchMapping(value="/{projectId}/update", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
