@@ -1,7 +1,10 @@
 package umc.tickettaka.converter;
 
+import umc.tickettaka.domain.Invitation;
+import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
+import umc.tickettaka.web.dto.response.InvitationResponseDto;
 import umc.tickettaka.web.dto.response.TeamResponseDto;
 
 import java.time.LocalDateTime;
@@ -26,13 +29,19 @@ public class TeamConverter {
                 .build();
     }
 
-    public static TeamResponseDto.TeamListDto toTeamListDto(List<Team> teamList) {
+    public static TeamResponseDto.TeamAndInvitationListDto teamAndInvitationListDto(Member member, List<Team> teamList, List<Invitation> invitationList) {
         List<TeamResponseDto.TeamDto> teamDtoList = teamList.stream()
                 .map(TeamConverter::toTeamResultDto)
                 .collect(Collectors.toList());
 
-        return TeamResponseDto.TeamListDto.builder()
+        List<InvitationResponseDto.InvitationDto> invitationDtoList = invitationList.stream()
+                .filter(invitation -> member.getId().equals(invitation.getReceiver().getId()))
+                .map(InvitationConverter::invitationDto)
+                .toList();
+
+        return TeamResponseDto.TeamAndInvitationListDto.builder()
                 .teamDtoList(teamDtoList)
+                .invitationDtoList(invitationDtoList)
                 .build();
     }
 }

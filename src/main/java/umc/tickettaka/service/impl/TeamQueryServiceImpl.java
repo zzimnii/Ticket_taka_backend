@@ -4,13 +4,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.TeamRepository;
 import umc.tickettaka.service.TeamQueryService;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +28,10 @@ public class TeamQueryServiceImpl implements TeamQueryService {
     @Override
     public List<Team> findAll() {
         return teamRepository.findAll();
+    }
+
+    @Override
+    public List<Team> findTeamsByMember(Member member) {
+        return teamRepository.findByMemberTeamListMember(member);
     }
 }
