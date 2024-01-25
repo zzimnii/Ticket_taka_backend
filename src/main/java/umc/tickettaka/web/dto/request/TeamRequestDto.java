@@ -7,7 +7,7 @@ public class TeamRequestDto {
 
     @Getter
     public static class CreateTeamDto{
-        String name;
+        String teamName;
         List<String> invitedUsernameList;
     }
 }
