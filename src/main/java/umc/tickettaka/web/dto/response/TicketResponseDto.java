@@ -32,4 +32,14 @@ public class TicketResponseDto {
 
         CommonMemberDto.ShowMemberProfileListDto memberProfileListDto;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberAchieveLevelDto {
+        CommonMemberDto.ShowMemberProfileDto profileDto;
+        int totalTicket;
+        int doneTicket;
+    }
 }

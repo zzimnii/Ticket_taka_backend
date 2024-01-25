@@ -36,4 +36,16 @@ public class ProjectResponseDto {
         String imageUrl;
         LocalDateTime modifiedTime;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProjectMainDto {
+        String teamName;
+        String projectName;
+        List<TicketResponseDto.MemberAchieveLevelDto> memberListDto;
+        String projectDescription;
+        List<String> linkUrls;
+    }
 }

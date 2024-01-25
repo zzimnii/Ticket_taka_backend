@@ -9,6 +9,7 @@ import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
+import umc.tickettaka.web.dto.common.CommonMemberDto;
 import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileListDto;
 import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
 import umc.tickettaka.web.dto.request.TicketRequestDto.CreateTicketDto;
@@ -81,5 +82,17 @@ public class TicketConverter {
             .ticketDtoList(ticketDtoList)
             .memberProfileListDto(memberProfileListDto)
             .build();
+    }
+
+    public static TicketResponseDto.MemberAchieveLevelDto toMemberAchieveLevelDto (
+            CommonMemberDto.ShowMemberProfileDto memberProfileDto,
+            int totalTicket,
+            int doneTicket) {
+
+        return TicketResponseDto.MemberAchieveLevelDto.builder()
+                .profileDto(memberProfileDto)
+                .totalTicket(totalTicket)
+                .doneTicket(doneTicket)
+                .build();
     }
 }

@@ -6,6 +6,7 @@ import umc.tickettaka.web.dto.response.ProjectResponseDto;
 import umc.tickettaka.web.dto.response.ProjectResponseDto.CreateResultDto;
 import umc.tickettaka.web.dto.response.ProjectResponseDto.ShowProjectDto;
 import umc.tickettaka.web.dto.response.ProjectResponseDto.ShowProjectListDto;
+import umc.tickettaka.web.dto.response.TicketResponseDto;
 
 public class ProjectConverter {
 
@@ -37,5 +38,21 @@ public class ProjectConverter {
         return ShowProjectListDto.builder()
             .showProjectDtoList(showProjectDtoList)
             .build();
+    }
+
+    public static ProjectResponseDto.ProjectMainDto toShowProjectMainDto (
+            String teamName,
+            String projectName,
+            List<TicketResponseDto.MemberAchieveLevelDto> memberAchieveLevelDtoList,
+            String projectDescription,
+            List<String> linkUrlList) {
+
+        return ProjectResponseDto.ProjectMainDto.builder()
+                .teamName(teamName)
+                .projectName(projectName)
+                .memberListDto(memberAchieveLevelDtoList)
+                .projectDescription(projectDescription)
+                .linkUrls(linkUrlList)
+                .build();
     }
 }
