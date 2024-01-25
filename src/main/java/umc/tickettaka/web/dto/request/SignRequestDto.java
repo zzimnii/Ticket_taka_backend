@@ -16,6 +16,8 @@ public class SignRequestDto {
 
         private String password;
 
+        private Boolean rememberMe; // 로그인 유지
+
     }
 
     @Getter

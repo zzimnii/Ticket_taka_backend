@@ -45,7 +45,7 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         if (foundMember.isPresent()) {
             Member member = foundMember.get();
             String username = member.getUsername();
-            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username);
+            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username, false);
 
             String  targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080")
                     .queryParam("token", jwtToken.getAccessToken())
