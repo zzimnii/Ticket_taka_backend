@@ -17,6 +17,8 @@ import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.enums.Color;
 import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.domain.mapping.ScheduleTeam;
+import umc.tickettaka.payload.exception.GeneralException;
+import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.InvitationRepository;
 import umc.tickettaka.repository.MemberTeamRepository;
 import umc.tickettaka.service.ImageUploadService;
@@ -67,27 +69,17 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     }
 
     @Override
-    public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.CreateTeamDto request) throws IOException {
+    public Team updateTeam(Long id, MultipartFile image, TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
         Team team = teamQueryService.findTeam(id);
         String imageUrl = team.getImageUrl();
-        List<MemberTeam> memberTeamList = team.getMemberTeamList();
-        List<Project> projectList = team.getProjectList();
-        List<ScheduleTeam> scheduleTeamList = team.getScheduleTeamList();
 
         if (image != null) {
             imageUrl = imageUploadService.uploadImage(image);
         }
-
-        team = Team.builder()
-                .id(id)
-                .name(request.getName())
-                .imageUrl(imageUrl)
-                .memberTeamList(memberTeamList)
-                .projectList(projectList)
-                .scheduleTeamList(scheduleTeamList)
-                .build();
-
-        return teamRepository.save(team);
+        if (updateTeamDto == null) {
+            throw new GeneralException(ErrorStatus.INVALID_UPDATE_TEAM, "변경 NAME이 입력되지 않았습니다");
+        }
+        return team.update(imageUrl, updateTeamDto);
     }
 
     @Override

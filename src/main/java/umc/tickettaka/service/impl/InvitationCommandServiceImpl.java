@@ -17,10 +17,12 @@ import umc.tickettaka.service.InvitationCommandService;
 import umc.tickettaka.service.InvitationQueryService;
 import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.web.dto.request.InvitationRequestDto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,32 +37,36 @@ public class InvitationCommandServiceImpl implements InvitationCommandService {
 
     @Override
     @Transactional
-    public Invitation sendInvitation(Member sender, Team team, String receiverUsername) {
-        Member receiver = memberQueryService.findByUsername(receiverUsername);
+    public List<Invitation> sendInvitation(Member sender, Team team, List<String> receiverUsernames) {
+        return receiverUsernames.stream()
+                .map(receiverUsername -> {
+                    Member receiver = memberQueryService.findByUsername(receiverUsername);
 
-        Optional<MemberTeam> existingMemberTeam = memberTeamRepository.findByTeamAndMember(team, receiver);
-        Optional<Invitation> invitationOptional = invitationRepository.findByReceiverAndTeam(receiver, team);
+                    Optional<MemberTeam> existingMemberTeam = memberTeamRepository.findByTeamAndMember(team, receiver);
+                    Optional<Invitation> invitationOptional = invitationRepository.findByReceiverAndTeam(receiver, team);
 
-        existingMemberTeam.ifPresent(memberTeam -> {
-            throw new GeneralException(ErrorStatus.MEMBER_TEAM_ALREADY_EXIST);
-        });
-        invitationOptional.ifPresent(invitation -> {
-            throw new GeneralException(ErrorStatus.INVITATION_ALREADY_EXIST);
-        });
+                    existingMemberTeam.ifPresent(memberTeam -> {
+                        throw new GeneralException(ErrorStatus.MEMBER_TEAM_ALREADY_EXIST);
+                    });
+                    invitationOptional.ifPresent(invitation -> {
+                        throw new GeneralException(ErrorStatus.INVITATION_ALREADY_EXIST);
+                    });
 
-        Invitation invitation = Invitation.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .team(team)
-                .build();
-
-        return invitationRepository.save(invitation);
+                    return Invitation.builder()
+                            .sender(sender)
+                            .receiver(receiver)
+                            .team(team)
+                            .build();
+                })
+                .map(invitationRepository::save)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public void isAcceptedInvitation(Long invitationId, Member receiver, Boolean isAccepted) {
-        if (isAccepted) {
+    public void isAcceptedInvitation(Long invitationId, Member receiver, InvitationRequestDto.AcceptInvitationDto request) {
+
+        if (request.getAccept()) {
             acceptInvitation(invitationId, receiver);
         } else {
             rejectInvitation(invitationId, receiver);

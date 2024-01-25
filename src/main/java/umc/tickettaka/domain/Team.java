@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.domain.mapping.ScheduleTeam;
+import umc.tickettaka.web.dto.request.TeamRequestDto;
 
 @Entity
 @Getter
@@ -41,4 +42,14 @@ public class Team extends BaseEntity {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleTeam> scheduleTeamList = new ArrayList<>();
+
+    public Team update(String imageUrl, TeamRequestDto.CreateTeamDto teamUpdateDto) {
+        this.imageUrl = imageUrl;
+
+        String updateName = teamUpdateDto.getTeamName();
+        if(updateName != null)
+            this.name = updateName;
+
+        return this;
+    }
 }

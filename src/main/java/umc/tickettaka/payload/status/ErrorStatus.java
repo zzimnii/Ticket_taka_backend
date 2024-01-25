@@ -53,6 +53,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_MEMBER_ASSOCIATION(HttpStatus.BAD_REQUEST, "TEAM4001", "Invalid member association for the team"),
     INVALID_SCHEDULE_TEAM_ASSOCIATION(HttpStatus.BAD_REQUEST, "TEAM4002", "Invalid schedule team association for the team"),
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM4003", "TEAM Not found"),
+    INVALID_UPDATE_TEAM(HttpStatus.BAD_REQUEST,"TEAM4004", "Update Name hasn't entered"),
     //MEMBERTEAM Error
     MEMBER_TEAM_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "MEMBERTEAM4000", "The user is already joined to the team"),
     //INVITATION Error

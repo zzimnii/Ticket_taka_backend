@@ -16,7 +16,7 @@ public class TeamResponseDto {
     @AllArgsConstructor
     public static class TeamDto{
         Long teamId;
-        String name;
+        String teamName;
         String imageUrl;
         LocalDateTime createdAt;
     }
