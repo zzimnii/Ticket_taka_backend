@@ -6,7 +6,7 @@ import lombok.Getter;
 public class TeamRequestDto {
 
     @Getter
-    public static class TeamDto{
+    public static class CreateTeamDto{
         String name;
         List<String> invitedUsernameList;
     }

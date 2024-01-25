@@ -13,7 +13,7 @@ public interface TicketQueryService {
     List<Ticket> findAllByWorker(Member member);
 
     List<ShowTicketDto> getShowTicketDto(Member member);
-    List<ShowTicketDto> getShowTicketDto(Long timelineId);
+    List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId);
 
-    TicketResponseDto.ShowAllTicketListDto getShowAllTicketListDto(Long teamId, Long timelineId);
+    TicketResponseDto.ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId);
 }

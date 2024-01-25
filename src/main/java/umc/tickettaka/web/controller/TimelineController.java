@@ -8,8 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.TimelineConverter;
+import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.payload.ApiResponse;
+import umc.tickettaka.service.ProjectQueryService;
 import umc.tickettaka.service.TimelineCommandService;
 import umc.tickettaka.service.TimelineQueryService;
 import umc.tickettaka.web.dto.request.TimelineRequestDto;
@@ -23,6 +25,7 @@ public class TimelineController {
 
     private final TimelineCommandService timelineCommandService;
     private final TimelineQueryService timelineQueryService;
+    private final ProjectQueryService projectQueryService;
 
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<TimelineResponseDto.CreateResultDto> createTimeline(
@@ -37,18 +40,19 @@ public class TimelineController {
 
     @GetMapping("")
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> allTimelines(@PathVariable Long projectId) {
+        Project project = projectQueryService.findById(projectId);
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
-
-        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(timelineList));
+        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
     }
 
     @DeleteMapping
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteTimelines(
             @PathVariable(name = "projectId") Long projectId,
             @RequestBody TimelineRequestDto.DeleteTimelineDto request) {
+        Project project = projectQueryService.findById(projectId);
         timelineCommandService.deleteTimeline(request);
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
 
-        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(timelineList));
+        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
     }
 }

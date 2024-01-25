@@ -48,13 +48,13 @@ public class TicketConverter {
         //todo next ticket?
     }
 
-    public static List<ShowTicketDto> toShowTicketDtoList(List<Ticket> ticketList) {
+    public static List<ShowTicketDto> toShowTicketDtoList(Member member, List<Ticket> ticketList) {
 
 
         return ticketList.stream()
             .map(ticket -> ShowTicketDto.builder()
                 .ticketId(ticket.getId())
-                .workerName(ticket.getWorker().getName())
+                .workerName(ticket.getWorker().getUsername())
                 .sequence(ticket.getSequence())
                 .title(ticket.getTitle())
                 .description(ticket.getDescription())
@@ -63,6 +63,7 @@ public class TicketConverter {
                 .endTime(ticket.getEndTime())
                 //todo nextTicket
                 .nextTicket(null)
+                .isMyTicket(ticket.getWorker().getUsername().equals(member.getUsername()))
                 .build()
             ).toList();
     }

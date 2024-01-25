@@ -23,7 +23,7 @@ public class CommonTicketDto {
                 List<String> fileUrlList;
                 String status;
                 LocalDate endTime;
-
                 ShowTicketDto nextTicket;
+                boolean isMyTicket;
         }
 }

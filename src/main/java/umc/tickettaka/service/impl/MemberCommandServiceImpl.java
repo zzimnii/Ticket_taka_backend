@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,6 @@ import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
-import umc.tickettaka.config.security.jwt.CustomUserDetailService;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberCommandService;
 import umc.tickettaka.service.TeamQueryService;
@@ -142,7 +140,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     @Transactional
     public CommonMemberDto.ShowMemberProfileDto getMemberProfileDto(Member member, Long teamId) {
         Team team = teamQueryService.findTeam(teamId);
-        String memberName = member.getName();
+        String memberName = member.getUsername();
         String imageUrl = member.getImageUrl();
         MemberTeam memberTeam = team.getMemberTeamList().stream()
                 .filter(mt -> mt.getMember().equals(member))

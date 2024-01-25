@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.ProjectConverter;
+import umc.tickettaka.domain.Link;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
@@ -49,7 +50,7 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
     @Override
     @Transactional
-    public ProjectResponseDto.ProjectMainDto getProjectMainDto(Long teamId, Long projectId, List<String> linkUrlList) {
+    public ProjectResponseDto.ProjectMainDto getProjectMainDto(Long teamId, Long projectId) {
         Team team = teamQueryService.findTeam(teamId);
         Project project = projectQueryService.findById(projectId);
         List<TicketResponseDto.MemberAchieveLevelDto> memberAchieveLevelDtoList = new ArrayList<>();
@@ -61,7 +62,10 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
             memberAchieveLevelDtoList.add(memberAchieveLevelDto);
         }
 
-        return ProjectConverter.toShowProjectMainDto(team.getName(), project.getName(), memberAchieveLevelDtoList, project.getDescription(), linkUrlList);
+        List<String> linkList = project.getLinkList().stream()
+            .map(Link::getUrl).toList();
+
+        return ProjectConverter.toShowProjectMainDto(team.getName(), project.getName(), memberAchieveLevelDtoList, project.getDescription(), linkList);
     }
 
     @Override

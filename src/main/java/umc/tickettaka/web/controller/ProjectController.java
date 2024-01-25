@@ -44,10 +44,9 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     public ApiResponse<ProjectResponseDto.ProjectMainDto> project(
             @PathVariable(name = "teamId") Long teamId,
-            @PathVariable(name = "projectId") Long projectId,
-            @RequestParam(value = "linkUrls") List<String> linkUrls) {
+            @PathVariable(name = "projectId") Long projectId) {
 
-        return ApiResponse.onSuccess(projectCommandService.getProjectMainDto(teamId,projectId,linkUrls));
+        return ApiResponse.onSuccess(projectCommandService.getProjectMainDto(teamId,projectId));
     }
 
     @PatchMapping(value="/{projectId}/update", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})

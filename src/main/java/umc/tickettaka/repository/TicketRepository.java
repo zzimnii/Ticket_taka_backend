@@ -14,6 +14,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @EntityGraph(attributePaths = "worker")
     List<Ticket> findAllByTimelineIdOrderByEndTime(Long timelineId);
 
+    @EntityGraph(attributePaths = "worker")
     List<Ticket> findAllByWorker(Member member);
 
     Long countByTimeline(Timeline timeline);
