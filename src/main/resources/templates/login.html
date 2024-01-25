@@ -1,10 +1,52 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<h2>Login</h2>
+<form id="loginForm" th:action="@{/members/sign-in}" th:object="${signInDto}" method="post">
+    <div>
+        <label for="username">username:</label>
+        <input type="text" th:field="*{username}" required />
+    </div>
+    <div>
+        <label for="password">password:</label>
+        <input type="password" th:field="*{password}" required />
+    </div>
+    <div>
+        <input type="checkbox" id="rememberMe" name="rememberMe"/>
+    </div>
+    <div>
+        <button type="submit">로그인</button>
+    </div>
+</form>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const formData = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            rememberMe: document.getElementById('rememberMe').checked,
+
+        };
+        console.log(formData)
+        fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+
 <a href="/oauth2/authorization/kakao">카카오 로그인</a>
 <a href="/oauth2/authorization/naver">네이버 로그인</a>
 <a href="/oauth2/authorization/google">구글 로그인</a>

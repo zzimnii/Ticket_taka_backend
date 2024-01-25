@@ -37,7 +37,6 @@ import umc.tickettaka.web.dto.request.SignRequestDto;
 public class MemberCommandServiceImpl implements MemberCommandService {
 
     private final MemberRepository memberRepository;
-    private final CustomUserDetailService customUserDetailService;
     private final ImageUploadService imageUploadService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -50,10 +49,10 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         // DB에서 회원정보를 가져온 후 -> CustomUserDetail로 변환한 객체를 받는다.
         String username = signInDto.getUsername();
         String password = signInDto.getPassword();
-        log.info("request username = {}, password = {}", username, password);
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
+        Boolean rememberMe = signInDto.getRememberMe();
+        log.info("request username = {}, password = {}, rememberMe = {}", username, password, rememberMe);
 
-        // 비밀번호가 다른 경우 UNAUTHORIZED 응답을 보낸다.
+        // form 에 null이 들어오는 경우 잘못된 정보라는 exception을 던진다.
         if (username == null || password == null) {
             throw new GeneralException(ErrorStatus.MEMBER_WRONG_INFORMATION);
         }
@@ -64,7 +63,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username);
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username, rememberMe);
         log.info("jwtToken accessToken = {}", jwtToken.getAccessToken());
         return jwtToken;
     }
