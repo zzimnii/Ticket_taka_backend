@@ -101,7 +101,7 @@ public class TeamCommandServiceImpl implements TeamCommandService {
             throw new GeneralException(ErrorStatus.COLOR_ALREADY_USED_IN_TEAM);
         }
 
-        memberTeam.setColor(request.getColor());
+        memberTeam.updateColor(request);
         memberTeamRepository.save(memberTeam);
     }
 

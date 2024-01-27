@@ -123,7 +123,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
             @AuthUser Member member,
             @PathVariable(name = "teamsId") Long teamsId,
-            @RequestPart(value = "request", required = false) MemberTeamRequestDto.UpdateColorDto updateDto) {
+            @RequestBody MemberTeamRequestDto.UpdateColorDto updateDto) {
 
         Team team = teamQueryService.findTeam(teamsId);
         teamCommandService.updateMemberTeamColor(member, teamsId, updateDto);
