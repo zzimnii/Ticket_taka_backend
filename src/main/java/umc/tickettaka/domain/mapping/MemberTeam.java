@@ -36,4 +36,10 @@ public class MemberTeam extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    public void setColor(Color newColor) {
+        if (newColor != null) {
+            this.color = newColor;
+        }
+    }
 }
