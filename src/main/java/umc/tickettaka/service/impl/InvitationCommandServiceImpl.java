@@ -13,10 +13,7 @@ import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.InvitationRepository;
 import umc.tickettaka.repository.MemberTeamRepository;
-import umc.tickettaka.service.InvitationCommandService;
-import umc.tickettaka.service.InvitationQueryService;
-import umc.tickettaka.service.MemberQueryService;
-import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.service.*;
 import umc.tickettaka.web.dto.request.InvitationRequestDto;
 
 import java.util.ArrayList;
@@ -31,6 +28,7 @@ public class InvitationCommandServiceImpl implements InvitationCommandService {
 
     private final InvitationRepository invitationRepository;
     private final InvitationQueryService invitationQueryService;
+    private final TeamCommandServiceImpl teamCommandService;
     private final TeamQueryService teamQueryService;
     private final MemberTeamRepository memberTeamRepository;
     private final MemberQueryService memberQueryService;
@@ -80,16 +78,21 @@ public class InvitationCommandServiceImpl implements InvitationCommandService {
 
         if (receiver.getId().equals(invitation.getReceiver().getId())) {
             Optional<MemberTeam> existingMemberTeam = memberTeamRepository.findByTeamAndMember(team, receiver);
+            Color newColor;
 
             if (existingMemberTeam.isPresent()) {
                 throw new GeneralException(ErrorStatus.MEMBER_TEAM_ALREADY_EXIST);
             }
 
+            do {
+                newColor = Color.getRandomColor();
+            } while (teamCommandService.isColorAlreadyUsedInTeam(team, newColor));
+
             List<MemberTeam> memberTeamList = new ArrayList<>();
 
             MemberTeam newMemberTeam = MemberTeam.builder()
                     .team(team)
-                    .color(Color.getRandomColor())
+                    .color(newColor)
                     .member(receiver)
                     .build();
 

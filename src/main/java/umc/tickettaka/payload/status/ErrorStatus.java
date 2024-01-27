@@ -55,7 +55,9 @@ public enum ErrorStatus implements BaseErrorCode {
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM4003", "TEAM Not found"),
     INVALID_UPDATE_TEAM(HttpStatus.BAD_REQUEST,"TEAM4004", "Update Name hasn't entered"),
     //MEMBERTEAM Error
-    MEMBER_TEAM_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "MEMBERTEAM4000", "The user is already joined to the team"),
+    MEMBER_TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBERTEAM4000", "MEMBERTEAM Not found"),
+    MEMBER_TEAM_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "MEMBERTEAM4001", "The user is already joined to the team"),
+    COLOR_ALREADY_USED_IN_TEAM(HttpStatus.BAD_REQUEST, "MEMBERTEAM4002", "The color is already used"),
     //INVITATION Error
     INVITATION_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "INVITATION4000", "The user is already invited to the team"),
     INVITATION_NOT_FOUND(HttpStatus.NOT_FOUND, "INVITATION4001", "INVITAION Not found"),
