@@ -12,11 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Invitation;
 import umc.tickettaka.domain.Member;
-import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.enums.Color;
 import umc.tickettaka.domain.mapping.MemberTeam;
-import umc.tickettaka.domain.mapping.ScheduleTeam;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.InvitationRepository;
@@ -25,6 +23,7 @@ import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.service.TeamCommandService;
 import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.web.dto.request.MemberTeamRequestDto;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
 import umc.tickettaka.repository.TeamRepository;
 
@@ -88,5 +87,26 @@ public class TeamCommandServiceImpl implements TeamCommandService {
     public void deleteTeam(Long id) throws IOException {
         Team team = teamQueryService.findTeam(id);
         teamRepository.delete(team);
+    }
+
+    @Override
+    @Transactional
+    public void updateMemberTeamColor(Member member, Long teamsId, MemberTeamRequestDto.UpdateColorDto request) {
+        Team team = teamQueryService.findTeam(teamsId);
+
+        MemberTeam memberTeam = memberTeamRepository.findByTeamAndMember(team, member)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_TEAM_NOT_FOUND));
+
+        if (isColorAlreadyUsedInTeam(team, request.getColor())) {
+            throw new GeneralException(ErrorStatus.COLOR_ALREADY_USED_IN_TEAM);
+        }
+
+        memberTeam.updateColor(request);
+        memberTeamRepository.save(memberTeam);
+    }
+
+    public boolean isColorAlreadyUsedInTeam(Team team, Color color) {
+        return team.getMemberTeamList().stream()
+                .anyMatch(memberTeam -> memberTeam.getColor() == color);
     }
 }

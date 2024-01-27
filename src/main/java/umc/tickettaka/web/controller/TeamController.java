@@ -2,14 +2,12 @@ package umc.tickettaka.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.config.security.jwt.AuthUser;
-import umc.tickettaka.converter.InvitationConverter;
 import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Invitation;
 import umc.tickettaka.domain.Member;
@@ -19,8 +17,8 @@ import umc.tickettaka.service.InvitationCommandService;
 import umc.tickettaka.service.InvitationQueryService;
 import umc.tickettaka.service.TeamQueryService;
 import umc.tickettaka.web.dto.request.InvitationRequestDto;
+import umc.tickettaka.web.dto.request.MemberTeamRequestDto;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
-import umc.tickettaka.web.dto.response.InvitationResponseDto;
 import umc.tickettaka.web.dto.response.TeamResponseDto;
 import umc.tickettaka.service.TeamCommandService;
 
@@ -117,5 +115,19 @@ public class TeamController {
         List<Team> teamList = teamQueryService.findTeamsByMember(receiver);
 
         return ApiResponse.onSuccess(TeamConverter.teamAndInvitationListDto(receiver, teamList, invitationList));
+    }
+
+    @PatchMapping("/{teamsId}")
+    @Operation(summary = "팀내 색 수정 API", description = "팀내 본인 색 수정 API")
+    @Parameter(name = "teamsId", description = "팀의 아이디, path variable 입니다.")
+    public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
+            @AuthUser Member member,
+            @PathVariable(name = "teamsId") Long teamsId,
+            @RequestBody MemberTeamRequestDto.UpdateColorDto updateDto) {
+
+        Team team = teamQueryService.findTeam(teamsId);
+        teamCommandService.updateMemberTeamColor(member, teamsId, updateDto);
+
+        return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
     }
 }

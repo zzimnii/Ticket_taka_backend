@@ -18,6 +18,7 @@ import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.Color;
+import umc.tickettaka.web.dto.request.MemberTeamRequestDto;
 
 @Entity
 @Getter
@@ -36,4 +37,14 @@ public class MemberTeam extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    public void updateColor(MemberTeamRequestDto.UpdateColorDto updateDto) {
+        if (updateDto != null) {
+            Color newColor = updateDto.getColor();
+
+            if (newColor != null) {
+                this.color = newColor;
+            }
+        }
+    }
 }
