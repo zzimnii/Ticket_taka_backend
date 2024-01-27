@@ -34,4 +34,9 @@ public class TicketReviewer extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
     private Member member;
+
+    public TicketReviewer update(Member member) {
+        this.member = member;
+        return this;
+    }
 }

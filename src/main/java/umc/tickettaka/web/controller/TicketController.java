@@ -55,6 +55,18 @@ public class TicketController {
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
     }
 
+    @PostMapping(value = "/test", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse createFeedback(
+            @PathVariable(name = "timelineId") Long timelineId,
+            //@RequestPart(value = "files", required = false) List<MultipartFile> files,
+            //@RequestPart(value = "request")TicketRequestDto.CreateFeedbackDto request
+            @RequestPart(value = "request") TicketRequestDto.RejectFeedbackDto request
+    ) throws IOException {
+
+        //ticketCommandService.makeFeedbackRequest(request,files);
+        ticketCommandService.rejectFeedback(request);
+        return ApiResponse.onSuccess(null);
+    }
     @GetMapping("")
     public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
         @AuthUser Member member,

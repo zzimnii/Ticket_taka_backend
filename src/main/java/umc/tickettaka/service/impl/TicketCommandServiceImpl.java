@@ -1,26 +1,33 @@
 package umc.tickettaka.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.tickettaka.converter.FeedbackConverter;
 import umc.tickettaka.converter.FileConverter;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Timeline;
+import umc.tickettaka.domain.enums.FeedbackStatus;
 import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.mapping.TicketReviewer;
+import umc.tickettaka.domain.ticket.Feedback;
 import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
+import umc.tickettaka.repository.FeedbackRepository;
 import umc.tickettaka.repository.FileRepository;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.repository.TicketReviewerRepository;
 import umc.tickettaka.service.*;
 import umc.tickettaka.web.dto.common.CommonMemberDto;
+import umc.tickettaka.web.dto.request.TicketRequestDto;
 import umc.tickettaka.web.dto.request.TicketRequestDto.CreateTicketDto;
 import umc.tickettaka.web.dto.request.TicketRequestDto.DeleteTicketDto;
 import umc.tickettaka.web.dto.response.TicketResponseDto;
@@ -32,6 +39,7 @@ public class TicketCommandServiceImpl implements TicketCommandService {
     private final TimelineQueryService timelineQueryService;
     private final ImageUploadService imageUploadService;
     private final FileRepository fileRepository;
+    private final FeedbackRepository feedbackRepository;
     private final MemberQueryService memberQueryService;
     private final MemberCommandService memberCommandService;
     private final TicketReviewerRepository ticketReviewerRepository;
@@ -84,11 +92,45 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         int total = memberTickets.size();
 
         List<Ticket> doneTickets = memberTickets.stream()
-                .filter(ticket -> TicketStatus.DONE.equals(ticket.getStatus()))
-                .collect(Collectors.toList());
+                .filter(ticket -> ticket.getStatus() == TicketStatus.DONE)
+                .toList();
         int done = doneTickets.size();
 
         return TicketConverter.toMemberAchieveLevelDto(memberProfileDto,total,done);
+    }
+
+    @Override
+    @Transactional
+    public void makeFeedbackRequest(TicketRequestDto.CreateFeedbackDto feedbackDto, List<MultipartFile> files) throws IOException{
+        //CommonMemberDto.ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
+        Ticket ticket = ticketQueryService.findById(feedbackDto.getTicketId());
+        Member member = memberQueryService.findByUsername(feedbackDto.getReviewer());
+        List<String> fileLinks = new ArrayList<>();
+
+        List<TicketReviewer> ticketReviewerList = ticketReviewerRepository.findAllByTicket(ticket);
+        ticketReviewerList.forEach(ticketReviewer -> ticketReviewer.update(member));
+        for (MultipartFile file : files) {
+            String fileLink = imageUploadService.uploadImage(file);
+            fileLinks.add(fileLink);
+        }
+        Feedback feedback = FeedbackConverter.toFeedback(ticket,fileLinks,feedbackDto.getLinkList());
+        feedbackRepository.save(feedback);
+    }
+
+    @Override
+    @Transactional
+    public void acceptFeedback(Long ticketId) {
+        Ticket ticket = ticketQueryService.findById(ticketId);
+        Feedback feedback = feedbackRepository.findByTicket(ticket);
+        ticket.updateStatus(TicketStatus.DONE);
+        feedbackRepository.delete(feedback);
+    }
+
+    @Override
+    @Transactional
+    public void rejectFeedback(TicketRequestDto.RejectFeedbackDto reject) {
+        Feedback feedback = ticketQueryService.findFeedback(reject.getFeedbackId());
+        feedback.reject(reject.getRejectComment());
     }
 
     @Override
