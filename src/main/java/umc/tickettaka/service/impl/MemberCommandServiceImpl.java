@@ -3,6 +3,7 @@ package umc.tickettaka.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +48,12 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         // DB에서 회원정보를 가져온 후 -> CustomUserDetail로 변환한 객체를 받는다.
         String username = signInDto.getUsername();
         String password = signInDto.getPassword();
-        Boolean rememberMe = signInDto.getRememberMe();
-        log.info("request username = {}, password = {}, rememberMe = {}", username, password, rememberMe);
+        Boolean keepStatus = signInDto.getKeepStatus();
+        log.info("request username = {}, password = {}, keeppStatus = {}", username, password, keepStatus);
 
         // form 에 null이 들어오는 경우 잘못된 정보라는 exception을 던진다.
         if (username == null || password == null) {
-            throw new GeneralException(ErrorStatus.MEMBER_WRONG_INFORMATION);
+            throw new GeneralException(ErrorStatus.MEMBER_WRONG_INFORMATION, "form에 null인 정보가 들어왔습니다.");
         }
 
         // 1.사용자가 아이디와 비밀번호를 입력하면 UsernamePasswordAuthentication 토큰을 생성한다.
@@ -61,7 +62,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username, rememberMe);
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username, keepStatus);
         log.info("jwtToken accessToken = {}", jwtToken.getAccessToken());
         return jwtToken;
     }
@@ -69,10 +70,17 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     @Override
     @Transactional
     public Member save(SignRequestDto.SignUpDto signUpDto) {
+        // null check front에서 1차적으로 해야하지만, backend에서 한번 더 체크
+        if(signUpDto.getUsername() == null || signUpDto.getPassword() == null || signUpDto.getPassword2() == null)
+            throw new GeneralException(ErrorStatus.BAD_REQUEST, "입력 값 중에 null이 있습니다.");
+
         // duplicate check
         String username = signUpDto.getUsername();
-        String email = signUpDto.getEmail();
-        checkDuplicateMember(username, email);
+        checkDuplicateMember(username);
+
+        // check password == password2
+        if(!Objects.equals(signUpDto.getPassword(), signUpDto.getPassword2()))
+            throw new GeneralException(ErrorStatus.MEMBER_WRONG_INFORMATION, "password와 passsword 확인이 다릅니다.");
 
         // password encoding
         String password = signUpDto.getPassword();
@@ -112,11 +120,6 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         if(foundUsername.isPresent())
             throw new GeneralException(ErrorStatus.USERNAME_ALREADY_EXISTS, "해당 멤버 username이 이미 존재합니다.");
 
-        String email = memberUpdateDto.getEmail();
-        Optional<Member> foundEmail = memberRepository.findByEmail(email);
-        if(foundEmail.isPresent())
-            throw new GeneralException(ErrorStatus.EMAIL_ALREADY_EXISTS, "해당 멤버 email이 이미 존재합니다.");
-
         String password = memberUpdateDto.getPassword();
 
 //        if (password == null) return;
@@ -125,13 +128,9 @@ public class MemberCommandServiceImpl implements MemberCommandService {
             throw new GeneralException(ErrorStatus.PASSWORD_SAME, "변경할 password가 기존과 같습니다");
     }
 
-    private void checkDuplicateMember(String username, String email) {
+    private void checkDuplicateMember(String username) {
         Optional<Member> memberByName = memberRepository.findByUsername(username);
         if (memberByName.isPresent()) {
-            throw new GeneralException(ErrorStatus.MEMBER_ALREADY_EXIST, "멤버가 이미 존재합니다.");
-        }
-        Optional<Member> memberByEmail = memberRepository.findByEmail(email);
-        if (memberByEmail.isPresent()) {
             throw new GeneralException(ErrorStatus.MEMBER_ALREADY_EXIST, "멤버가 이미 존재합니다.");
         }
     }
@@ -150,13 +149,14 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         if (memberTeam == null) {
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
-        String memberHex=memberTeam.getColor().getHex();
+        String memberHex = memberTeam.getColor().getHex();
 
         CommonMemberDto.ShowMemberProfileDto showMemberProfileDto = CommonMemberDto.ShowMemberProfileDto.builder()
                 .imageUrl(imageUrl)
                 .name(memberName)
                 .memberHex(memberHex)
                 .build();
+
         return showMemberProfileDto;
     }
 

@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.ProviderType;
+import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.web.dto.request.MemberRequestDto;
 
 import java.util.ArrayList;
@@ -41,8 +43,10 @@ public class Member extends BaseEntity {
 
     @Column(length = 500)
     private String password;
-    @Column(length = 50)
-    private String email;
+
+    @Column(length = 500)
+    @Transient
+    private String password2;
 
     @Column(length = 500)
     private String imageUrl;
@@ -56,6 +60,14 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
+    // 연관관계
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> ticketList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberTeam> memberTeamList = new ArrayList<>();
+
+
     public Member update(String imageUrl, MemberRequestDto.UpdateDto memberUpdateDto, String password) {
 
         this.imageUrl = imageUrl;
@@ -65,9 +77,6 @@ public class Member extends BaseEntity {
 
         String updateUsername = memberUpdateDto.getUsername();
         if(updateUsername != null) this.username = updateUsername;
-
-        String updateEmail = memberUpdateDto.getEmail();
-        if(updateEmail != null) this.email = updateEmail;
 
         if(password != null) this.password = password;
 

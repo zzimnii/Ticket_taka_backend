@@ -46,10 +46,10 @@ public class JwtTokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = null;
         if (rememberMe) {
-            accessTokenExpiresIn = new Date(now + 86400 * 7); // 만약 login 유지에 체크한 경우 일주일
+            accessTokenExpiresIn = new Date(now + 864000 * 7); // 만약 login 유지에 체크한 경우 일주일
         }
         else {
-            accessTokenExpiresIn = new Date(now + 86400); // 아닌 경우 하루
+            accessTokenExpiresIn = new Date(now + 864000); // 아닌 경우 하루
         }
 
         String accessToken = Jwts.builder()

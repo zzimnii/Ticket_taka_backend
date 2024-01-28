@@ -3,6 +3,7 @@ package umc.tickettaka.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.config.security.jwt.AuthUser;
@@ -11,12 +12,14 @@ import umc.tickettaka.converter.MemberConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.MemberCommandService;
+import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.web.dto.request.MemberRequestDto;
 import umc.tickettaka.web.dto.request.SignRequestDto;
 import umc.tickettaka.web.dto.response.MemberResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,10 +28,20 @@ import java.io.IOException;
 public class MemberController {
 
     private final MemberCommandService memberCommandService;
+    private final MemberQueryService memberQueryService;
+
+    @GetMapping("/my-page")
+    public ApiResponse<MemberResponseDto.MyPageMemberDto> getMemberForMyPage(@AuthUser Member member) {
+        Member memberWithTicketsAndMemberTeamsByMemberId = memberQueryService.findMemberWithTicketsAndMemberTeamsByMemberId(member.getId());
+
+        return ApiResponse.onSuccess(MemberConverter.toMyPageMemberDto(memberWithTicketsAndMemberTeamsByMemberId));
+    }
+
 
     // 로그인
     @PostMapping("/sign-in")
     public ApiResponse<SignResponseDto.SignInResultDto> jwtSignIn(@RequestBody SignRequestDto.SignInDto signInDto) {
+
         JwtToken jwtToken = memberCommandService.signIn(signInDto);
         return ApiResponse.onSuccess(MemberConverter.toSignInResultDto(jwtToken));
     }
