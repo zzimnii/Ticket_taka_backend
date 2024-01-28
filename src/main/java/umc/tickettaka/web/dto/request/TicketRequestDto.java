@@ -28,7 +28,7 @@ public class TicketRequestDto {
     @AllArgsConstructor
     public static class CreateFeedbackDto {
         Long ticketId;
-        String reviewer;
+        List<String> reviewerList;
         List<String> linkList;
     }
 

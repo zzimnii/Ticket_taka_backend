@@ -102,13 +102,18 @@ public class TicketCommandServiceImpl implements TicketCommandService {
     @Override
     @Transactional
     public void makeFeedbackRequest(TicketRequestDto.CreateFeedbackDto feedbackDto, List<MultipartFile> files) throws IOException{
-        //CommonMemberDto.ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
         Ticket ticket = ticketQueryService.findById(feedbackDto.getTicketId());
-        Member member = memberQueryService.findByUsername(feedbackDto.getReviewer());
+        List<Member> reviewers = feedbackDto.getReviewerList().stream()
+                .map(memberQueryService::findByUsername).toList();
         List<String> fileLinks = new ArrayList<>();
 
-        List<TicketReviewer> ticketReviewerList = ticketReviewerRepository.findAllByTicket(ticket);
-        ticketReviewerList.forEach(ticketReviewer -> ticketReviewer.update(member));
+        List<TicketReviewer> ticketReviewerList = reviewers.stream()
+                .map(reviewer -> TicketReviewer.builder()
+                        .member(reviewer)
+                        .ticket(ticket)
+                        .build()).toList();
+        ticketReviewerRepository.saveAll(ticketReviewerList);
+
         for (MultipartFile file : files) {
             String fileLink = imageUploadService.uploadImage(file);
             fileLinks.add(fileLink);
@@ -117,13 +122,17 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         feedbackRepository.save(feedback);
     }
 
+
     @Override
     @Transactional
     public void acceptFeedback(Long ticketId) {
         Ticket ticket = ticketQueryService.findById(ticketId);
         Feedback feedback = feedbackRepository.findByTicket(ticket);
+        List<TicketReviewer> ticketReviewerList = ticketReviewerRepository.findAllByTicket(ticket);
+
         ticket.updateStatus(TicketStatus.DONE);
         feedbackRepository.delete(feedback);
+        ticketReviewerList.forEach(ticketReviewerRepository::delete);
     }
 
     @Override
