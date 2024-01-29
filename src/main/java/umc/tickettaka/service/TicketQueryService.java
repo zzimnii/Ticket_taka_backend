@@ -17,6 +17,8 @@ public interface TicketQueryService {
 
     List<ShowTicketDto> getShowTicketDto(Member member);
     List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId);
+    List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId, String status);
 
     TicketResponseDto.ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId);
+    TicketResponseDto.ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId, String status);
 }
