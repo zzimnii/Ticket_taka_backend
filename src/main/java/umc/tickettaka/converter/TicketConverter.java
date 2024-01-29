@@ -96,4 +96,17 @@ public class TicketConverter {
                 .doneTicket(doneTicket)
                 .build();
     }
+
+    public static TicketStatus toTicketStatus(String status) {
+        switch (status.toLowerCase()) {
+            case "todo":
+                return TicketStatus.TODO;
+            case "inprogress":
+                return TicketStatus.IN_PROGRESS;
+            case "done":
+                return TicketStatus.DONE;
+            default:
+                throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        }
+    }
 }

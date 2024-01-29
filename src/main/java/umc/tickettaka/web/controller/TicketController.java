@@ -5,18 +5,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.config.security.jwt.AuthUser;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.MemberCommandService;
@@ -50,18 +44,18 @@ public class TicketController {
         @RequestPart(value = "files", required = false) List<MultipartFile> files,
         @RequestPart(value = "request") TicketRequestDto.CreateTicketDto request
     ) throws IOException {
-
         Ticket ticket = ticketCommandService.createTicket(timelineId, files, request);
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
     }
 
     @GetMapping("")
     public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
-        @AuthUser Member member,
-        @PathVariable(name = "teamId") Long teamId,
-        @PathVariable(name = "timelineId") Long timelineId
-    ) {
-        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(member, teamId, timelineId));
+            @AuthUser Member member,
+            @PathVariable(name = "teamId") Long teamId,
+            @PathVariable(name = "timelineId") Long timelineId,
+            @RequestParam(name ="status")String status
+            ) {
+        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(member, teamId, timelineId, status));
     }
 
     @DeleteMapping("")

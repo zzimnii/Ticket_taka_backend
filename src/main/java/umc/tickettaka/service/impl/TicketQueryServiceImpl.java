@@ -1,5 +1,6 @@
 package umc.tickettaka.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
@@ -57,8 +59,30 @@ public class TicketQueryServiceImpl implements TicketQueryService {
     }
 
     @Override
+    public List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId, String statusStr) {
+        List<Ticket> ticketList = findAllByTimelineId(timelineId);
+        List<Ticket> ticketsByStatus = new ArrayList<>();
+        TicketStatus status = TicketConverter.toTicketStatus(statusStr);
+        for (Ticket ticket : ticketList) {
+            if (status.equals(ticket.getStatus())) {
+                ticketsByStatus.add(ticket);
+            }
+        }
+        return TicketConverter.toShowTicketDtoList(member, ticketsByStatus);
+    }
+
+    @Override
     public ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId) {
         List<ShowTicketDto> ticketDtoList = getShowTicketDto(member, timelineId);
+        String timelineName = timelineQueryService.findById(timelineId).getName();
+        ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
+
+        return TicketConverter.toShowAllTicketListDto(timelineName, memberProfileListDto, ticketDtoList);
+    }
+
+    @Override
+    public ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId, String status) {
+        List<ShowTicketDto> ticketDtoList = getShowTicketDto(member, timelineId, status);
         String timelineName = timelineQueryService.findById(timelineId).getName();
         ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
 
