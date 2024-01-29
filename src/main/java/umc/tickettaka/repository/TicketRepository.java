@@ -18,4 +18,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findAllByWorker(Member member);
 
     Long countByTimeline(Timeline timeline);
+
+    @Query("SELECT t from Ticket t left join fetch t.fileList where t.worker.id = :memberId order by t.endTime")
+    @EntityGraph(attributePaths = "team")
+    List<Ticket> findAllWithFileByWorkerOrderByEndTime(Long memberId);
 }

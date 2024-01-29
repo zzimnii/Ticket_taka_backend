@@ -16,7 +16,7 @@ public class SignRequestDto {
 
         private String password;
 
-        private Boolean rememberMe; // 로그인 유지
+        private Boolean keepStatus; // 로그인 유지
 
     }
 
@@ -24,11 +24,13 @@ public class SignRequestDto {
     @Schema(name = "sign up dto")
     public static class SignUpDto {
 
+        private String name;
+
         private String username;
 
         private String password;
 
-        private String email;
+        private String password2;
 
         private String imageUrl;
 

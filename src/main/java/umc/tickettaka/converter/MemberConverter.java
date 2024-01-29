@@ -1,9 +1,18 @@
 package umc.tickettaka.converter;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.hibernate.LazyInitializationException;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.enums.Color;
 import umc.tickettaka.domain.enums.ProviderType;
+import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.domain.ticket.File;
+import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.web.dto.request.SignRequestDto.SignUpDto;
 import umc.tickettaka.web.dto.response.MemberResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto;
@@ -25,10 +34,46 @@ public class MemberConverter {
             .build();
     }
 
+
+    public static MemberResponseDto.MyPageMemberDto toMyPageMemberDto(Member member) {
+        Map<Long, Color> colorMap = member.getMemberTeamList().stream()
+                .collect(Collectors.toMap(
+                        memberTeam -> memberTeam.getTeam().getId(), MemberTeam::getColor
+                ));
+        List<MemberResponseDto.MyPageTicketDto> myPageTicketDtoList = member.getTicketList().stream()
+                .map(
+                        ticket -> {
+                            MemberResponseDto.MyPageTicketDto ticketDto = MemberResponseDto.MyPageTicketDto.builder()
+                                    .ticketId(ticket.getId())
+                                    .title(ticket.getTitle())
+                                    .ticketHex(colorMap.get(ticket.getTeam().getId()).getHex())
+                                    .ticketSequence(ticket.getSequence())
+                                    .description(ticket.getDescription())
+                                    .status(ticket.getStatus().toString())
+                                    .endTime(ticket.getEndTime())
+                                    .teamName(ticket.getTeam().getName())
+                                    .fileUrlList(ticket.getFileList().stream()
+                                            .map(File::getUrl).collect(Collectors.toList()))
+                                    .build();
+
+                            return ticketDto;
+                        }
+                ).collect(Collectors.toList());
+
+
+        return MemberResponseDto.MyPageMemberDto.builder()
+                .memberHex(Color.getRandomColor().getHex())
+                .imageUrl(member.getImageUrl())
+                .name(member.getName())
+                .myPageTicketDtoList(myPageTicketDtoList)
+                .build();
+
+    }
+
     public static Member toMember(SignUpDto signUpDto, String encodedPassword) {
         // parse values
+        String name = signUpDto.getName();
         String username = signUpDto.getUsername();
-        String email = signUpDto.getEmail();
         String imageUrl = signUpDto.getImageUrl();
         String providerType = signUpDto.getProviderType();
         String providerId = signUpDto.getProviderId();
@@ -39,9 +84,9 @@ public class MemberConverter {
         }
 
         return Member.builder()
+            .name(name)
             .username(username)
             .password(encodedPassword)
-            .email(email)
             .imageUrl(imageUrl)
             .providerType(providerTypeEnum)
             .providerId(providerId)
@@ -54,7 +99,6 @@ public class MemberConverter {
                 .memberId(member.getId())
                 .name(member.getName())
                 .username(member.getUsername())
-                .email(member.getEmail())
                 .imageUrl(member.getImageUrl())
                 .build();
     }

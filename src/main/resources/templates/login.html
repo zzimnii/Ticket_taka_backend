@@ -16,7 +16,7 @@
         <input type="password" th:field="*{password}" required />
     </div>
     <div>
-        <input type="checkbox" id="rememberMe" name="rememberMe"/>
+        <input type="checkbox" id="keepStatus" th:field="*{keepStatus}" />
     </div>
     <div>
         <button type="submit">로그인</button>
@@ -30,7 +30,7 @@
         const formData = {
             username: document.getElementById('username').value,
             password: document.getElementById('password').value,
-            rememberMe: document.getElementById('rememberMe').checked,
+            keepStatus: document.getElementById('keepStatus').checked,
 
         };
         console.log(formData)
