@@ -3,8 +3,6 @@ package umc.tickettaka.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,6 @@ import umc.tickettaka.converter.FileConverter;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Timeline;
-import umc.tickettaka.domain.enums.FeedbackStatus;
 import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.mapping.TicketReviewer;
 import umc.tickettaka.domain.ticket.Feedback;
@@ -48,7 +45,7 @@ public class TicketCommandServiceImpl implements TicketCommandService {
 
     @Override
     @Transactional
-    public Ticket createTicket(Long timelineId, List<MultipartFile> files, CreateTicketDto request) throws IOException {
+    public Ticket createTicket(Long timelineId, CreateTicketDto request) {
 
         Timeline timeline = timelineQueryService.findById(timelineId);
         Member worker = memberQueryService.findByUsername(request.getWorkerName());
@@ -56,8 +53,8 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         Ticket ticket = TicketConverter.toTicket(timeline, worker, sequence, request);
         Ticket newTicket = ticketRepository.save(ticket);
         setReviewers(request, ticket);
-        if (files != null) {
-            setFiles(files, ticket);
+        if (request.getFileUrlList() != null) {
+            setFiles(request.getFileUrlList(), ticket);
         }
 
         return newTicket;
@@ -74,13 +71,9 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         ticketReviewerRepository.saveAll(ticketReviewerList);
     }
 
-    private void setFiles(List<MultipartFile> files, Ticket ticket) throws IOException {
-        for (MultipartFile file : files) {
-            String fileUrl = imageUploadService.uploadImage(file);
-            File fileEntity = FileConverter.toFile(fileUrl, ticket);
-
-            fileRepository.save(fileEntity);
-        }
+    private void setFiles(List<String> files, Ticket ticket) {
+        List<File> fileList = FileConverter.toFileList(files, ticket);
+        fileRepository.saveAll(fileList);
     }
 
     @Override
@@ -132,7 +125,7 @@ public class TicketCommandServiceImpl implements TicketCommandService {
 
         ticket.updateStatus(TicketStatus.DONE);
         feedbackRepository.delete(feedback);
-        ticketReviewerList.forEach(ticketReviewerRepository::delete);
+        ticketReviewerRepository.deleteAll(ticketReviewerList);
     }
 
     @Override

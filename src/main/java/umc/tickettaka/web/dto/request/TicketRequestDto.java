@@ -12,6 +12,7 @@ public class TicketRequestDto {
 
     @Getter
     public static class CreateTicketDto {
+        List<String> fileUrlList;
         String title;
         String description;
         String workerName;
