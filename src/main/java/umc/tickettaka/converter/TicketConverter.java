@@ -45,7 +45,6 @@ public class TicketConverter {
             .startTime(startTime)
             .endTime(endTime)
             .build();
-        //todo next ticket?
     }
 
     public static List<ShowTicketDto> toShowTicketDtoList(Member member, List<Ticket> ticketList) {
@@ -60,9 +59,8 @@ public class TicketConverter {
                 .description(ticket.getDescription())
                 .fileUrlList(getFileUrlList(ticket.getFileList()))
                 .status(String.valueOf(ticket.getStatus()))
+                .startTime(ticket.getStartTime())
                 .endTime(ticket.getEndTime())
-                //todo nextTicket
-                .nextTicket(null)
                 .isMyTicket(ticket.getWorker().getUsername().equals(member.getUsername()))
                 .build()
             ).toList();
@@ -98,15 +96,11 @@ public class TicketConverter {
     }
 
     public static TicketStatus toTicketStatus(String status) {
-        switch (status.toLowerCase()) {
-            case "todo":
-                return TicketStatus.TODO;
-            case "inprogress":
-                return TicketStatus.IN_PROGRESS;
-            case "done":
-                return TicketStatus.DONE;
-            default:
-                throw new GeneralException(ErrorStatus.BAD_REQUEST);
-        }
+        return switch (status.toLowerCase()) {
+            case "todo" -> TicketStatus.TODO;
+            case "inprogress" -> TicketStatus.IN_PROGRESS;
+            case "done" -> TicketStatus.DONE;
+            default -> throw new GeneralException(ErrorStatus.BAD_REQUEST);
+        };
     }
 }
