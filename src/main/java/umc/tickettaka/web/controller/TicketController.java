@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.config.security.jwt.AuthUser;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
-import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.MemberCommandService;
@@ -38,13 +35,12 @@ public class TicketController {
         return ApiResponse.onSuccess(memberCommandService.getCommonMemberDto(teamId));
     }
 
-    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/create")
     public ApiResponse<TicketResponseDto.CreateTicketResultDto> createTicket(
         @PathVariable(name = "timelineId") Long timelineId,
-        @RequestPart(value = "files", required = false) List<MultipartFile> files,
-        @RequestPart(value = "request") TicketRequestDto.CreateTicketDto request
+        @RequestBody TicketRequestDto.CreateTicketDto request
     ) throws IOException {
-        Ticket ticket = ticketCommandService.createTicket(timelineId, files, request);
+        Ticket ticket = ticketCommandService.createTicket(timelineId, request);
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
     }
 
