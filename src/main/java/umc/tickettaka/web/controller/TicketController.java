@@ -28,14 +28,15 @@ public class TicketController {
     private final TicketQueryService ticketQueryService;
     private final MemberCommandService memberCommandService;
 
-    @GetMapping("/create")
+    //todo team controller로 이동
+    @GetMapping("/member-info")
     public ApiResponse<CommonMemberDto.ShowMemberProfileListDto> createTicketPage(
         @PathVariable(name = "teamId") Long teamId
     ) {
         return ApiResponse.onSuccess(memberCommandService.getCommonMemberDto(teamId));
     }
 
-    @PostMapping(value = "/create")
+    @PostMapping
     public ApiResponse<TicketResponseDto.CreateTicketResultDto> createTicket(
         @PathVariable(name = "timelineId") Long timelineId,
         @RequestBody TicketRequestDto.CreateTicketDto request
@@ -44,7 +45,7 @@ public class TicketController {
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
     }
 
-    @GetMapping("")
+    @GetMapping
     public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
             @AuthUser Member member,
             @PathVariable(name = "teamId") Long teamId,
@@ -54,7 +55,7 @@ public class TicketController {
         return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(member, teamId, timelineId, status));
     }
 
-    @DeleteMapping("")
+    @DeleteMapping
     public ApiResponse<List<ShowTicketDto>> deleteTicket(
         @RequestBody TicketRequestDto.DeleteTicketDto request
     ) {
