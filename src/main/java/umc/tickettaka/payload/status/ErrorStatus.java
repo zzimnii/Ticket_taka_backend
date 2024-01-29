@@ -62,8 +62,9 @@ public enum ErrorStatus implements BaseErrorCode {
     INVITATION_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "INVITATION4000", "The user is already invited to the team"),
     INVITATION_NOT_FOUND(HttpStatus.NOT_FOUND, "INVITATION4001", "INVITAION Not found"),
     //SNS LOGIN Error
-    SNS_LOGIN_WRONG_INFORMATION(HttpStatus.BAD_REQUEST, "SNS4003", "SNS information you entered is not valid.");
-
+    SNS_LOGIN_WRONG_INFORMATION(HttpStatus.BAD_REQUEST, "SNS4003", "SNS information you entered is not valid."),
+    //FEEABACK Error
+    FEEDBACK_NOT_FOUND(HttpStatus.NOT_FOUND,"FEEDBACK4000","Feedback doesn't exist");
 
     private final HttpStatus httpStatus;
     private final String code;

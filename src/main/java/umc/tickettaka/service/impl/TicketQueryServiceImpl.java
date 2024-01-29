@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.enums.TicketStatus;
+import umc.tickettaka.domain.ticket.Feedback;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
+import umc.tickettaka.repository.FeedbackRepository;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.service.MemberCommandService;
 import umc.tickettaka.service.TicketQueryService;
@@ -27,6 +29,7 @@ import umc.tickettaka.web.dto.response.TicketResponseDto.ShowAllTicketListDto;
 public class TicketQueryServiceImpl implements TicketQueryService {
 
     private final TicketRepository ticketRepository;
+    private final FeedbackRepository feedbackRepository;
     private final MemberCommandService memberCommandService;
     private final TimelineQueryService timelineQueryService;
 
@@ -46,6 +49,11 @@ public class TicketQueryServiceImpl implements TicketQueryService {
         return ticketRepository.findAllByWorker(member);
     }
 
+    @Override
+    public Feedback findFeedback(Long feedbackId) {
+        return feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.FEEDBACK_NOT_FOUND));
+    }
     @Override
     public List<ShowTicketDto> getShowTicketDto(Member member) {
         List<Ticket> ticketList = findAllByWorker(member);
