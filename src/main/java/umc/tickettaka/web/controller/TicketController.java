@@ -28,6 +28,16 @@ public class TicketController {
     private final TicketQueryService ticketQueryService;
     private final MemberCommandService memberCommandService;
 
+    @GetMapping
+    public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
+        @AuthUser Member member,
+        @PathVariable(name = "teamId") Long teamId,
+        @PathVariable(name = "timelineId") Long timelineId,
+        @RequestParam(name ="status")String status
+    ) {
+        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(member, teamId, timelineId, status));
+    }
+
     //todo team controller로 이동
     @GetMapping("/member-info")
     public ApiResponse<CommonMemberDto.ShowMemberProfileListDto> createTicketPage(
@@ -35,7 +45,6 @@ public class TicketController {
     ) {
         return ApiResponse.onSuccess(memberCommandService.getCommonMemberDto(teamId));
     }
-
     @PostMapping
     public ApiResponse<TicketResponseDto.CreateTicketResultDto> createTicket(
         @PathVariable(name = "timelineId") Long timelineId,
@@ -43,16 +52,6 @@ public class TicketController {
     ) throws IOException {
         Ticket ticket = ticketCommandService.createTicket(timelineId, request);
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
-    }
-
-    @GetMapping
-    public ApiResponse<TicketResponseDto.ShowAllTicketListDto> showAllTickets(
-            @AuthUser Member member,
-            @PathVariable(name = "teamId") Long teamId,
-            @PathVariable(name = "timelineId") Long timelineId,
-            @RequestParam(name ="status")String status
-            ) {
-        return ApiResponse.onSuccess(ticketQueryService.getShowAllTicketListDto(member, teamId, timelineId, status));
     }
 
     @DeleteMapping
