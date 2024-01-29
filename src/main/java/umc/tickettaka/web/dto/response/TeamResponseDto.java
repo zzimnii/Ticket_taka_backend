@@ -18,7 +18,6 @@ public class TeamResponseDto {
         Long teamId;
         String teamName;
         String imageUrl;
-        LocalDateTime createdAt;
     }
 
     @Builder

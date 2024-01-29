@@ -12,6 +12,7 @@ public class InvitationRequestDto {
     }
     @Getter
     public static class AcceptInvitationDto{
+        Long invitationId;
         Boolean accept;
     }
 }
