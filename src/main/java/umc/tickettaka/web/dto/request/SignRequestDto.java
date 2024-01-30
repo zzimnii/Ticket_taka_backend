@@ -34,6 +34,8 @@ public class SignRequestDto {
 
         private String imageUrl;
 
+        private String deviceToken;
+
         private String providerType;
 
         private String providerId;
