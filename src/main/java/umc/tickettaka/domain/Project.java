@@ -42,13 +42,13 @@ public class Project extends BaseEntity {
     private List<Link> linkList;
 
 
-    public Project update(String imageUrl, ProjectRequestDto.CreateProjectDto projectUpdateDto) {
+    public Project update(String imageUrl, ProjectRequestDto.UpdateProjectDto projectUpdateDto) {
         this.imageUrl = imageUrl;
 
         String updateName = projectUpdateDto.getName();
         if(updateName != null) this.name = updateName;
 
-        String updateDescription = projectUpdateDto.getDescription();
+        String updateDescription = projectUpdateDto.getDesciption();
         if(updateDescription != null) this.description = updateDescription;
 
         return this;

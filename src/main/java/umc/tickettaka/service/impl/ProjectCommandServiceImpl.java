@@ -14,8 +14,6 @@ import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.mapping.MemberTeam;
-import umc.tickettaka.payload.exception.GeneralException;
-import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.ProjectRepository;
 import umc.tickettaka.service.*;
 import umc.tickettaka.web.dto.request.ProjectRequestDto;
@@ -70,16 +68,16 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
 
     @Override
     @Transactional
-    public Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.CreateProjectDto updateProjectDto) throws IOException {
+    public Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.UpdateProjectDto updateProjectDto) throws IOException {
         Project project = projectQueryService.findById(projectId);
         String imageUrl = project.getImageUrl();
 
         if (image != null) {
             imageUrl = imageUploadService.uploadImage(image);
         }
-        if (updateProjectDto == null) {
-            throw new GeneralException(ErrorStatus.INVALID_UPDATE_INFO, "변경 NAME과 DESCRIPTION이 입력되지 않았습니다.");
-        }
+//        if (updateProjectDto == null) {
+//            throw new GeneralException(ErrorStatus.INVALID_UPDATE_INFO, "변경 NAME과 DESCRIPTION이 입력되지 않았습니다.");
+//        }
         return project.update(imageUrl, updateProjectDto);
     }
 

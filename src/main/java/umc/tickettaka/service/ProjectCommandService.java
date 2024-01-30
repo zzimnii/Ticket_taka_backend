@@ -11,6 +11,6 @@ public interface ProjectCommandService{
 
     Project createProject(Long teamId, MultipartFile image, ProjectRequestDto.CreateProjectDto request) throws IOException;
     ProjectResponseDto.ProjectMainDto getProjectMainDto(Long teamId, Long projectId);
-    Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.CreateProjectDto update) throws IOException;
+    Project updateProject(Long teamId, Long projectId, MultipartFile image, ProjectRequestDto.UpdateProjectDto update) throws IOException;
     void deleteProject(Long teamId, Long projectId);
 }
