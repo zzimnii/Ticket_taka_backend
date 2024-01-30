@@ -93,7 +93,7 @@ public class TeamController {
         return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
     }
 
-    @PostMapping("invitation-response")
+    @PostMapping("/invitation-response")
     @Operation(summary = "팀에 멤버 초대 수락/거절", description = "팀에 멤버 초대 수락/거절")
     public ApiResponse<TeamResponseDto.TeamAndInvitationListDto> acceptOrRejectTeam(
             @RequestBody InvitationRequestDto.AcceptInvitationDto request,
