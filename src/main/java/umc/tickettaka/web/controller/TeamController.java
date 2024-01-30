@@ -14,15 +14,14 @@ import umc.tickettaka.converter.TeamConverter;
 import umc.tickettaka.domain.Invitation;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
+import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
-import umc.tickettaka.service.InvitationCommandService;
-import umc.tickettaka.service.InvitationQueryService;
-import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.service.*;
 import umc.tickettaka.web.dto.request.InvitationRequestDto;
 import umc.tickettaka.web.dto.request.MemberTeamRequestDto;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
 import umc.tickettaka.web.dto.response.TeamResponseDto;
-import umc.tickettaka.service.TeamCommandService;
 
 import java.util.List;
 
@@ -35,17 +34,8 @@ public class TeamController {
     private final TeamQueryService teamQueryService;
     private final InvitationCommandService invitationCommandService;
     private final InvitationQueryService invitationQueryService;
-
-    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "팀 생성 API", description = "팀 생성하기")
-    public ApiResponse<TeamResponseDto.TeamDto> createTeam(
-            @AuthUser Member member,
-            @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart(value = "request") @Valid TeamRequestDto.CreateTeamDto request) throws IOException {
-
-        Team team = teamCommandService.createTeam(member, image, request);
-        return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
-    }
+    private final TicketQueryService ticketQueryService;
+    private final MemberTeamQueryService memberTeamQueryService;
 
     @GetMapping("")
     @Operation(summary = "생성된 팀 목록, 초대 팀 목록 조회", description = "생성된 팀, 초대 목록 조회하기")
@@ -56,30 +46,26 @@ public class TeamController {
         return ApiResponse.onSuccess(TeamConverter.teamAndInvitationListDto(receiver, teamList, invitationList));
     }
 
-    @PatchMapping(value = "/{teamId}/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "팀 정보 수정 API", description = "팀 정보를 업데이트하는 API")
-    @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다.")
-    public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
-            @PathVariable(name = "teamId") Long teamId,
-            @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart(value = "request", required = false) @Valid TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
+    @GetMapping("/{teamId}/calendar")
+    @Operation(summary = "팀 캘린더 조회", description = "팀 캘린더 조회API")
+    public ApiResponse<TeamResponseDto.TeamCalendarDto> teamCalendar(
+            @PathVariable(name = "teamId") Long teamId ) {
+        Team team = teamQueryService.findTeam(teamId);
+        List<MemberTeam> memberTeams = memberTeamQueryService.findAllMembersByTeam(team);
+        List<Ticket> ticketList = ticketQueryService.findAllByTeam(team);
 
-        Team updatedTeam = teamCommandService.updateTeam(teamId, image, updateTeamDto);
-
-        return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(updatedTeam));
+        return ApiResponse.onSuccess(TeamConverter.teamCalendarDto(memberTeams, team, ticketList));
     }
 
-    @DeleteMapping("/{teamId}")
-    @Operation(summary = "팀 삭제", description = "팀을 삭제하기, 삭제하면 Response는 가입된 전체 팀이 조회됩니다.")
-    @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다.")
-    public ApiResponse<TeamResponseDto.TeamAndInvitationListDto> deleteTeam(
-            @PathVariable(name = "teamId") Long teamId,
-            @AuthUser Member member) throws IOException {
+    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "팀 생성 API", description = "팀 생성하기")
+    public ApiResponse<TeamResponseDto.TeamDto> createTeam(
+            @AuthUser Member member,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "request") @Valid TeamRequestDto.CreateTeamDto request) throws IOException {
 
-        teamCommandService.deleteTeam(teamId);
-        List<Team> teamList = teamQueryService.findAll();
-        List<Invitation> invitationList = invitationQueryService.findAll();
-        return ApiResponse.onSuccess(TeamConverter.teamAndInvitationListDto(member, teamList, invitationList));
+        Team team = teamCommandService.createTeam(member, image, request);
+        return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
     }
 
     @PostMapping("/{teamId}")
@@ -109,6 +95,19 @@ public class TeamController {
         return ApiResponse.onSuccess(TeamConverter.teamAndInvitationListDto(receiver, teamList, invitationList));
     }
 
+    @PatchMapping(value = "/{teamId}/update", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "팀 정보 수정 API", description = "팀 정보를 업데이트하는 API")
+    @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다.")
+    public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
+            @PathVariable(name = "teamId") Long teamId,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "request", required = false) @Valid TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
+
+        Team updatedTeam = teamCommandService.updateTeam(teamId, image, updateTeamDto);
+
+        return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(updatedTeam));
+    }
+
     @PatchMapping("/{teamId}/color")
     @Operation(summary = "팀내 색 수정 API", description = "팀내 본인 색 수정 API")
     @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다.")
@@ -122,4 +121,18 @@ public class TeamController {
 
         return ApiResponse.onSuccess(TeamConverter.toTeamResultDto(team));
     }
+
+    @DeleteMapping("/{teamId}")
+    @Operation(summary = "팀 삭제", description = "팀을 삭제하기, 삭제하면 Response는 가입된 전체 팀이 조회됩니다.")
+    @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다.")
+    public ApiResponse<TeamResponseDto.TeamAndInvitationListDto> deleteTeam(
+            @PathVariable(name = "teamId") Long teamId,
+            @AuthUser Member member) throws IOException {
+
+        teamCommandService.deleteTeam(teamId);
+        List<Team> teamList = teamQueryService.findAll();
+        List<Invitation> invitationList = invitationQueryService.findAll();
+        return ApiResponse.onSuccess(TeamConverter.teamAndInvitationListDto(member, teamList, invitationList));
+    }
+
 }

@@ -2,6 +2,7 @@ package umc.tickettaka.service;
 
 import java.util.List;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.ticket.Feedback;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
@@ -21,4 +22,6 @@ public interface TicketQueryService {
 
     TicketResponseDto.ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId);
     TicketResponseDto.ShowAllTicketListDto getShowAllTicketListDto(Member member, Long teamId, Long timelineId, String status);
+
+    List<Ticket> findAllByTeam(Team team);
 }

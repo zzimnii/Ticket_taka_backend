@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public class TeamResponseDto {
@@ -27,5 +28,26 @@ public class TeamResponseDto {
     public static class TeamAndInvitationListDto {
         List<TeamDto> teamDtoList;
         List<InvitationResponseDto.InvitationDto> invitationDtoList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamCalendarTicketDto {
+        Long ticketId;
+        String ticketHex;
+        LocalDate startTime;
+        LocalDate endTime;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamCalendarDto {
+        String teamName;
+        List<TeamCalendarTicketDto> teamCalendarTicketDtoList;
+        List<ShowTicketDto> showTicketDtoList;
     }
 }

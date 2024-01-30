@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.ticket.Ticket;
 
@@ -22,4 +23,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT t from Ticket t left join fetch t.fileList where t.worker.id = :memberId order by t.endTime")
     @EntityGraph(attributePaths = "team")
     List<Ticket> findAllWithFileByWorkerOrderByEndTime(Long memberId);
+
+    @EntityGraph(attributePaths = "worker")
+    List<Ticket> findAllByTeam(Team team);
 }
