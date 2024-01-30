@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import java.io.IOException;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +68,7 @@ public class TicketController {
     })
     public ApiResponse<TicketResponseDto.CreateTicketResultDto> createTicket(
         @PathVariable(name = "timelineId") Long timelineId,
-        @RequestBody TicketRequestDto.CreateTicketDto request
+        @RequestBody @Valid TicketRequestDto.CreateTicketDto request
     ) throws IOException {
         Ticket ticket = ticketCommandService.createTicket(timelineId, request);
         return ApiResponse.onCreate(TicketConverter.toCreateTicketResultDto(ticket));
@@ -75,7 +77,7 @@ public class TicketController {
     @DeleteMapping
     @Operation(summary = "Ticket 삭제")
     public ApiResponse<List<ShowTicketDto>> deleteTicket(
-        @RequestBody TicketRequestDto.DeleteTicketDto request
+        @RequestBody @Valid TicketRequestDto.DeleteTicketDto request
     ) {
 
         ticketCommandService.deleteTicket(request);

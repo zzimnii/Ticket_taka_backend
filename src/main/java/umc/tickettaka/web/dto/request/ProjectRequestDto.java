@@ -8,21 +8,21 @@ public class ProjectRequestDto {
 
     @Getter
     public static class CreateProjectDto {
-        @NotBlank
+        @NotBlank(message = "project name이 입력되지 않았습니다.")
         String name;
 
-        @NotBlank
-        @Size(max = 500)
+        @NotBlank (message = "project description이 입력되지 않았습니다.")
+        @Size(max = 500, message = "길이가 500 이상입니다.")
         String description;
     }
 
     @Getter
     public static class UpdateProjectDto {
-        @NotBlank
+        @NotBlank(message = "project name이 입력되지 않았습니다.")
         String name;
 
-        @NotBlank
-        @Size(max = 500)
+        @NotBlank(message = "project description이 입력되지 않았습니다.")
+        @Size(max = 500, message = "길이가 500 이상입니다.")
         String desciption;
     }
 

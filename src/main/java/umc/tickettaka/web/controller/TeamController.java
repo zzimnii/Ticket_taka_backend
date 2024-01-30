@@ -3,6 +3,8 @@ package umc.tickettaka.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +41,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> createTeam(
             @AuthUser Member member,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart(value = "request") TeamRequestDto.CreateTeamDto request) throws IOException {
+            @RequestPart(value = "request") @Valid TeamRequestDto.CreateTeamDto request) throws IOException {
 
         Team team = teamCommandService.createTeam(member, image, request);
         return ApiResponse.onCreate(TeamConverter.toTeamResultDto(team));
@@ -60,7 +62,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
             @PathVariable(name = "teamId") Long teamId,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @RequestPart(value = "request", required = false) TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
+            @RequestPart(value = "request", required = false) @Valid TeamRequestDto.CreateTeamDto updateTeamDto) throws IOException {
 
         Team updatedTeam = teamCommandService.updateTeam(teamId, image, updateTeamDto);
 
@@ -86,7 +88,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> inviteTeam(
             @PathVariable(name = "teamId") Long teamId,
             @AuthUser Member sender,
-            @RequestBody InvitationRequestDto.CreateInvitationDto invitationDto) {
+            @RequestBody @Valid InvitationRequestDto.CreateInvitationDto invitationDto) {
 
         Team team = teamQueryService.findTeam(teamId);
         invitationCommandService.sendInvitation(sender, team, invitationDto.getInvitedUsernameList());
@@ -96,7 +98,7 @@ public class TeamController {
     @PostMapping("/invitation-response")
     @Operation(summary = "팀에 멤버 초대 수락/거절", description = "팀에 멤버 초대 수락/거절")
     public ApiResponse<TeamResponseDto.TeamAndInvitationListDto> acceptOrRejectTeam(
-            @RequestBody InvitationRequestDto.AcceptInvitationDto request,
+            @RequestBody @Valid InvitationRequestDto.AcceptInvitationDto request,
             @AuthUser Member receiver) {
 
         invitationCommandService.isAcceptedInvitation(request.getInvitationId(), receiver, request);
@@ -113,7 +115,7 @@ public class TeamController {
     public ApiResponse<TeamResponseDto.TeamDto> updateTeam(
             @AuthUser Member member,
             @PathVariable(name = "teamId") Long teamId,
-            @RequestBody MemberTeamRequestDto.UpdateColorDto updateDto) {
+            @RequestBody @Valid MemberTeamRequestDto.UpdateColorDto updateDto) {
 
         Team team = teamQueryService.findTeam(teamId);
         teamCommandService.updateMemberTeamColor(member, teamId, updateDto);

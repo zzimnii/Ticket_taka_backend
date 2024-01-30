@@ -2,6 +2,8 @@ package umc.tickettaka.web.controller;
 
 import java.io.IOException;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -31,7 +33,7 @@ public class TimelineController {
     public ApiResponse<TimelineResponseDto.CreateResultDto> createTimeline(
         @PathVariable Long projectId,
         @RequestPart(value = "image", required = false) MultipartFile image,
-        @RequestPart(value = "request") TimelineRequestDto.CreateTimelineDto request
+        @RequestPart(value = "request") @Valid TimelineRequestDto.CreateTimelineDto request
         ) throws IOException {
 
         Timeline timeline = timelineCommandService.createTimeline(projectId, image, request);
@@ -48,7 +50,7 @@ public class TimelineController {
     @DeleteMapping
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteTimelines(
             @PathVariable(name = "projectId") Long projectId,
-            @RequestBody TimelineRequestDto.DeleteTimelineDto request) {
+            @RequestBody @Valid TimelineRequestDto.DeleteTimelineDto request) {
         Project project = projectQueryService.findById(projectId);
         timelineCommandService.deleteTimeline(request);
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
