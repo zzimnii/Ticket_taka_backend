@@ -56,6 +56,8 @@ public class Member extends BaseEntity {
 
     private String providerId;
 
+    private String deviceToken; // 기기 연동을 위한 토큰
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
