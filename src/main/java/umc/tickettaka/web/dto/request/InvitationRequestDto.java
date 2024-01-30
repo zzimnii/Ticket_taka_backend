@@ -10,7 +10,7 @@ public class InvitationRequestDto {
 
     @Getter
     public static class CreateInvitationDto{
-        List<@NotBlank(message = "초대할 팀원이 입력되지 않았습니다.") String> invitedUsernameList;
+        List<String> invitedUsernameList;
     }
     @Getter
     public static class AcceptInvitationDto{

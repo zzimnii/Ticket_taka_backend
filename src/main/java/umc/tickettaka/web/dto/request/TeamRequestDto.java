@@ -12,6 +12,6 @@ public class TeamRequestDto {
         @NotBlank(message = "team의 name이 입력되지 않았습니다.")
         String teamName;
 
-        List<@NotBlank(message = "초대할 id(username)이 공백입니다.") String> invitedUsernameList;
+        List<String> invitedUsernameList;
     }
 }
