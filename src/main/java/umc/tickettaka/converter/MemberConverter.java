@@ -68,7 +68,7 @@ public class MemberConverter {
         String username = signUpDto.getUsername();
         String imageUrl = signUpDto.getImageUrl();
         String providerType = signUpDto.getProviderType();
-        String providerId = signUpDto.getProviderId();
+        String email = signUpDto.getEmail();
         String deviceToken = signUpDto.getDeviceToken();
 
         ProviderType providerTypeEnum = null;
@@ -82,7 +82,7 @@ public class MemberConverter {
             .password(encodedPassword)
             .imageUrl(imageUrl)
             .providerType(providerTypeEnum)
-            .providerId(providerId)
+            .email(email)
             .deviceToken(deviceToken)
             .roles(Collections.singletonList("ROLE_USER"))
             .build();

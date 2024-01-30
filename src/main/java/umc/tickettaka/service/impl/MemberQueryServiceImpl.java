@@ -4,16 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.tickettaka.converter.MemberConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.service.MemberQueryService;
+import umc.tickettaka.web.dto.response.MemberResponseDto;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -48,7 +53,14 @@ public class MemberQueryServiceImpl implements MemberQueryService {
     }
 
     @Override
-    public Optional<Member> findByProviderId(String providerId) {
-        return memberRepository.findByProviderId(providerId);
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
+
+    @Override
+    public Optional<Member> findByEmailAndProvider(String email, String provider) {
+        return memberRepository.findByEmailAndProviderType(email, ProviderType.valueOf(provider));
+    }
+
+
 }
