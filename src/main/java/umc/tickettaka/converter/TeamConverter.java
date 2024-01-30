@@ -18,7 +18,6 @@ public class TeamConverter {
                 .teamId(team.getId())
                 .teamName(team.getName())
                 .imageUrl(team.getImageUrl())
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 
