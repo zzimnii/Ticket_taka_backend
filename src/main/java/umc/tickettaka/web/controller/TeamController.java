@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.io.IOException;
 
+import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,6 +19,7 @@ import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.ApiResponse;
 import umc.tickettaka.service.*;
+import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileListDto;
 import umc.tickettaka.web.dto.request.InvitationRequestDto;
 import umc.tickettaka.web.dto.request.MemberTeamRequestDto;
 import umc.tickettaka.web.dto.request.TeamRequestDto;
@@ -36,6 +38,7 @@ public class TeamController {
     private final InvitationQueryService invitationQueryService;
     private final TicketQueryService ticketQueryService;
     private final MemberTeamQueryService memberTeamQueryService;
+    private final MemberCommandService memberCommandService;
 
     @GetMapping("")
     @Operation(summary = "생성된 팀 목록, 초대 팀 목록 조회", description = "생성된 팀, 초대 목록 조회하기")
@@ -48,13 +51,23 @@ public class TeamController {
 
     @GetMapping("/{teamId}/calendar")
     @Operation(summary = "팀 캘린더 조회", description = "팀 캘린더 조회API")
+    @Parameters({
+            @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다."),
+            @Parameter(name = "status", description = "티켓 상태 : todo, inprogress, done 셋 중 하나입니다."),
+            @Parameter(name = "sort", description = "정렬 : "),
+            @Parameter(name = "memberId", description = "멤버Id")
+    })
     public ApiResponse<TeamResponseDto.TeamCalendarDto> teamCalendar(
-            @PathVariable(name = "teamId") Long teamId ) {
+            @PathVariable(name = "teamId") Long teamId,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "memberId", required = false) Long memberId) {
         Team team = teamQueryService.findTeam(teamId);
         List<MemberTeam> memberTeams = memberTeamQueryService.findAllMembersByTeam(team);
         List<Ticket> ticketList = ticketQueryService.findAllByTeam(team);
+        ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
 
-        return ApiResponse.onSuccess(TeamConverter.teamCalendarDto(memberTeams, team, ticketList));
+        return ApiResponse.onSuccess(TeamConverter.teamCalendarDto(memberTeams, team, ticketList, memberProfileListDto, status, sort, memberId));
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})

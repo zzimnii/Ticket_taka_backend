@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.tickettaka.web.dto.common.CommonMemberDto;
 import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
 
 import java.time.LocalDate;
@@ -49,5 +50,6 @@ public class TeamResponseDto {
         String teamName;
         List<TeamCalendarTicketDto> teamCalendarTicketDtoList;
         List<ShowTicketDto> showTicketDtoList;
+        CommonMemberDto.ShowMemberProfileListDto memberProfileListDto;
     }
 }

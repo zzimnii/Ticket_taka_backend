@@ -24,6 +24,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @EntityGraph(attributePaths = "team")
     List<Ticket> findAllWithFileByWorkerOrderByEndTime(Long memberId);
 
-    @EntityGraph(attributePaths = "worker")
+    @EntityGraph(attributePaths = {"fileList", "worker"})
     List<Ticket> findAllByTeam(Team team);
 }
