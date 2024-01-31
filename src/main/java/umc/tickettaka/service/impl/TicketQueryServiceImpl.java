@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.ticket.Feedback;
 import umc.tickettaka.domain.ticket.Ticket;
@@ -95,5 +96,10 @@ public class TicketQueryServiceImpl implements TicketQueryService {
         ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
 
         return TicketConverter.toShowAllTicketListDto(timelineName, memberProfileListDto, ticketDtoList);
+    }
+
+    @Override
+    public List<Ticket> findAllByTeam(Team team) {
+        return ticketRepository.findAllByTeam(team);
     }
 }
