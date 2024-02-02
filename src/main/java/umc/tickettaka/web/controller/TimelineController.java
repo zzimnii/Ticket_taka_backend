@@ -1,5 +1,8 @@
 package umc.tickettaka.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +33,10 @@ public class TimelineController {
     private final ProjectQueryService projectQueryService;
 
     @GetMapping
+    @Operation(summary = "모든 Timeline 조회")
+    @Parameters({
+        @Parameter(name = "projectId", description = "프로젝트 아이디 : Path Variable")
+    })
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> allTimelines(@PathVariable Long projectId) {
         Project project = projectQueryService.findById(projectId);
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
@@ -37,6 +44,10 @@ public class TimelineController {
     }
 
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Timeline 생성")
+    @Parameters({
+        @Parameter(name = "projectId", description = "프로젝트 아이디 : Path Variable")
+    })
     public ApiResponse<TimelineResponseDto.CreateResultDto> createTimeline(
         @PathVariable Long projectId,
         @RequestPart(value = "image", required = false) MultipartFile image,
@@ -48,6 +59,10 @@ public class TimelineController {
     }
 
     @DeleteMapping
+    @Operation(summary = "Timeline 삭제")
+    @Parameters({
+        @Parameter(name = "projectId", description = "프로젝트 아이디 : Path Variable")
+    })
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteTimelines(
             @PathVariable(name = "projectId") Long projectId,
             @RequestBody @Valid TimelineRequestDto.DeleteTimelineDto request) {
