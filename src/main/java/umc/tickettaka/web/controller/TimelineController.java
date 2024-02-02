@@ -29,6 +29,13 @@ public class TimelineController {
     private final TimelineQueryService timelineQueryService;
     private final ProjectQueryService projectQueryService;
 
+    @GetMapping
+    public ApiResponse<TimelineResponseDto.ShowTimelineListDto> allTimelines(@PathVariable Long projectId) {
+        Project project = projectQueryService.findById(projectId);
+        List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
+        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
+    }
+
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<TimelineResponseDto.CreateResultDto> createTimeline(
         @PathVariable Long projectId,
@@ -38,13 +45,6 @@ public class TimelineController {
 
         Timeline timeline = timelineCommandService.createTimeline(projectId, image, request);
         return ApiResponse.onCreate(TimelineConverter.toCreateResultDto(timeline));
-    }
-
-    @GetMapping("")
-    public ApiResponse<TimelineResponseDto.ShowTimelineListDto> allTimelines(@PathVariable Long projectId) {
-        Project project = projectQueryService.findById(projectId);
-        List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
-        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
     }
 
     @DeleteMapping
