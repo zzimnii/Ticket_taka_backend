@@ -41,5 +41,6 @@ public class TicketResponseDto {
         CommonMemberDto.ShowMemberProfileDto profileDto;
         int totalTicket;
         int doneTicket;
+        double achieveLevel;
     }
 }

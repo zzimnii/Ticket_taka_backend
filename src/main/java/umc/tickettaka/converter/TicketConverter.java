@@ -92,6 +92,7 @@ public class TicketConverter {
                 .profileDto(memberProfileDto)
                 .totalTicket(totalTicket)
                 .doneTicket(doneTicket)
+                .achieveLevel((double)doneTicket/totalTicket)
                 .build();
     }
 

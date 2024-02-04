@@ -1,11 +1,11 @@
 package umc.tickettaka.web.dto.response;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.tickettaka.web.dto.common.CommonMemberDto;
 
 public class ProjectResponseDto {
 
@@ -15,7 +15,6 @@ public class ProjectResponseDto {
     @AllArgsConstructor
     public static class CreateResultDto {
         Long projectId;
-        LocalDateTime createdTime;
     }
 
     @Builder
@@ -23,6 +22,7 @@ public class ProjectResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ShowProjectListDto {
+        CommonMemberDto.ShowMemberProfileListDto memberProfileList;
         List<ShowProjectDto> showProjectDtoList;
     }
 
@@ -34,7 +34,6 @@ public class ProjectResponseDto {
         Long projectId;
         String name;
         String imageUrl;
-        LocalDateTime modifiedTime;
     }
 
     @Builder
