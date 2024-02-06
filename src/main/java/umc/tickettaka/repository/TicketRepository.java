@@ -11,7 +11,7 @@ import umc.tickettaka.domain.ticket.Ticket;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.fileList f WHERE t.timeline.id = :timelineId ORDER BY t.endTime")
+    @Query("SELECT t FROM Ticket t WHERE t.timeline.id = :timelineId ORDER BY t.endTime")
     @EntityGraph(attributePaths = "worker")
     List<Ticket> findAllByTimelineIdOrderByEndTime(Long timelineId);
 

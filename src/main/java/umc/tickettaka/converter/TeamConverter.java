@@ -5,7 +5,6 @@ import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.enums.Color;
 import umc.tickettaka.domain.mapping.MemberTeam;
-import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileListDto;
 import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
@@ -50,6 +49,7 @@ public class TeamConverter {
     }
 
     public static TeamResponseDto.TeamCalendarDto teamCalendarDto(
+            Member visitor,
             List<MemberTeam> memberTeams,
             Team team,
             List<Ticket> ticketList,
@@ -92,21 +92,19 @@ public class TeamConverter {
                 .filter(ticket -> team.getId().equals(ticket.getTeam().getId()))
                 .filter(ticket -> status == null || status.equalsIgnoreCase(String.valueOf(ticket.getStatus())))
                 .filter(ticket -> memberId == null || memberId.equals(ticket.getWorker().getId()))
-                .map(ticket -> {
-
-                    return ShowTicketDto.builder()
-                            .ticketId(ticket.getId())
-                            .sequence(ticket.getSequence())
-                            .workerName(ticket.getWorker().getUsername())
-                            .sequence(ticket.getSequence())
-                            .title(ticket.getTitle())
-                            .description(ticket.getDescription())
-                            .fileUrlList(ticket.getFileList().stream().map(File::getUrl).toList())
-                            .status(String.valueOf(ticket.getStatus()))
-                            .startTime(ticket.getStartTime())
-                            .endTime(ticket.getEndTime())
-                            .build();
-                }).toList();
+                .map(ticket -> ShowTicketDto.builder()
+                        .ticketId(ticket.getId())
+                        .sequence(ticket.getSequence())
+                        .workerName(ticket.getWorker().getUsername())
+                        .sequence(ticket.getSequence())
+                        .title(ticket.getTitle())
+                        .description(ticket.getDescription())
+                        .fileUrlList(ticket.getFileList())
+                        .status(String.valueOf(ticket.getStatus()))
+                        .startTime(ticket.getStartTime())
+                        .endTime(ticket.getEndTime())
+                    .isMyTicket(ticket.getWorker().getUsername().equals(visitor.getUsername()))
+                        .build()).toList();
 
         return TeamResponseDto.TeamCalendarDto.builder()
                 .teamCalendarTicketDtoList(teamCalendarTicketDtoList)

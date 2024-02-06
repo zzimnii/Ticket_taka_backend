@@ -5,7 +5,6 @@ import java.util.List;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.enums.TicketStatus;
-import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
@@ -42,6 +41,7 @@ public class TicketConverter {
             .worker(worker)
             .status(TicketStatus.TODO)
             .timeline(timeline)
+            .fileList(request.getFileUrlList())
             .startTime(startTime)
             .endTime(endTime)
             .build();
@@ -57,7 +57,7 @@ public class TicketConverter {
                 .sequence(ticket.getSequence())
                 .title(ticket.getTitle())
                 .description(ticket.getDescription())
-                .fileUrlList(getFileUrlList(ticket.getFileList()))
+                .fileUrlList(ticket.getFileList())
                 .status(String.valueOf(ticket.getStatus()))
                 .startTime(ticket.getStartTime())
                 .endTime(ticket.getEndTime())
@@ -66,10 +66,6 @@ public class TicketConverter {
             ).toList();
     }
 
-    private static List<String> getFileUrlList(List<File> fileList) {
-        return fileList.stream()
-            .map(File::getUrl).toList();
-    }
 
     public static ShowAllTicketListDto toShowAllTicketListDto(
         String timelineName,

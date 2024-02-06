@@ -5,14 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.hibernate.LazyInitializationException;
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.enums.Color;
 import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.mapping.MemberTeam;
-import umc.tickettaka.domain.ticket.File;
-import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.web.dto.request.SignRequestDto.SignUpDto;
 import umc.tickettaka.web.dto.response.MemberResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto;
@@ -42,22 +39,17 @@ public class MemberConverter {
                 ));
         List<MemberResponseDto.MyPageTicketDto> myPageTicketDtoList = member.getTicketList().stream()
                 .map(
-                        ticket -> {
-                            MemberResponseDto.MyPageTicketDto ticketDto = MemberResponseDto.MyPageTicketDto.builder()
-                                    .ticketId(ticket.getId())
-                                    .title(ticket.getTitle())
-                                    .ticketHex(colorMap.get(ticket.getTeam().getId()).getHex())
-                                    .ticketSequence(ticket.getSequence())
-                                    .description(ticket.getDescription())
-                                    .status(ticket.getStatus().toString())
-                                    .endTime(ticket.getEndTime())
-                                    .teamName(ticket.getTeam().getName())
-                                    .fileUrlList(ticket.getFileList().stream()
-                                            .map(File::getUrl).collect(Collectors.toList()))
-                                    .build();
-
-                            return ticketDto;
-                        }
+                        ticket -> MemberResponseDto.MyPageTicketDto.builder()
+                                .ticketId(ticket.getId())
+                                .title(ticket.getTitle())
+                                .ticketHex(colorMap.get(ticket.getTeam().getId()).getHex())
+                                .ticketSequence(ticket.getSequence())
+                                .description(ticket.getDescription())
+                                .status(ticket.getStatus().toString())
+                                .endTime(ticket.getEndTime())
+                                .teamName(ticket.getTeam().getName())
+                                .fileUrlList(ticket.getFileList())
+                                .build()
                 ).collect(Collectors.toList());
 
 

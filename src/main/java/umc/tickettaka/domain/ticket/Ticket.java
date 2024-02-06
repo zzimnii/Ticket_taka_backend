@@ -1,7 +1,7 @@
 package umc.tickettaka.domain.ticket;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.tickettaka.converter.StringListConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.Timeline;
@@ -67,8 +67,8 @@ public class Ticket extends BaseEntity {
     @JoinColumn(name = "next_ticket_id")
     private Ticket nextTicket;
 
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> fileList = new ArrayList<>();
+    @Convert(converter = StringListConverter.class)
+    private List<String> fileList = new ArrayList<>();
 
 
     public Ticket updateStatus(TicketStatus updatedStatus)
