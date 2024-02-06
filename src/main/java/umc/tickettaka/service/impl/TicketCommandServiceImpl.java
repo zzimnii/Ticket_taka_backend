@@ -9,17 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.FeedbackConverter;
-import umc.tickettaka.converter.FileConverter;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.enums.TicketStatus;
 import umc.tickettaka.domain.mapping.TicketReviewer;
 import umc.tickettaka.domain.ticket.Feedback;
-import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.repository.FeedbackRepository;
-import umc.tickettaka.repository.FileRepository;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.repository.TicketReviewerRepository;
 import umc.tickettaka.service.*;
@@ -35,7 +32,6 @@ public class TicketCommandServiceImpl implements TicketCommandService {
 
     private final TimelineQueryService timelineQueryService;
     private final ImageUploadService imageUploadService;
-    private final FileRepository fileRepository;
     private final FeedbackRepository feedbackRepository;
     private final MemberQueryService memberQueryService;
     private final MemberCommandService memberCommandService;
@@ -53,9 +49,6 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         Ticket ticket = TicketConverter.toTicket(timeline, worker, sequence, request);
         Ticket newTicket = ticketRepository.save(ticket);
         setReviewers(request, ticket);
-        if (request.getFileUrlList() != null) {
-            setFiles(request.getFileUrlList(), ticket);
-        }
 
         return newTicket;
     }
@@ -71,10 +64,6 @@ public class TicketCommandServiceImpl implements TicketCommandService {
         ticketReviewerRepository.saveAll(ticketReviewerList);
     }
 
-    private void setFiles(List<String> files, Ticket ticket) {
-        List<File> fileList = FileConverter.toFileList(files, ticket);
-        fileRepository.saveAll(fileList);
-    }
 
     @Override
     @Transactional

@@ -1,5 +1,6 @@
 package umc.tickettaka.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +39,9 @@ public class TeamResponseDto {
     public static class TeamCalendarTicketDto {
         Long ticketId;
         String ticketHex;
+        @JsonFormat(pattern = "yyyy-MM-dd", locale = "Asia/Seoul")
         LocalDate startTime;
+        @JsonFormat(pattern = "yyyy-MM-dd", locale = "Asia/Seoul")
         LocalDate endTime;
     }
 

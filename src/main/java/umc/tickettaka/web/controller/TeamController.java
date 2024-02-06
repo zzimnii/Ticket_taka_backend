@@ -58,6 +58,7 @@ public class TeamController {
             @Parameter(name = "memberId", description = "멤버Id")
     })
     public ApiResponse<TeamResponseDto.TeamCalendarDto> teamCalendar(
+            @AuthUser Member member,
             @PathVariable(name = "teamId") Long teamId,
             @RequestParam(name = "status", required = false) String status,
             @RequestParam(name = "sort", required = false) String sort,
@@ -67,7 +68,7 @@ public class TeamController {
         List<Ticket> ticketList = ticketQueryService.findAllByTeam(team);
         ShowMemberProfileListDto memberProfileListDto = memberCommandService.getCommonMemberDto(teamId);
 
-        return ApiResponse.onSuccess(TeamConverter.teamCalendarDto(memberTeams, team, ticketList, memberProfileListDto, status, sort, memberId));
+        return ApiResponse.onSuccess(TeamConverter.teamCalendarDto(member, memberTeams, team, ticketList, memberProfileListDto, status, sort, memberId));
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})

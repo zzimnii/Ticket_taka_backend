@@ -4,22 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.tickettaka.converter.MemberConverter;
 import umc.tickettaka.domain.Member;
-import umc.tickettaka.domain.ticket.File;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
-import umc.tickettaka.repository.FileRepository;
 import umc.tickettaka.repository.MemberRepository;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.service.MemberQueryService;
-import umc.tickettaka.web.dto.response.MemberResponseDto;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
