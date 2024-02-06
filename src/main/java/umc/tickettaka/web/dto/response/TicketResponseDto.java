@@ -1,5 +1,6 @@
 package umc.tickettaka.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ public class TicketResponseDto {
     public static class CreateTicketResultDto {
         Long id;
         Long sequence;
+        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", locale = "Asia/Seoul")
         LocalDateTime createdTime;
     }
 

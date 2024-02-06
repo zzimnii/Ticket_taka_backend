@@ -1,5 +1,6 @@
 package umc.tickettaka.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -49,6 +50,7 @@ public class MemberResponseDto {
         String title;
         String description;
         String status;
+        @JsonFormat(pattern = "yyyy-MM-dd", locale = "Asia/Seoul")
         LocalDate endTime;
         List<String> fileUrlList;
         String teamName;
