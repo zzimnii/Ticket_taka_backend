@@ -35,7 +35,7 @@ public class JwtTokenProvider {
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
-    public JwtToken generateToken(Authentication authentication, String username, Boolean rememberMe) {
+    public JwtToken generateToken(Authentication authentication, String username, Boolean keepStatus) {
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
 
         // Access Token 생성
         Date accessTokenExpiresIn = null;
-        if (rememberMe) {
+        if (keepStatus) {
             accessTokenExpiresIn = new Date(now + 864000 * 7); // 만약 login 유지에 체크한 경우 일주일
         }
         else {

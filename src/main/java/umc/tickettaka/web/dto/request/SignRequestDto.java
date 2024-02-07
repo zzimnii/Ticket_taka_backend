@@ -1,14 +1,16 @@
 package umc.tickettaka.web.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Schema(description = "jwt request dto")
 public class SignRequestDto {
 
+    @Builder
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Schema(name = "sign in dto")
     public static class SignInDto {
 
@@ -20,7 +22,10 @@ public class SignRequestDto {
 
     }
 
+    @Builder
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Schema(name = "sign up dto")
     public static class SignUpDto {
 
@@ -38,7 +43,7 @@ public class SignRequestDto {
 
         private String providerType;
 
-        private String providerId;
+        private String email;
 
     }
 }

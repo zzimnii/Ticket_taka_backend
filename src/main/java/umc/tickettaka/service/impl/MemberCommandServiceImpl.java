@@ -70,24 +70,32 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     @Override
     @Transactional
     public Member save(SignRequestDto.SignUpDto signUpDto) {
-        // null check front에서 1차적으로 해야하지만, backend에서 한번 더 체크
-        if(signUpDto.getUsername() == null || signUpDto.getPassword() == null || signUpDto.getPassword2() == null)
-            throw new GeneralException(ErrorStatus.BAD_REQUEST, "입력 값 중에 null이 있습니다.");
+        Member member = null;
+        // sns 로그인이 아닌 일반 로그인인 경우
+        if (signUpDto.getProviderType() == null) {
+            // null check front에서 1차적으로 해야하지만, backend에서 한번 더 체크
+            if(signUpDto.getUsername() == null || signUpDto.getPassword() == null || signUpDto.getPassword2() == null)
+                throw new GeneralException(ErrorStatus.BAD_REQUEST, "입력 값 중에 null이 있습니다.");
 
-        // duplicate check
-        String username = signUpDto.getUsername();
-        checkDuplicateMember(username);
+            // duplicate check
+            String username = signUpDto.getUsername();
+            checkDuplicateMember(username);
 
-        // check password == password2
-        if(!Objects.equals(signUpDto.getPassword(), signUpDto.getPassword2()))
-            throw new GeneralException(ErrorStatus.MEMBER_WRONG_INFORMATION, "password와 passsword 확인이 다릅니다.");
+            // check password == password2
+            if(!Objects.equals(signUpDto.getPassword(), signUpDto.getPassword2()))
+                throw new GeneralException(ErrorStatus.MEMBER_WRONG_INFORMATION, "password와 passsword 확인이 다릅니다.");
 
-        // password encoding
-        String password = signUpDto.getPassword();
-        String encodedPassword = passwordEncoder.encode(password);
+            // password encoding
+            String password = signUpDto.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
 
-        // dto to member
-        Member member = MemberConverter.toMember(signUpDto, encodedPassword);
+            // dto to member
+            member = MemberConverter.toMember(signUpDto, encodedPassword);
+        }
+        // sns 로그인인 경우
+        else {
+            member = MemberConverter.toMember(signUpDto, null);
+        }
         return memberRepository.save(member);
     }
 

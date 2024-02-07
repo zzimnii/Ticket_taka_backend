@@ -54,7 +54,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
-    private String providerId;
+    private String email;
 
     private String deviceToken; // 기기 연동을 위한 토큰
 

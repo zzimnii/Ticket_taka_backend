@@ -10,5 +10,6 @@ public interface MemberQueryService {
 
     Member findMemberWithTicketsAndMemberTeamsByMemberId(Long memberId);
 
-    Optional<Member> findByProviderId(String providerId);
+    Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmailAndProvider(String email, String provider);
 }
