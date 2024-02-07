@@ -54,7 +54,7 @@ public class TeamController {
     @Parameters({
             @Parameter(name = "teamId", description = "팀의 아이디, path variable 입니다."),
             @Parameter(name = "status", description = "티켓 상태 : todo, inprogress, done 셋 중 하나입니다."),
-            @Parameter(name = "sort", description = "정렬 : "),
+            @Parameter(name = "sort", description = "마감 순 정렬 : asc, desc 둘 중 하나입니다."),
             @Parameter(name = "memberId", description = "멤버Id")
     })
     public ApiResponse<TeamResponseDto.TeamCalendarDto> teamCalendar(
