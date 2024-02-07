@@ -1,7 +1,7 @@
 package umc.tickettaka.domain;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,13 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.tickettaka.converter.StringListConverter;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.web.dto.request.ProjectRequestDto;
 
@@ -38,9 +39,8 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Link> linkList;
-
+    @Convert(converter = StringListConverter.class)
+    private List<String> linkList = new ArrayList<>();
 
     public Project update(String imageUrl, ProjectRequestDto.UpdateProjectDto projectUpdateDto) {
         this.imageUrl = imageUrl;

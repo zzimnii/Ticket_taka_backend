@@ -15,6 +15,7 @@ public class ProjectConverter {
     public static ProjectResponseDto.CreateResultDto toCreateResultDto(Project project) {
         return CreateResultDto.builder()
             .projectId(project.getId())
+            .createdTime(project.getCreatedTime())
             .build();
     }
 

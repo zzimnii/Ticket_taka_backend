@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.ProjectConverter;
-import umc.tickettaka.domain.Link;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
@@ -60,8 +59,7 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
             memberAchieveLevelDtoList.add(memberAchieveLevelDto);
         }
 
-        List<String> linkList = project.getLinkList().stream()
-            .map(Link::getUrl).toList();
+        List<String> linkList = project.getLinkList();
 
         return ProjectConverter.toShowProjectMainDto(team.getName(), project.getName(), memberAchieveLevelDtoList, project.getDescription(), linkList);
     }

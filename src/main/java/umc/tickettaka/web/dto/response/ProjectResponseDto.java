@@ -1,5 +1,7 @@
 package umc.tickettaka.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +17,8 @@ public class ProjectResponseDto {
     @AllArgsConstructor
     public static class CreateResultDto {
         Long projectId;
+        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", locale = "Asia/Seoul")
+        LocalDateTime createdTime;
     }
 
     @Builder
