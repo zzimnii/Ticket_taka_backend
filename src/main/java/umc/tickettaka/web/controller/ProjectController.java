@@ -30,17 +30,6 @@ public class ProjectController {
     private final ProjectCommandService projectCommandService;
     private final ProjectQueryService projectQueryService;
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "project 생성 요청")
-    public ApiResponse<ProjectResponseDto.CreateResultDto> createProject(
-        @PathVariable(name="teamId") Long teamId,
-        @RequestPart(value = "image", required = false) MultipartFile image,
-        @RequestPart(value = "request") @Valid ProjectRequestDto.CreateProjectDto request) throws IOException {
-
-        Project project = projectCommandService.createProject(teamId, image, request);
-        return ApiResponse.onCreate(ProjectConverter.toCreateResultDto(project));
-    }
-
     @GetMapping("")
     @Operation(summary = "팀 공간 창 (참여 팀원, 모든 project 표시)")
     public ApiResponse<ProjectResponseDto.ShowProjectListDto> allProjects(
@@ -58,6 +47,17 @@ public class ProjectController {
             @PathVariable(name = "projectId") Long projectId) {
 
         return ApiResponse.onSuccess(projectCommandService.getProjectMainDto(teamId,projectId));
+    }
+
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "project 생성 요청")
+    public ApiResponse<ProjectResponseDto.CreateResultDto> createProject(
+        @PathVariable(name="teamId") Long teamId,
+        @RequestPart(value = "image", required = false) MultipartFile image,
+        @RequestPart(value = "request") @Valid ProjectRequestDto.CreateProjectDto request) throws IOException {
+
+        Project project = projectCommandService.createProject(teamId, image, request);
+        return ApiResponse.onCreate(ProjectConverter.toCreateResultDto(project));
     }
 
     @PatchMapping(value="/{projectId}", consumes = {MediaType.APPLICATION_JSON_VALUE , MediaType.MULTIPART_FORM_DATA_VALUE})
