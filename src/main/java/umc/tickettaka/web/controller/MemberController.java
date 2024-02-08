@@ -31,10 +31,13 @@ public class MemberController {
     private final MemberQueryService memberQueryService;
 
     @GetMapping("/my-page")
-    public ApiResponse<MemberResponseDto.MyPageMemberDto> getMemberForMyPage(@AuthUser Member member) {
+    public ApiResponse<MemberResponseDto.MyPageMemberDto> getMemberForMyPage(@AuthUser Member member,
+                                                                             @RequestParam(name = "status", required = false) String status,
+                                                                             @RequestParam(name = "teamId", required = false) Long teamId) {
+
         Member memberWithTicketsAndMemberTeamsByMemberId = memberQueryService.findMemberWithTicketsAndMemberTeamsByMemberId(member.getId());
 
-        return ApiResponse.onSuccess(MemberConverter.toMyPageMemberDto(memberWithTicketsAndMemberTeamsByMemberId));
+        return ApiResponse.onSuccess(MemberConverter.toMyPageMemberDto(memberWithTicketsAndMemberTeamsByMemberId, status, teamId));
     }
 
 
@@ -54,25 +57,17 @@ public class MemberController {
         return ApiResponse.onCreate(MemberConverter.toSignUpResultDto(member));
     }
 
-    @PatchMapping(value = "/{memberId}/update", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/{memberId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberResponseDto.ShowMemberDto> updateMember(
             @PathVariable("memberId") Long memberId,
             @RequestPart(value = "image", required = false) MultipartFile image,
             @RequestPart(value = "request", required = false) MemberRequestDto.UpdateDto memberUpdateDto
             ) throws IOException {
         
-            Member member = memberCommandService.updateMember(memberId, image,memberUpdateDto);
+            Member member = memberCommandService.updateMember(memberId, image, memberUpdateDto);
 
         return ApiResponse.onSuccess(MemberConverter.toShowProjectDto(member));
     }
 
 
-    /**
-     * 나중에 지울거임~
-     */
-    @GetMapping("/token-test")
-    public ApiResponse<Long> test(@AuthUser Member member) {
-        log.info(member.getUsername());
-        return ApiResponse.onSuccess(member.getId());
-    }
 }

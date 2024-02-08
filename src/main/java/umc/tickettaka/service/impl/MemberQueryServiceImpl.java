@@ -37,18 +37,15 @@ public class MemberQueryServiceImpl implements MemberQueryService {
 
     @Override
     public Member findMemberWithTicketsAndMemberTeamsByMemberId(Long memberId) {
-//        Member member = memberRepository.findMemberWithTicketsAndFilesOrderByEndTime(memberId)
-//                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
+            Member memberWithTickets = memberRepository.findMemberWithTicketsById(memberId)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
 
-        Member memberWithTickets = memberRepository.findMemberWithTicketsById(memberId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
+            Member memberWithMemberTeams = memberRepository.findMemberWitMemberTeamById(memberId)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
 
-        Member memberWithMemberTeams = memberRepository.findMemberWitMemberTeamById(memberId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
+            List<Ticket> tickets = ticketRepository.findAllByWorkerOrderByEndTime(memberWithMemberTeams.getId());
 
-        List<Ticket> tickets = ticketRepository.findAllWithFileByWorkerOrderByEndTime(memberWithMemberTeams.getId());
-
-        return memberWithTickets;
+            return memberWithTickets;
 
     }
 
