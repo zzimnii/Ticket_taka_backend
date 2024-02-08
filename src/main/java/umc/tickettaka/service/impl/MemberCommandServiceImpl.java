@@ -123,16 +123,18 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     private void UpdateDuplicateCheck(MemberRequestDto.UpdateDto memberUpdateDto, Member member) {
         String username = memberUpdateDto.getUsername();
-        Optional<Member> foundUsername = memberRepository.findByUsername(username);
+        Optional<Member> foundUsername = null;
+        if (username != null) {
+            foundUsername = memberRepository.findByUsername(username);
 
-        if(foundUsername.isPresent())
-            throw new GeneralException(ErrorStatus.USERNAME_ALREADY_EXISTS, "해당 멤버 username이 이미 존재합니다.");
+            if(foundUsername.isPresent())
+                throw new GeneralException(ErrorStatus.USERNAME_ALREADY_EXISTS, "해당 멤버 username이 이미 존재합니다.");
+        }
+
 
         String password = memberUpdateDto.getPassword();
 
-//        if (password == null) return;
-
-        if(passwordEncoder.matches(password, member.getPassword()))
+        if(member.getPassword() != null && passwordEncoder.matches(password, member.getPassword()))
             throw new GeneralException(ErrorStatus.PASSWORD_SAME, "변경할 password가 기존과 같습니다");
     }
 

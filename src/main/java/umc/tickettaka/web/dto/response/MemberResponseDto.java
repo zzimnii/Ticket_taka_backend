@@ -53,6 +53,7 @@ public class MemberResponseDto {
         @JsonFormat(pattern = "yyyy-MM-dd", locale = "Asia/Seoul")
         LocalDate endTime;
         List<String> fileUrlList;
+        Long teamId;
         String teamName;
     }
 

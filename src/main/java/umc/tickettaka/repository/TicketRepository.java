@@ -20,9 +20,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     Long countByTimeline(Timeline timeline);
 
-    @Query("SELECT t from Ticket t left join fetch t.fileList where t.worker.id = :memberId order by t.endTime")
+    @Query("SELECT t from Ticket t where t.worker.id = :memberId order by t.endTime")
     @EntityGraph(attributePaths = "team")
-    List<Ticket> findAllWithFileByWorkerOrderByEndTime(Long memberId);
+    List<Ticket> findAllByWorkerOrderByEndTime(Long memberId);
 
     @EntityGraph(attributePaths = {"fileList", "worker"})
     List<Ticket> findAllByTeam(Team team);

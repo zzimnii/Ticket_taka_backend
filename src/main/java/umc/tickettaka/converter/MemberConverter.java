@@ -3,6 +3,7 @@ package umc.tickettaka.converter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import umc.tickettaka.config.security.jwt.JwtToken;
@@ -32,7 +33,7 @@ public class MemberConverter {
     }
 
 
-    public static MemberResponseDto.MyPageMemberDto toMyPageMemberDto(Member member) {
+    public static MemberResponseDto.MyPageMemberDto toMyPageMemberDto(Member member, String status, Long teamId) {
         Map<Long, Color> colorMap = member.getMemberTeamList().stream()
                 .collect(Collectors.toMap(
                         memberTeam -> memberTeam.getTeam().getId(), MemberTeam::getColor
@@ -47,11 +48,23 @@ public class MemberConverter {
                                 .description(ticket.getDescription())
                                 .status(ticket.getStatus().toString())
                                 .endTime(ticket.getEndTime())
+                                .teamId(ticket.getTeam().getId())
                                 .teamName(ticket.getTeam().getName())
                                 .fileUrlList(ticket.getFileList())
                                 .build()
                 ).collect(Collectors.toList());
 
+
+        if (status != null) {
+            myPageTicketDtoList = myPageTicketDtoList.stream().filter(s -> Objects.equals(s.getStatus(), status))
+                    .collect(Collectors.toList());
+        }
+
+        if (teamId != null) {
+            myPageTicketDtoList = myPageTicketDtoList.stream()
+                    .filter(s -> Objects.equals(s.getTeamId(), teamId))
+                    .collect(Collectors.toList());
+        }
 
         return MemberResponseDto.MyPageMemberDto.builder()
                 .memberHex(Color.getRandomColor().getHex())
