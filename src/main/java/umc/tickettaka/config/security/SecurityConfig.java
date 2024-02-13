@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import umc.tickettaka.config.security.jwt.ExceptionHandlerFilter;
 import umc.tickettaka.config.security.jwt.JwtAuthenticationFilter;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
 import umc.tickettaka.oauth.CustomOAuth2SuccessHandler;
@@ -46,6 +47,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class) // exception이 발생하면 그 앞 filter에서 처리하므로
         ;
 
 

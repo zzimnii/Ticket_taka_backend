@@ -11,12 +11,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import umc.tickettaka.payload.exception.GeneralException;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static umc.tickettaka.payload.status.ErrorStatus.EXPIRED_TOKEN;
+import static umc.tickettaka.payload.status.ErrorStatus.INTERNAL_ERROR;
 
 @Slf4j
 @Component
@@ -41,15 +49,24 @@ public class JwtTokenProvider {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
 
-        long now = (new Date()).getTime();
 
-        // Access Token 생성
-        Date accessTokenExpiresIn = null;
+        // Token 생성
+        // Expire 시간 생성
+        LocalDateTime now = LocalDateTime.now();
+        // accessToken Expire 시간 생성
+        LocalDateTime afterHalfHour = now.plus(30, ChronoUnit.SECONDS);
+        Date accessTokenExpiresIn = convertToDate(afterHalfHour);
+
+        // refreshToken Expire 시간 생성
+        Date refreshTokenExpiresIn = null;
+
         if (keepStatus) {
-            accessTokenExpiresIn = new Date(now + 864000 * 7); // 만약 login 유지에 체크한 경우 일주일
+            LocalDateTime afterWeekHour = now.plus(7, ChronoUnit.DAYS);
+            refreshTokenExpiresIn = convertToDate(afterWeekHour); // 만약 login 유지에 체크한 경우 일주일
         }
         else {
-            accessTokenExpiresIn = new Date(now + 864000); // 아닌 경우 하루
+            LocalDateTime afterDayHour = now.plus(1, ChronoUnit.DAYS);
+            refreshTokenExpiresIn = convertToDate(afterDayHour); // 아닌 경우 하루
         }
 
         String accessToken = Jwts.builder()
@@ -60,10 +77,23 @@ public class JwtTokenProvider {
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
 
+        String refreshToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .setExpiration(refreshTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
         return JwtToken.builder()
             .grantType("Bearer")
             .accessToken(accessToken)
+            .refreshToken(refreshToken)
             .build();
+    }
+
+    private Date convertToDate(LocalDateTime afterHalfHour) {
+        ZonedDateTime zonedDateTime = afterHalfHour.atZone(ZoneId.systemDefault());
+        Date accessTokenExpiresIn = Date.from(zonedDateTime.toInstant());
+        return accessTokenExpiresIn;
     }
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
@@ -88,22 +118,23 @@ public class JwtTokenProvider {
 
     // 토큰 정보를 검증하는 메서드
     public boolean validateToken(String token) {
-        try {
+
             Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
-        }
-        return false;
+
+//        } catch (SecurityException | MalformedJwtException e) {
+//            log.info("Invalid JWT Token", e);
+//        } catch (ExpiredJwtException e) {
+//            log.info("Expired JWT Token", e);
+//        } catch (UnsupportedJwtException e) {
+//            log.info("Unsupported JWT Token", e);
+//        } catch (IllegalArgumentException e) {
+//            log.info("JWT claims string is empty.", e);
+//        }
+//        return false;
     }
 
 

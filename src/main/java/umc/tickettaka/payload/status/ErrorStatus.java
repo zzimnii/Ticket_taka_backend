@@ -32,6 +32,8 @@ public enum ErrorStatus implements BaseErrorCode {
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED,"TOKEN4002", "Token has expired"),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND,"TOKEN4003", "Token not found"),
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED,"TOKEN4004", "Unauthorized access, token is not valid for this operation"),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED,"TOKEN4005", "Unsupported token access"),
+
     //TICKET Error
     INVALID_TICKET(HttpStatus.BAD_REQUEST,"TICKET4000","Invalid ticket creation request"),
     TICKET_NOT_FOUND(HttpStatus.NOT_FOUND,"TICKET4001","Ticket Not found"),
