@@ -35,6 +35,7 @@ public class SecurityConfig {
                         authHttp -> authHttp.requestMatchers("/*").permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/health")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/members/sign-up")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/members/sign-in")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
