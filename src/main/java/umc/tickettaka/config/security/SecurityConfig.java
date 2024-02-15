@@ -25,6 +25,8 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -36,8 +38,10 @@ public class SecurityConfig {
                             .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
+
                 )
+                .exceptionHandling(basic -> basic.authenticationEntryPoint(customAuthenticationEntryPoint))
                 .oauth2Login(
                         oauth2Login -> oauth2Login
                         .loginPage("/login")
