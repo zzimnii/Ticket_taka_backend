@@ -3,7 +3,6 @@ package umc.tickettaka.web.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.config.security.jwt.AuthUser;
@@ -19,7 +18,6 @@ import umc.tickettaka.web.dto.response.MemberResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -51,6 +49,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/sign-up")
+    @CrossOrigin(origins = "https://dev.ticket-taka.shop")
     public ApiResponse<SignResponseDto.SignUpResultDto> signUp(@RequestBody SignRequestDto.SignUpDto signUpDto) {
 
         Member member = memberCommandService.save(signUpDto);
