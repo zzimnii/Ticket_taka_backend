@@ -49,7 +49,6 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/sign-up")
-    @CrossOrigin(origins = "https://dev.ticket-taka.shop")
     public ApiResponse<SignResponseDto.SignUpResultDto> signUp(@RequestBody SignRequestDto.SignUpDto signUpDto) {
 
         Member member = memberCommandService.save(signUpDto);
