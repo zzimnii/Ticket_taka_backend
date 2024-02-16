@@ -25,6 +25,7 @@ import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.TicketStatus;
+import umc.tickettaka.domain.mapping.MemberTeam;
 
 @Entity
 @Getter
@@ -62,6 +63,10 @@ public class Ticket extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_team_id")
+    private MemberTeam workerTeam;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_ticket_id")
