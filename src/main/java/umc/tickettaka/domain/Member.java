@@ -87,6 +87,10 @@ public class Member extends BaseEntity {
         return this;
     }
 
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 //    @OneToMany(mappedBy = "member")
 //    private List<MemberTeam> memberTeamList = new ArrayList<>();
 }

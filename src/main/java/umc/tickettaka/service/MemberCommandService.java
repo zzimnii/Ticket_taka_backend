@@ -16,4 +16,6 @@ public interface MemberCommandService {
     CommonMemberDto.ShowMemberProfileListDto getCommonMemberDto(Long teamId);
     CommonMemberDto.ShowMemberProfileDto getMemberProfileDto(Member member, Long teamId);
     Member updateMember(Long memberId, MultipartFile image, MemberRequestDto.UpdateDto memberUpdateDto) throws IOException;
+
+    String getAccessToken(String expiredAccessToken);
 }

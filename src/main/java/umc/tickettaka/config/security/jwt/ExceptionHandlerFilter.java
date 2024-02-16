@@ -23,7 +23,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e, ErrorStatus.EXPIRED_TOKEN);
+            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e, ErrorStatus.EXPIRED_ACCESS_TOKEN);
         } catch (UnsupportedJwtException e) {
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, e, ErrorStatus.UNSUPPORTED_TOKEN);
         } catch (Exception e) {

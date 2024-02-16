@@ -109,4 +109,10 @@ public class MemberConverter {
                 .imageUrl(member.getImageUrl())
                 .build();
     }
+
+    public static MemberResponseDto.TokenDto toTokenDto(String accessToken) {
+        return MemberResponseDto.TokenDto.builder()
+                .accessToken(accessToken)
+                .build();
+    }
 }
