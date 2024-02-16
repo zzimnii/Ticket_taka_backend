@@ -10,10 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import umc.tickettaka.payload.exception.GeneralException;
 
 import java.security.Key;
 import java.time.LocalDateTime;
@@ -26,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static umc.tickettaka.payload.status.ErrorStatus.INTERNAL_ERROR;
 
 @Slf4j
 @Component
@@ -57,10 +54,9 @@ public class JwtTokenProvider {
         String email = null;
 
         // email은 오직 sns 로그인에서만 사용
-        if (principal instanceof OAuth2User) {
-            OAuth2User oAuth2User = (OAuth2User) principal;
-            provider = (String) oAuth2User.getAttribute("provider");
-            email = (String) oAuth2User.getAttribute("email");
+        if (principal instanceof OAuth2User oAuth2User) {
+            provider = oAuth2User.getAttribute("provider");
+            email = oAuth2User.getAttribute("email");
         }
 
 
@@ -72,11 +68,11 @@ public class JwtTokenProvider {
         // Expire 시간 생성
         LocalDateTime now = LocalDateTime.now();
         // accessToken Expire 시간 생성
-        LocalDateTime afterHalfHour = now.plus(30, ChronoUnit.SECONDS);
+        LocalDateTime afterHalfHour = now.plus(3000, ChronoUnit.SECONDS);
         Date accessTokenExpiresIn = convertToDate(afterHalfHour);
 
         // refreshToken Expire 시간 생성
-        Date refreshTokenExpiresIn = null;
+        Date refreshTokenExpiresIn;
 
         if (keepStatus) {
             LocalDateTime afterWeekHour = now.plus(7, ChronoUnit.SECONDS);
@@ -112,8 +108,7 @@ public class JwtTokenProvider {
 
     private Date convertToDate(LocalDateTime afterHalfHour) {
         ZonedDateTime zonedDateTime = afterHalfHour.atZone(ZoneId.systemDefault());
-        Date accessTokenExpiresIn = Date.from(zonedDateTime.toInstant());
-        return accessTokenExpiresIn;
+        return Date.from(zonedDateTime.toInstant());
     }
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
@@ -131,7 +126,7 @@ public class JwtTokenProvider {
             .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication return
-        UserDetails principal = customUserDetailService.loadUserByUsername(claims.getSubject());
+        UserDetails principal = customUserDetailService.loadUserByUsername((String) claims.get("username"));
 
         return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
     }
@@ -144,7 +139,6 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
             return true;
-
     }
 
 
@@ -167,7 +161,7 @@ public class JwtTokenProvider {
         LocalDateTime afterHalfHour = now.plus(30, ChronoUnit.SECONDS);
         Date accessTokenExpiresIn = convertToDate(afterHalfHour);
 
-        String accessToken = Jwts.builder()
+        return Jwts.builder()
                 .claim("auth", authorities)
                 .claim("username", username)
                 .claim("provider", provider)
@@ -175,7 +169,5 @@ public class JwtTokenProvider {
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-
-        return accessToken;
     }
 }
