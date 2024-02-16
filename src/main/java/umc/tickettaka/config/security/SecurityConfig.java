@@ -40,7 +40,7 @@ public class SecurityConfig {
                             .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
 
                 )
                 .exceptionHandling(basic -> basic.authenticationEntryPoint(customAuthenticationEntryPoint))

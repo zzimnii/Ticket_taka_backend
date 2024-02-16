@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import umc.tickettaka.payload.exception.GeneralException;
 
@@ -21,9 +23,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static umc.tickettaka.payload.status.ErrorStatus.EXPIRED_TOKEN;
 import static umc.tickettaka.payload.status.ErrorStatus.INTERNAL_ERROR;
 
 @Slf4j
@@ -49,6 +51,22 @@ public class JwtTokenProvider {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
 
+        // sns 로그인 여부 체크를 위한 provider parsing
+        Object principal = authentication.getPrincipal();
+        String provider = null;
+        String email = null;
+
+        // email은 오직 sns 로그인에서만 사용
+        if (principal instanceof OAuth2User) {
+            OAuth2User oAuth2User = (OAuth2User) principal;
+            provider = (String) oAuth2User.getAttribute("provider");
+            email = (String) oAuth2User.getAttribute("email");
+        }
+
+
+        if (provider != null) {
+            provider = provider.toUpperCase();
+        }
 
         // Token 생성
         // Expire 시간 생성
@@ -61,24 +79,26 @@ public class JwtTokenProvider {
         Date refreshTokenExpiresIn = null;
 
         if (keepStatus) {
-            LocalDateTime afterWeekHour = now.plus(7, ChronoUnit.DAYS);
+            LocalDateTime afterWeekHour = now.plus(7, ChronoUnit.SECONDS);
             refreshTokenExpiresIn = convertToDate(afterWeekHour); // 만약 login 유지에 체크한 경우 일주일
         }
         else {
-            LocalDateTime afterDayHour = now.plus(1, ChronoUnit.DAYS);
+            LocalDateTime afterDayHour = now.plus(1, ChronoUnit.SECONDS);
             refreshTokenExpiresIn = convertToDate(afterDayHour); // 아닌 경우 하루
         }
 
+        // accessToken은 정보를 담고 있어, 유효 시간이 짧고
         String accessToken = Jwts.builder()
-            .setSubject(authentication.getName())
-            .claim("auth", authorities)
-            .claim("username", username)
-            .setExpiration(accessTokenExpiresIn)
-            .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
+                .claim("auth", authorities)
+                .claim("username", username)
+                .claim("provider", provider)
+                .claim("email", email)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
 
+        // refresh토큰은 유효시간이 길지만, 정보를 담고 있지 않다.
         String refreshToken = Jwts.builder()
-                .setSubject(authentication.getName())
                 .setExpiration(refreshTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -125,16 +145,6 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
 
-//        } catch (SecurityException | MalformedJwtException e) {
-//            log.info("Invalid JWT Token", e);
-//        } catch (ExpiredJwtException e) {
-//            log.info("Expired JWT Token", e);
-//        } catch (UnsupportedJwtException e) {
-//            log.info("Unsupported JWT Token", e);
-//        } catch (IllegalArgumentException e) {
-//            log.info("JWT claims string is empty.", e);
-//        }
-//        return false;
     }
 
 
@@ -151,4 +161,21 @@ public class JwtTokenProvider {
         }
     }
 
+    public String recreateAccessToken(String username, String email, String provider, List<String> roles) {
+        String authorities = String.join(",", roles);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime afterHalfHour = now.plus(30, ChronoUnit.SECONDS);
+        Date accessTokenExpiresIn = convertToDate(afterHalfHour);
+
+        String accessToken = Jwts.builder()
+                .claim("auth", authorities)
+                .claim("username", username)
+                .claim("provider", provider)
+                .claim("email", email)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        return accessToken;
+    }
 }

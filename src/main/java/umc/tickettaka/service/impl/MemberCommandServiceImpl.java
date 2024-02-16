@@ -1,10 +1,10 @@
 package umc.tickettaka.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +19,7 @@ import umc.tickettaka.config.security.jwt.JwtTokenProvider;
 import umc.tickettaka.converter.MemberConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
+import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
@@ -63,7 +64,12 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username, keepStatus);
-        log.info("jwtToken accessToken = {}", jwtToken.getAccessToken());
+
+        // 3. refresh token member field에 update
+        Member member = memberRepository.findByUsername(username).get();
+        member.setRefreshToken(jwtToken.getRefreshToken());
+
+        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
         return jwtToken;
     }
 
@@ -119,6 +125,50 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         }
 
         return member.update(imageUrl, memberUpdateDto, password);
+    }
+
+    @Override
+    public String getAccessToken(String expiredAccessToken) {
+        // 1. expiredAccessToken 에서 필요한 정보를 가져온다
+        Claims claims = jwtTokenProvider.parseClaims(expiredAccessToken);
+
+        String username = claims.get("username", String.class);
+        String provider = claims.get("provider", String.class);
+        String email = claims.get("email", String.class);
+
+        // 2-1. 일반 로그인인 경우
+        if (provider == null) {
+            Member member = memberRepository.findByUsername(username)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "멤버를 찾을 수 없습니다."));
+
+            // refreshToken 만료 체크
+            checkRefreshTokenExpire(member.getRefreshToken());
+
+            // 3. jwt 토큰을 만들어 return 한다
+            return jwtTokenProvider.recreateAccessToken(member.getUsername(), member.getEmail(), null, member.getRoles());
+        }
+        // 2-2. sns 로그인인 경우
+        else {
+            Member member = memberRepository.findByEmailAndProviderType(email, ProviderType.valueOf(provider))
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "멤버를 찾을 수 없습니다."));
+
+            // refreshToken 만료 체크
+            checkRefreshTokenExpire(member.getRefreshToken());
+
+            // 3. jwt 토큰을 만들어 return 한다.
+            return jwtTokenProvider.recreateAccessToken(member.getUsername(), member.getEmail(), member.getProviderType().toString(),member.getRoles());
+        }
+
+    }
+
+    private void checkRefreshTokenExpire(String refreshToken) {
+        Claims claims = jwtTokenProvider.parseClaims(refreshToken);
+        Date expiration = claims.getExpiration();
+
+        if (expiration.before(new Date())) {
+            throw new GeneralException(ErrorStatus.EXPIRED_REFRESH_TOKEN, "refreshToken이 만료되었습니다.");
+        }
+
     }
 
     private void UpdateDuplicateCheck(MemberRequestDto.UpdateDto memberUpdateDto, Member member) {

@@ -57,4 +57,11 @@ public class MemberResponseDto {
         String teamName;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TokenDto {
+        String accessToken;
+    }
 }

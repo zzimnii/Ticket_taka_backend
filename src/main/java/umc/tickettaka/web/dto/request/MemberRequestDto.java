@@ -1,8 +1,7 @@
 package umc.tickettaka.web.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Schema(description = "member request dto")
@@ -18,5 +17,13 @@ public class MemberRequestDto {
 
         private String password;
 
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TokenDto {
+        String accessToken;
     }
 }

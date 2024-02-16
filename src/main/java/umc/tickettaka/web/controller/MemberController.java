@@ -38,6 +38,14 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.toMyPageMemberDto(memberWithTicketsAndMemberTeamsByMemberId, status, teamId));
     }
 
+    @PostMapping("/refresh")
+    public ApiResponse<MemberResponseDto.TokenDto> getAccessTokenByRefreshToken(@RequestBody MemberRequestDto.TokenDto tokenDto) {
+        String expiredAccessToken = tokenDto.getAccessToken();
+        log.info("expiredAccessToken = {} ", expiredAccessToken);
+
+        String accessToken = memberCommandService.getAccessToken(expiredAccessToken);
+        return ApiResponse.onCreate(MemberConverter.toTokenDto(accessToken));
+    }
 
     // 로그인
     @PostMapping("/sign-in")
