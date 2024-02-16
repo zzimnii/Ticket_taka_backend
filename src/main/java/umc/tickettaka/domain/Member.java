@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.mapping.MemberTeam;
@@ -43,10 +42,6 @@ public class Member extends BaseEntity {
 
     @Column(length = 500)
     private String password;
-
-    @Column(length = 500)
-    @Transient
-    private String password2;
 
     @Column(length = 500)
     private String imageUrl;
