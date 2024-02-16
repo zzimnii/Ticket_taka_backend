@@ -1,5 +1,8 @@
 package umc.tickettaka.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -29,6 +32,11 @@ public class MemberController {
     private final MemberQueryService memberQueryService;
 
     @GetMapping("/my-page")
+    @Operation(summary = "마이페이지 조회")
+    @Parameters({
+        @Parameter(name = "status", description = "티켓 상태 : todo, inprogress, done 셋 중 하나입니다."),
+        @Parameter(name = "teamId", description = "조회할 팀 아이디 : Query Parameter")
+    })
     public ApiResponse<MemberResponseDto.MyPageMemberDto> getMemberForMyPage(@AuthUser Member member,
                                                                              @RequestParam(name = "status", required = false) String status,
                                                                              @RequestParam(name = "teamId", required = false) Long teamId) {
@@ -49,6 +57,7 @@ public class MemberController {
 
     // 로그인
     @PostMapping("/sign-in")
+    @Operation(summary = "로그인")
     public ApiResponse<SignResponseDto.SignInResultDto> jwtSignIn(@RequestBody SignRequestDto.SignInDto signInDto) {
 
         JwtToken jwtToken = memberCommandService.signIn(signInDto);
@@ -57,6 +66,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/sign-up")
+    @Operation(summary = "회원가입")
     public ApiResponse<SignResponseDto.SignUpResultDto> signUp(@RequestBody SignRequestDto.SignUpDto signUpDto) {
 
         Member member = memberCommandService.save(signUpDto);
@@ -64,6 +74,11 @@ public class MemberController {
     }
 
     @PatchMapping(value = "/{memberId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "회원정보 수정")
+    @Parameters({
+        @Parameter(name = "status", description = "티켓 상태 : todo, inprogress, done 셋 중 하나입니다."),
+        @Parameter(name = "memberId", description = "조회할 팀 아이디 : Path Variable")
+    })
     public ApiResponse<MemberResponseDto.ShowMemberDto> updateMember(
             @PathVariable("memberId") Long memberId,
             @RequestPart(value = "image", required = false) MultipartFile image,

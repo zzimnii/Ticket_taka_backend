@@ -41,8 +41,10 @@ public class SignRequestDto {
 
         private String deviceToken;
 
+        @Schema(description = "NAVER, KAKAO, GOOGLE 셋 중 하나입니다. 현재 null로만 요청 가능합니다.")
         private String providerType;
 
+        @Schema(description = "소셜 로그인에서만 사용합니다.")
         private String email;
 
     }
