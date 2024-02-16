@@ -39,7 +39,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_TICKET(HttpStatus.BAD_REQUEST,"TICKET4000","Invalid ticket creation request"),
     TICKET_NOT_FOUND(HttpStatus.NOT_FOUND,"TICKET4001","Ticket Not found"),
     TICKET_TIME_ERROR(HttpStatus.BAD_REQUEST, "TICKET4002", "Error assigning worker or reviewer to the ticket"),
-    INVALID_TICKET_TIME(HttpStatus.BAD_REQUEST, "TICKET4003", "end time is faster than start time"),
+    INVALID_TICKET_TIME(HttpStatus.BAD_REQUEST, "TICKET4003", "End date is faster than start date"),
+    TICKET_BAD_REQUEST(HttpStatus.BAD_REQUEST, "TICKET4004", "The start date is earlier than today."),
     //TIMELINE Error
     TIMELINE_NOT_FOUND(HttpStatus.NOT_FOUND,"TIMELINE4000","Timeline Not found"),
     TIMELINE_NAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "TIMELINE4001", "Name hasn't entered"),
