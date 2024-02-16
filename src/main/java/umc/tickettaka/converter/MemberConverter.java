@@ -56,7 +56,13 @@ public class MemberConverter {
 
 
         if (status != null) {
-            myPageTicketDtoList = myPageTicketDtoList.stream().filter(s -> Objects.equals(s.getStatus(), status))
+            switch (status) {
+                case "todo" -> status = "TODO";
+                case "inprogress" -> status = "IN_PROGRESS";
+                case "done" -> status = "DONE";
+            }
+            String finalStatus = status;
+            myPageTicketDtoList = myPageTicketDtoList.stream().filter(s -> Objects.equals(s.getStatus(), finalStatus))
                     .collect(Collectors.toList());
         }
 
