@@ -58,16 +58,35 @@ public class TimelineController {
         return ApiResponse.onCreate(TimelineConverter.toCreateResultDto(timeline));
     }
 
-    @DeleteMapping
+    /*@DeleteMapping("/{timelineId}")
     @Operation(summary = "Timeline 삭제")
     @Parameters({
         @Parameter(name = "projectId", description = "프로젝트 아이디 : Path Variable")
     })
     public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteTimelines(
             @PathVariable(name = "projectId") Long projectId,
-            @RequestBody @Valid TimelineRequestDto.DeleteTimelineDto request) {
+            @PathVariable(name = "timelineId") Long timelineId) {
         Project project = projectQueryService.findById(projectId);
-        timelineCommandService.deleteTimeline(request);
+        timelineCommandService.deleteTimeline(timelineId);
+        List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
+
+        return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
+    }*/
+
+    @DeleteMapping
+    @Operation(summary = "Timeline 여러개 삭제")
+    @Parameters({
+            @Parameter(name = "projectId", description = "프로젝트 아이디 : Path Variable")
+    })
+    public ApiResponse<TimelineResponseDto.ShowTimelineListDto> deleteManyTimelines(
+            @PathVariable(name = "projectId") Long projectId,
+            @RequestBody @Valid TimelineRequestDto.DeleteTimelineListDto deleteTimelineListDto) {
+        Project project = projectQueryService.findById(projectId);
+        List<Long> timelineIdList = deleteTimelineListDto.getTimelineIdList();
+
+        for (Long timelineId : timelineIdList) {
+            timelineCommandService.deleteTimeline(timelineId);
+        }
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
 
         return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
