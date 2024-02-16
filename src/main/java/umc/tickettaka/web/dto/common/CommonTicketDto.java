@@ -18,7 +18,7 @@ public class CommonTicketDto {
     public static class ShowTicketDto {
 
         Long ticketId;
-        String workerName;
+        String ticketHex;
         Long sequence;
         String title;
         String description;
