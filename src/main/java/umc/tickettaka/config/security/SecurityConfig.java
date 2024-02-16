@@ -53,8 +53,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class) // exception이 발생하면 그 앞 filter에서 처리하므로
-        ;
+                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthenticationFilter.class);
 
 
         return http.build();

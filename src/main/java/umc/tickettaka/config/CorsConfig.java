@@ -12,8 +12,8 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("https://dev.ticket-taka.shop")
-            .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedOrigins("https://dev.ticket-taka.shop","http://localhost:8081")
+            .allowedMethods("*")
             .allowCredentials(true)
             .maxAge(3600);
     }

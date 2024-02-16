@@ -2,14 +2,13 @@ package umc.tickettaka.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.enums.ProviderType;
 
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findByUsername(String userName);
+    Optional<Member> findByUsername(String username);
 
     @EntityGraph(attributePaths = {"ticketList"})
     Optional<Member> findMemberWithTicketsById(Long memberId);
