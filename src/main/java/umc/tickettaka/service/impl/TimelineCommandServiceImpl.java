@@ -40,6 +40,7 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
         return timelineRepository.save(timeline);
     }
 
+
     @Override
     @Transactional
     public void deleteTimeline(Long timelineId) {
