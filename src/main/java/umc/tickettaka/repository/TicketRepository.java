@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.Timeline;
@@ -22,7 +23,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT t from Ticket t where t.worker.id = :memberId order by t.endTime")
     @EntityGraph(attributePaths = "team")
-    List<Ticket> findAllByWorkerOrderByEndTime(Long memberId);
+    List<Ticket> findAllByWorkerOrderByEndTime(@Param("memberId") Long memberId);
 
     @EntityGraph(attributePaths = {"fileList", "worker"})
     List<Ticket> findAllByTeam(Team team);
