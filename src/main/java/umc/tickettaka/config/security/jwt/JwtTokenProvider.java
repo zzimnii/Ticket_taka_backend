@@ -68,7 +68,7 @@ public class JwtTokenProvider {
         // Expire 시간 생성
         LocalDateTime now = LocalDateTime.now();
         // accessToken Expire 시간 생성
-        LocalDateTime afterHalfHour = now.plus(3000, ChronoUnit.SECONDS);
+        LocalDateTime afterHalfHour = now.plus(300000, ChronoUnit.SECONDS);
         Date accessTokenExpiresIn = convertToDate(afterHalfHour);
 
         // refreshToken Expire 시간 생성

@@ -17,6 +17,7 @@ public interface TicketQueryService {
     Feedback findFeedback(Long feedbackId);
 
     List<ShowTicketDto> getShowTicketDto(Member member);
+    List<ShowTicketDto> getShowTicketDto(Member member, Team team);
     List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId);
     List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId, String status);
 

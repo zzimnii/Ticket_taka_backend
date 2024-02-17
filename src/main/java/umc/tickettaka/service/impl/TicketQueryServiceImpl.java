@@ -62,6 +62,13 @@ public class TicketQueryServiceImpl implements TicketQueryService {
     }
 
     @Override
+    public List<ShowTicketDto> getShowTicketDto(Member member, Team team) {
+        List<Ticket> ticketList = findAllByTeam(team);
+        return TicketConverter.toShowTicketDtoList(member, ticketList);
+
+    }
+
+    @Override
     public List<ShowTicketDto> getShowTicketDto(Member member, Long timelineId) {
         List<Ticket> ticketList = findAllByTimelineId(timelineId);
         return TicketConverter.toShowTicketDtoList(member, ticketList);

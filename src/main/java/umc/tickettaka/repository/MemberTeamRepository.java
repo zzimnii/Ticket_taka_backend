@@ -14,4 +14,7 @@ public interface MemberTeamRepository extends JpaRepository<MemberTeam, Long> {
 
     @EntityGraph(attributePaths = {"team", "member.ticketList"})
     List<MemberTeam> findAllMembersByTeam(Team team);
+
+    @EntityGraph(attributePaths = {"team", "member.ticketList"})
+    List<MemberTeam> findAllByMember(Member member);
 }

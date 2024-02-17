@@ -29,6 +29,7 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
     @Transactional
     public Timeline createTimeline(Long projectId, MultipartFile image, TimelineRequestDto.CreateTimelineDto request) throws IOException {
         Project project = projectQueryService.findById(projectId);
+        //todo Project 양방향 객체 관리
         String imageUrl = imageUploadService.uploadImage(image);
 
         Timeline timeline = Timeline.builder()

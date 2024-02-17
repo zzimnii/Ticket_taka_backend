@@ -13,18 +13,20 @@ import umc.tickettaka.domain.ticket.Ticket;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT t FROM Ticket t WHERE t.timeline.id = :timelineId ORDER BY t.endTime")
-    @EntityGraph(attributePaths = "worker")
-    List<Ticket> findAllByTimelineIdOrderByEndTime(Long timelineId);
+    @EntityGraph(attributePaths = {"worker", "workerTeam"})
+    List<Ticket> findAllByTimelineIdOrderByEndTime(@Param("timelineId") Long timelineId);
 
     @EntityGraph(attributePaths = "worker")
     List<Ticket> findAllByWorker(Member member);
 
     Long countByTimeline(Timeline timeline);
 
-    @Query("SELECT t from Ticket t where t.worker.id = :memberId order by t.endTime")
-    @EntityGraph(attributePaths = "team")
-    List<Ticket> findAllByWorkerOrderByEndTime(@Param("memberId") Long memberId);
+    //@Query("SELECT t from Ticket t where t.worker.id = :memberId order by t.endTime")
+    @EntityGraph(attributePaths = {"team", "workerTeam"})
+    List<Ticket> findAllByWorkerOrderByEndTime(Member worker);
 
     @EntityGraph(attributePaths = {"fileList", "worker"})
     List<Ticket> findAllByTeam(Team team);
+    @EntityGraph(attributePaths = {"fileList", "worker"})
+    List<Ticket> findAllByTeamId(Long teamId);
 }

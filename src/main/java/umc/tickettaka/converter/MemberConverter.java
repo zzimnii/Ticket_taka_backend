@@ -1,16 +1,11 @@
 package umc.tickettaka.converter;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.enums.Color;
 import umc.tickettaka.domain.enums.ProviderType;
-import umc.tickettaka.domain.mapping.MemberTeam;
+import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileDto;
 import umc.tickettaka.web.dto.request.SignRequestDto.SignUpDto;
 import umc.tickettaka.web.dto.response.MemberResponseDto;
 import umc.tickettaka.web.dto.response.SignResponseDto;
@@ -32,54 +27,62 @@ public class MemberConverter {
             .build();
     }
 
-
-    public static MemberResponseDto.MyPageMemberDto toMyPageMemberDto(Member member, String status, Long teamId) {
-        Map<Long, Color> colorMap = member.getMemberTeamList().stream()
-                .collect(Collectors.toMap(
-                        memberTeam -> memberTeam.getTeam().getId(), MemberTeam::getColor
-                ));
-        List<MemberResponseDto.MyPageTicketDto> myPageTicketDtoList = member.getTicketList().stream()
-                .map(
-                        ticket -> MemberResponseDto.MyPageTicketDto.builder()
-                                .ticketId(ticket.getId())
-                                .title(ticket.getTitle())
-                                .ticketHex(colorMap.get(ticket.getTeam().getId()).getHex())
-                                .ticketSequence(ticket.getSequence())
-                                .description(ticket.getDescription())
-                                .status(ticket.getStatus().toString())
-                                .endTime(ticket.getEndTime())
-                                .teamId(ticket.getTeam().getId())
-                                .teamName(ticket.getTeam().getName())
-                                .fileUrlList(ticket.getFileList())
-                                .build()
-                ).collect(Collectors.toList());
-
-
-        if (status != null) {
-            switch (status) {
-                case "todo" -> status = "TODO";
-                case "inprogress" -> status = "IN_PROGRESS";
-                case "done" -> status = "DONE";
-            }
-            String finalStatus = status;
-            myPageTicketDtoList = myPageTicketDtoList.stream().filter(s -> Objects.equals(s.getStatus(), finalStatus))
-                    .collect(Collectors.toList());
-        }
-
-        if (teamId != null) {
-            myPageTicketDtoList = myPageTicketDtoList.stream()
-                    .filter(s -> Objects.equals(s.getTeamId(), teamId))
-                    .collect(Collectors.toList());
-        }
-
-        return MemberResponseDto.MyPageMemberDto.builder()
-                .memberHex(Color.getRandomColor().getHex())
-                .imageUrl(member.getImageUrl())
-                .name(member.getName())
-                .myPageTicketDtoList(myPageTicketDtoList)
-                .build();
-
+    public static ShowMemberProfileDto toMemberProfileDto(Member member) {
+        return ShowMemberProfileDto.builder()
+            .name(member.getName())
+            .imageUrl(member.getImageUrl())
+            .memberHex(Color.PASTEL_1.getHex())
+            .build();
     }
+
+
+//    public static MemberResponseDto.MyPageMemberDto toMyPageMemberDto(Member member, String status, Long teamId) {
+//        Map<Long, Color> colorMap = member.getMemberTeamList().stream()
+//                .collect(Collectors.toMap(
+//                        memberTeam -> memberTeam.getTeam().getId(), MemberTeam::getColor
+//                ));
+//        List<MemberResponseDto.MyPageTicketDto> myPageTicketDtoList = member.getTicketList().stream()
+//                .map(
+//                        ticket -> MemberResponseDto.MyPageTicketDto.builder()
+//                                .ticketId(ticket.getId())
+//                                .title(ticket.getTitle())
+//                                .ticketHex(colorMap.get(ticket.getTeam().getId()).getHex())
+//                                .ticketSequence(ticket.getSequence())
+//                                .description(ticket.getDescription())
+//                                .status(ticket.getStatus().toString())
+//                                .endTime(ticket.getEndTime())
+//                                .teamId(ticket.getTeam().getId())
+//                                .teamName(ticket.getTeam().getName())
+//                                .fileUrlList(ticket.getFileList())
+//                                .build()
+//                ).collect(Collectors.toList());
+//
+//
+//        if (status != null) {
+//            switch (status) {
+//                case "todo" -> status = "TODO";
+//                case "inprogress" -> status = "IN_PROGRESS";
+//                case "done" -> status = "DONE";
+//            }
+//            String finalStatus = status;
+//            myPageTicketDtoList = myPageTicketDtoList.stream().filter(s -> Objects.equals(s.getStatus(), finalStatus))
+//                    .collect(Collectors.toList());
+//        }
+//
+//        if (teamId != null) {
+//            myPageTicketDtoList = myPageTicketDtoList.stream()
+//                    .filter(s -> Objects.equals(s.getTeamId(), teamId))
+//                    .collect(Collectors.toList());
+//        }
+//
+//        return MemberResponseDto.MyPageMemberDto.builder()
+//                .memberHex(Color.getRandomColor().getHex())
+//                .imageUrl(member.getImageUrl())
+//                .name(member.getName())
+//                .myPageTicketDtoList(myPageTicketDtoList)
+//                .build();
+//
+//    }
 
     public static Member toMember(SignUpDto signUpDto, String encodedPassword) {
         // parse values

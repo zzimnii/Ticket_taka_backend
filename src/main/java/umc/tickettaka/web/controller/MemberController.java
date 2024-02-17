@@ -37,13 +37,11 @@ public class MemberController {
         @Parameter(name = "status", description = "티켓 상태 : todo, inprogress, done 셋 중 하나입니다."),
         @Parameter(name = "teamId", description = "조회할 팀 아이디 : Query Parameter")
     })
-    public ApiResponse<MemberResponseDto.MyPageMemberDto> getMemberForMyPage(@AuthUser Member member,
+    public ApiResponse<MemberResponseDto.MyPageDto> getMemberForMyPage(@AuthUser Member member,
                                                                              @RequestParam(name = "status", required = false) String status,
                                                                              @RequestParam(name = "teamId", required = false) Long teamId) {
 
-        Member memberWithTicketsAndMemberTeamsByMemberId = memberQueryService.findMemberWithTicketsAndMemberTeamsByMemberId(member.getId());
-
-        return ApiResponse.onSuccess(MemberConverter.toMyPageMemberDto(memberWithTicketsAndMemberTeamsByMemberId, status, teamId));
+        return ApiResponse.onSuccess(memberQueryService.getMyPageDto(member, teamId, status));
     }
 
     @PostMapping("/refresh")
