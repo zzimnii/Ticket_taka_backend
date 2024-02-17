@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.domain.common.BaseEntity;
 import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.mapping.MemberTeam;
@@ -45,10 +44,6 @@ public class Member extends BaseEntity {
     private String password;
 
     @Column(length = 500)
-    @Transient
-    private String password2;
-
-    @Column(length = 500)
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -64,7 +59,6 @@ public class Member extends BaseEntity {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    // 연관관계
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> ticketList = new ArrayList<>();
 
@@ -91,6 +85,4 @@ public class Member extends BaseEntity {
         this.refreshToken = refreshToken;
     }
 
-//    @OneToMany(mappedBy = "member")
-//    private List<MemberTeam> memberTeamList = new ArrayList<>();
 }

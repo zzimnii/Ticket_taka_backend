@@ -11,8 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.tickettaka.converter.FeedbackConverter;
 import umc.tickettaka.converter.TicketConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Project;
+import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.enums.TicketStatus;
+import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.domain.mapping.TicketReviewer;
 import umc.tickettaka.domain.ticket.Feedback;
 import umc.tickettaka.domain.ticket.Ticket;
@@ -38,15 +41,21 @@ public class TicketCommandServiceImpl implements TicketCommandService {
     private final TicketReviewerRepository ticketReviewerRepository;
     private final TicketQueryService ticketQueryService;
     private final TicketRepository ticketRepository;
+    private final TeamQueryService teamQueryService;
+    private final MemberTeamQueryService memberTeamQueryService;
+    private final ProjectQueryService projectQueryService;
 
     @Override
     @Transactional
     public Ticket createTicket(Long timelineId, CreateTicketDto request) {
 
         Timeline timeline = timelineQueryService.findById(timelineId);
+        Project project = projectQueryService.findByTimeline(timeline);
+        Team team = teamQueryService.findTeamByProjectAndTimeline(project, timelineId);
         Member worker = memberQueryService.findByUsername(request.getWorkerName());
+        MemberTeam memberTeam = memberTeamQueryService.findByTeamAndMember(team, worker);
         Long sequence = ticketRepository.countByTimeline(timeline) + 1;
-        Ticket ticket = TicketConverter.toTicket(timeline, worker, sequence, request);
+        Ticket ticket = TicketConverter.toTicket(timeline, team, worker, sequence, memberTeam, request);
         Ticket newTicket = ticketRepository.save(ticket);
         setReviewers(request, ticket);
 

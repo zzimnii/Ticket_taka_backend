@@ -14,6 +14,7 @@ import umc.tickettaka.web.dto.response.TeamResponseDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import umc.tickettaka.web.dto.response.TeamResponseDto.TeamSelectDto;
 
 public class TeamConverter {
 
@@ -95,7 +96,7 @@ public class TeamConverter {
                 .map(ticket -> ShowTicketDto.builder()
                         .ticketId(ticket.getId())
                         .sequence(ticket.getSequence())
-                        .workerName(ticket.getWorker().getUsername())
+                        .ticketHex(ticket.getWorkerTeam().getColor().getHex())
                         .sequence(ticket.getSequence())
                         .title(ticket.getTitle())
                         .description(ticket.getDescription())
@@ -112,5 +113,13 @@ public class TeamConverter {
                 .showTicketDtoList(showTicketDtoList)
                 .memberProfileListDto(memberProfileListDto)
                 .build();
+    }
+
+    public static List<TeamSelectDto> toTeamSelectDto(List<Team> teamList) {
+        return teamList.stream()
+            .map(team -> TeamSelectDto.builder()
+                .teamId(team.getId())
+                .teamName(team.getName())
+                .build()).toList();
     }
 }

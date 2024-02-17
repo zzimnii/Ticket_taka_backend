@@ -27,6 +27,15 @@ public class TeamResponseDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamSelectDto{
+        Long teamId;
+        String teamName;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamAndInvitationListDto {
         List<TeamDto> teamDtoList;
         List<InvitationResponseDto.InvitationDto> invitationDtoList;

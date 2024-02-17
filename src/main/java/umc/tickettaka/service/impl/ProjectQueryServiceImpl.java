@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.tickettaka.domain.Project;
+import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.ProjectRepository;
@@ -23,6 +24,12 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     @Override
     public Project findById(Long id) {
         return projectRepository.findById(id)
+            .orElseThrow(() -> new GeneralException(ErrorStatus.PROJECT_NOT_FOUND));
+    }
+
+    @Override
+    public Project findByTimeline(Timeline timeline) {
+        return projectRepository.findByTimeline(timeline)
             .orElseThrow(() -> new GeneralException(ErrorStatus.PROJECT_NOT_FOUND));
     }
 }

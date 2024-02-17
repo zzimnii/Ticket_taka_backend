@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileDto;
+import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
+import umc.tickettaka.web.dto.response.TeamResponseDto.TeamSelectDto;
 
 @Data
 @Schema(description = "member response dto")
@@ -30,13 +33,10 @@ public class MemberResponseDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MyPageMemberDto {
-        private String imageUrl;
-        private String name;
-        private String memberHex;
-
-        List<MyPageTicketDto> myPageTicketDtoList;
-
+    public static class MyPageDto {
+        ShowMemberProfileDto profileDto;
+        List<ShowTicketDto> showTicketDtoList;
+        List<TeamSelectDto> teamSelectDtoList;
     }
 
     @Builder

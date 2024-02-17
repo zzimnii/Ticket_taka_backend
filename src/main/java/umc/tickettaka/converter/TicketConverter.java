@@ -3,8 +3,10 @@ package umc.tickettaka.converter;
 import java.time.LocalDate;
 import java.util.List;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.Timeline;
 import umc.tickettaka.domain.enums.TicketStatus;
+import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.domain.ticket.Ticket;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
@@ -26,12 +28,15 @@ public class TicketConverter {
             .build();
     }
 
-    public static Ticket toTicket(Timeline timeline, Member worker, Long sequence, CreateTicketDto request) {
+    public static Ticket toTicket(Timeline timeline, Team team, Member worker, Long sequence, MemberTeam memberTeam, CreateTicketDto request) {
 
         LocalDate startTime = LocalDate.parse(request.getStartTime());
         LocalDate endTime = LocalDate.parse(request.getEndTime());
         if (startTime.isAfter(endTime)) {
             throw new GeneralException(ErrorStatus.INVALID_TICKET_TIME);
+        }
+        if (startTime.isBefore(LocalDate.now())) {
+            throw new GeneralException(ErrorStatus.TICKET_TIME_ERROR);
         }
 
         return Ticket.builder()
@@ -39,6 +44,8 @@ public class TicketConverter {
             .description(request.getDescription())
             .sequence(sequence)
             .worker(worker)
+            .team(team)
+            .workerTeam(memberTeam)
             .status(TicketStatus.TODO)
             .timeline(timeline)
             .fileList(request.getFileUrlList())
@@ -53,7 +60,7 @@ public class TicketConverter {
         return ticketList.stream()
             .map(ticket -> ShowTicketDto.builder()
                 .ticketId(ticket.getId())
-                .workerName(ticket.getWorker().getUsername())
+                .ticketHex(ticket.getWorkerTeam().getColor().getHex())
                 .sequence(ticket.getSequence())
                 .title(ticket.getTitle())
                 .description(ticket.getDescription())

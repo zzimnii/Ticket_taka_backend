@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.Project;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
@@ -23,6 +24,12 @@ public class TeamQueryServiceImpl implements TeamQueryService {
     public Team findTeam(Long id) {
         return teamRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_NOT_FOUND));
+    }
+
+    @Override
+    public Team findTeamByProjectAndTimeline(Project project, Long timelineId) {
+        return teamRepository.findTeamByProjectAndTimeline(project, timelineId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus.TEAM_NOT_FOUND));
     }
 
     @Override
