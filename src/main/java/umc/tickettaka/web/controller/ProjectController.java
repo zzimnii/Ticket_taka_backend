@@ -72,12 +72,25 @@ public class ProjectController {
         return ApiResponse.onSuccess(ProjectConverter.toShowProjectDto(project));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{projectId}")
     @Operation(summary = "project 삭제 요청")
     public ApiResponse<ProjectResponseDto.ShowProjectListDto> deleteProject(
-            @PathVariable Long teamId,
-            @RequestParam Long projectId) {
+            @PathVariable(name = "teamId") Long teamId,
+            @PathVariable(name = "projectId") Long projectId) {
         projectCommandService.deleteProject(teamId, projectId);
+        return ApiResponse.onSuccess(null);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "project 여러개 삭제 요청")
+    public ApiResponse<ProjectResponseDto.ShowProjectListDto> deleteManyProject(
+            @PathVariable(name = "teamId") Long teamId,
+            @RequestBody @Valid ProjectRequestDto.DeleteProjectDto deleteProjectDto) {
+        List<Long> projectIdList = deleteProjectDto.getProjectIdList();
+
+        for (Long projectId : projectIdList) {
+            projectCommandService.deleteProject(teamId, projectId);
+        }
         return ApiResponse.onSuccess(null);
     }
 

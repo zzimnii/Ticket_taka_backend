@@ -40,10 +40,11 @@ public class TimelineCommandServiceImpl implements TimelineCommandService {
         return timelineRepository.save(timeline);
     }
 
+
     @Override
     @Transactional
-    public void deleteTimeline(TimelineRequestDto.DeleteTimelineDto request) {
-        Timeline timeline = timelineQueryService.findById(request.getTimelineId());
+    public void deleteTimeline(Long timelineId) {
+        Timeline timeline = timelineQueryService.findById(timelineId);
         timelineRepository.delete(timeline);
     }
 }
