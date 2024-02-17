@@ -58,7 +58,7 @@ public class TimelineController {
         return ApiResponse.onCreate(TimelineConverter.toCreateResultDto(timeline));
     }
 
-    /*@DeleteMapping("/{timelineId}")
+    @DeleteMapping("/delete/{timelineId}")
     @Operation(summary = "Timeline 삭제")
     @Parameters({
         @Parameter(name = "projectId", description = "프로젝트 아이디 : Path Variable")
@@ -71,7 +71,7 @@ public class TimelineController {
         List<Timeline> timelineList = timelineQueryService.findAllByProjectId(projectId);
 
         return ApiResponse.onSuccess(TimelineConverter.toShowTimelineListDto(project.getName(), timelineList));
-    }*/
+    }
 
     @DeleteMapping
     @Operation(summary = "Timeline 여러개 삭제")
