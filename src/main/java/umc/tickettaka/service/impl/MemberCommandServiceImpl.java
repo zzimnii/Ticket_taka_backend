@@ -4,7 +4,6 @@ import java.util.*;
 import java.io.IOException;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +17,7 @@ import umc.tickettaka.config.security.jwt.JwtToken;
 import umc.tickettaka.config.security.jwt.JwtTokenProvider;
 import umc.tickettaka.converter.MemberConverter;
 import umc.tickettaka.domain.Member;
+import umc.tickettaka.domain.RefreshToken;
 import umc.tickettaka.domain.Team;
 import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.mapping.MemberTeam;
@@ -26,6 +26,7 @@ import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
 import umc.tickettaka.service.ImageUploadService;
 import umc.tickettaka.service.MemberCommandService;
+import umc.tickettaka.service.RefreshTokenService;
 import umc.tickettaka.service.TeamQueryService;
 import umc.tickettaka.web.dto.common.CommonMemberDto;
 import umc.tickettaka.web.dto.request.MemberRequestDto;
@@ -42,6 +43,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final TeamQueryService teamQueryService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     @Transactional
@@ -65,9 +67,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication, username, keepStatus);
 
-        // 3. refresh token member field에 update
-        Member member = memberRepository.findByUsername(username).get();
-        member.setRefreshToken(jwtToken.getRefreshToken());
+        // 3. refreshToken Redis 적용
+        refreshTokenService.saveRefreshToken(jwtToken.getAccessToken(), jwtToken.getRefreshToken());
 
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
         return jwtToken;
@@ -142,7 +143,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "멤버를 찾을 수 없습니다."));
 
             // refreshToken 만료 체크
-            checkRefreshTokenExpire(member.getRefreshToken());
+            RefreshToken refreshToken = refreshTokenService.findByAccessToken(expiredAccessToken);
+            checkRefreshTokenExpire(refreshToken.getRefreshToken());
 
             // 3. jwt 토큰을 만들어 return 한다
             return jwtTokenProvider.recreateAccessToken(member.getUsername(), member.getEmail(), null, member.getRoles());
@@ -153,7 +155,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                     .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "멤버를 찾을 수 없습니다."));
 
             // refreshToken 만료 체크
-            checkRefreshTokenExpire(member.getRefreshToken());
+            RefreshToken refreshToken = refreshTokenService.findByAccessToken(expiredAccessToken);
+            checkRefreshTokenExpire(refreshToken.getRefreshToken());
 
             // 3. jwt 토큰을 만들어 return 한다.
             return jwtTokenProvider.recreateAccessToken(member.getUsername(), member.getEmail(), member.getProviderType().toString(),member.getRoles());

@@ -36,53 +36,6 @@ public class MemberConverter {
     }
 
 
-//    public static MemberResponseDto.MyPageMemberDto toMyPageMemberDto(Member member, String status, Long teamId) {
-//        Map<Long, Color> colorMap = member.getMemberTeamList().stream()
-//                .collect(Collectors.toMap(
-//                        memberTeam -> memberTeam.getTeam().getId(), MemberTeam::getColor
-//                ));
-//        List<MemberResponseDto.MyPageTicketDto> myPageTicketDtoList = member.getTicketList().stream()
-//                .map(
-//                        ticket -> MemberResponseDto.MyPageTicketDto.builder()
-//                                .ticketId(ticket.getId())
-//                                .title(ticket.getTitle())
-//                                .ticketHex(colorMap.get(ticket.getTeam().getId()).getHex())
-//                                .ticketSequence(ticket.getSequence())
-//                                .description(ticket.getDescription())
-//                                .status(ticket.getStatus().toString())
-//                                .endTime(ticket.getEndTime())
-//                                .teamId(ticket.getTeam().getId())
-//                                .teamName(ticket.getTeam().getName())
-//                                .fileUrlList(ticket.getFileList())
-//                                .build()
-//                ).collect(Collectors.toList());
-//
-//
-//        if (status != null) {
-//            switch (status) {
-//                case "todo" -> status = "TODO";
-//                case "inprogress" -> status = "IN_PROGRESS";
-//                case "done" -> status = "DONE";
-//            }
-//            String finalStatus = status;
-//            myPageTicketDtoList = myPageTicketDtoList.stream().filter(s -> Objects.equals(s.getStatus(), finalStatus))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        if (teamId != null) {
-//            myPageTicketDtoList = myPageTicketDtoList.stream()
-//                    .filter(s -> Objects.equals(s.getTeamId(), teamId))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        return MemberResponseDto.MyPageMemberDto.builder()
-//                .memberHex(Color.getRandomColor().getHex())
-//                .imageUrl(member.getImageUrl())
-//                .name(member.getName())
-//                .myPageTicketDtoList(myPageTicketDtoList)
-//                .build();
-//
-//    }
 
     public static Member toMember(SignUpDto signUpDto, String encodedPassword) {
         // parse values
