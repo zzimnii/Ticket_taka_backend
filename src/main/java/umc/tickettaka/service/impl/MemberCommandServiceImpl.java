@@ -136,30 +136,27 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         String username = claims.get("username", String.class);
         String provider = claims.get("provider", String.class);
         String email = claims.get("email", String.class);
+        String roles = claims.get("auth", String.class);
 
         // 2-1. 일반 로그인인 경우
         if (provider == null) {
-            Member member = memberRepository.findByUsername(username)
-                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "멤버를 찾을 수 없습니다."));
 
             // refreshToken 만료 체크
             RefreshToken refreshToken = refreshTokenService.findByAccessToken(expiredAccessToken);
             checkRefreshTokenExpire(refreshToken.getRefreshToken());
 
             // 3. jwt 토큰을 만들어 return 한다
-            return jwtTokenProvider.recreateAccessToken(member.getUsername(), member.getEmail(), null, member.getRoles());
+            return jwtTokenProvider.recreateAccessToken(username, email, null, roles);
         }
         // 2-2. sns 로그인인 경우
         else {
-            Member member = memberRepository.findByEmailAndProviderType(email, ProviderType.valueOf(provider))
-                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "멤버를 찾을 수 없습니다."));
 
             // refreshToken 만료 체크
             RefreshToken refreshToken = refreshTokenService.findByAccessToken(expiredAccessToken);
             checkRefreshTokenExpire(refreshToken.getRefreshToken());
 
             // 3. jwt 토큰을 만들어 return 한다.
-            return jwtTokenProvider.recreateAccessToken(member.getUsername(), member.getEmail(), member.getProviderType().toString(),member.getRoles());
+            return jwtTokenProvider.recreateAccessToken(username, email, provider, roles);
         }
 
     }

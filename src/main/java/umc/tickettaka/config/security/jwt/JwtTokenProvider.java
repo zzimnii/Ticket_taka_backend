@@ -155,14 +155,13 @@ public class JwtTokenProvider {
         }
     }
 
-    public String recreateAccessToken(String username, String email, String provider, List<String> roles) {
-        String authorities = String.join(",", roles);
+    public String recreateAccessToken(String username, String email, String provider, String roles) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime afterHalfHour = now.plus(30, ChronoUnit.SECONDS);
         Date accessTokenExpiresIn = convertToDate(afterHalfHour);
 
         return Jwts.builder()
-                .claim("auth", authorities)
+                .claim("auth", roles)
                 .claim("username", username)
                 .claim("provider", provider)
                 .claim("email", email)
