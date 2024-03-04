@@ -53,7 +53,6 @@ public class Member extends BaseEntity {
 
     private String deviceToken; // 기기 연동을 위한 토큰
 
-    private String refreshToken;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -81,8 +80,5 @@ public class Member extends BaseEntity {
         return this;
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
 }

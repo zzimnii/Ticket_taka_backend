@@ -18,6 +18,7 @@ import umc.tickettaka.repository.MemberRepository;
 import umc.tickettaka.repository.TicketRepository;
 import umc.tickettaka.service.MemberQueryService;
 import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.service.TicketQueryService;
 import umc.tickettaka.web.dto.common.CommonMemberDto.ShowMemberProfileDto;
 import umc.tickettaka.web.dto.common.CommonTicketDto.ShowTicketDto;
 

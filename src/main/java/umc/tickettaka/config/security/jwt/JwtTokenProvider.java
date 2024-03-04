@@ -68,18 +68,18 @@ public class JwtTokenProvider {
         // Expire 시간 생성
         LocalDateTime now = LocalDateTime.now();
         // accessToken Expire 시간 생성
-        LocalDateTime afterHalfHour = now.plus(300000, ChronoUnit.SECONDS);
+        LocalDateTime afterHalfHour = now.plus(30, ChronoUnit.MINUTES);
         Date accessTokenExpiresIn = convertToDate(afterHalfHour);
 
         // refreshToken Expire 시간 생성
         Date refreshTokenExpiresIn;
 
         if (keepStatus) {
-            LocalDateTime afterWeekHour = now.plus(7, ChronoUnit.SECONDS);
+            LocalDateTime afterWeekHour = now.plus(7, ChronoUnit.DAYS);
             refreshTokenExpiresIn = convertToDate(afterWeekHour); // 만약 login 유지에 체크한 경우 일주일
         }
         else {
-            LocalDateTime afterDayHour = now.plus(1, ChronoUnit.SECONDS);
+            LocalDateTime afterDayHour = now.plus(1, ChronoUnit.DAYS);
             refreshTokenExpiresIn = convertToDate(afterDayHour); // 아닌 경우 하루
         }
 
