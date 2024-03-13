@@ -37,4 +37,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         return refreshToken;
     }
 
+    @Override
+    @Transactional
+    public void deleteRefreshToken(String accessToken) {
+        refreshTokenRepository.findByAccessToken(accessToken).ifPresent(refreshTokenRepository::delete);
+    }
+
 }

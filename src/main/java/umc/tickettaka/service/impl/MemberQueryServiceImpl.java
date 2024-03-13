@@ -72,16 +72,6 @@ public class MemberQueryServiceImpl implements MemberQueryService {
             .teamSelectDtoList(teamSelectDtoList)
             .build();
 
-//            Member memberWithTickets = memberRepository.findMemberWithTicketsById(memberId)
-//                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
-//
-//            Member memberWithMemberTeams = memberRepository.findMemberWitMemberTeamById(memberId)
-//                    .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND, "member를 찾을 수 없습니다."));
-//
-//            List<Ticket> tickets = ticketRepository.findAllByWorkerOrderByEndTime(memberWithMemberTeams);
-//
-//            return memberWithTickets;
-
     }
 
     @Override

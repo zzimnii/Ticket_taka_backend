@@ -12,6 +12,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+import umc.tickettaka.domain.BlackList;
+import umc.tickettaka.payload.exception.GeneralException;
+import umc.tickettaka.payload.status.ErrorStatus;
+import umc.tickettaka.service.BlackListService;
 
 import java.security.Key;
 import java.time.LocalDateTime;
@@ -33,12 +37,15 @@ public class JwtTokenProvider {
 
     private final CustomUserDetailService customUserDetailService;
 
+    private final BlackListService blackListService;
+
 
     // application.yml에서 secret 값 가져와서 key에 저장
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailService customUserDetailService) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailService customUserDetailService, BlackListService blackListService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.customUserDetailService = customUserDetailService;
+        this.blackListService = blackListService;
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
@@ -133,8 +140,12 @@ public class JwtTokenProvider {
 
     // 토큰 정보를 검증하는 메서드
     public boolean validateToken(String token) {
+        BlackList blackList = blackListService.findByAccessToken(token);
+        if (blackList != null) {
+            throw new ExpiredJwtException(null, null, "로그아웃된 토큰입니다.");
+        }
 
-            Jwts.parserBuilder()
+        Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);

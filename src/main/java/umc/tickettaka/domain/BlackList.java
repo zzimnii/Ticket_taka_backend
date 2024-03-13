@@ -11,14 +11,12 @@ import org.springframework.data.redis.core.index.Indexed;
 @AllArgsConstructor
 @Slf4j
 @Getter
-@RedisHash(value = "jwtToken", timeToLive = 60 * 60 * 24 * 7)
+@RedisHash(value = "blackList", timeToLive = 60 * 30)
 @Builder
-public class RefreshToken {
+public class BlackList {
 
     @Id @Indexed
     private String accessToken;
 
-    private String refreshToken;
-
-
+    private Boolean isLogOut;
 }
