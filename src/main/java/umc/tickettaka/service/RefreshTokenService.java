@@ -6,7 +6,9 @@ import java.util.Optional;
 
 public interface RefreshTokenService {
 
-    public void saveRefreshToken(String accessToken, String refreshToken);
+    void saveRefreshToken(String accessToken, String refreshToken);
 
     RefreshToken findByAccessToken(String accessToken);
+
+    void deleteRefreshToken(String accessToken);
 }

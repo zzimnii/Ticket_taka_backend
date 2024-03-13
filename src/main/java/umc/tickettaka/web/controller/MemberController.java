@@ -53,6 +53,8 @@ public class MemberController {
         return ApiResponse.onCreate(MemberConverter.toTokenDto(accessToken));
     }
 
+
+
     // 로그인
     @PostMapping("/sign-in")
     @Operation(summary = "로그인")
@@ -60,6 +62,14 @@ public class MemberController {
 
         JwtToken jwtToken = memberCommandService.signIn(signInDto);
         return ApiResponse.onSuccess(MemberConverter.toSignInResultDto(jwtToken));
+    }
+
+    @PostMapping("/sign-out")
+    @Operation(summary = "로그아웃")
+    public ApiResponse<SignResponseDto.SignOutResultDto> jwtSignOut(@RequestBody SignRequestDto.SignOutDto signOutDto) {
+        SignResponseDto.SignOutResultDto signOutResultDto = memberCommandService.signOut(signOutDto);
+
+        return ApiResponse.onSuccess(signOutResultDto);
     }
 
     // 회원가입
@@ -87,6 +97,7 @@ public class MemberController {
 
         return ApiResponse.onSuccess(MemberConverter.toShowProjectDto(member));
     }
+
 
 
 }

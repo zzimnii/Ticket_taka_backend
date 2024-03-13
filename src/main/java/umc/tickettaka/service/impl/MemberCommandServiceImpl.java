@@ -19,18 +19,15 @@ import umc.tickettaka.converter.MemberConverter;
 import umc.tickettaka.domain.Member;
 import umc.tickettaka.domain.RefreshToken;
 import umc.tickettaka.domain.Team;
-import umc.tickettaka.domain.enums.ProviderType;
 import umc.tickettaka.domain.mapping.MemberTeam;
 import umc.tickettaka.payload.exception.GeneralException;
 import umc.tickettaka.payload.status.ErrorStatus;
 import umc.tickettaka.repository.MemberRepository;
-import umc.tickettaka.service.ImageUploadService;
-import umc.tickettaka.service.MemberCommandService;
-import umc.tickettaka.service.RefreshTokenService;
-import umc.tickettaka.service.TeamQueryService;
+import umc.tickettaka.service.*;
 import umc.tickettaka.web.dto.common.CommonMemberDto;
 import umc.tickettaka.web.dto.request.MemberRequestDto;
 import umc.tickettaka.web.dto.request.SignRequestDto;
+import umc.tickettaka.web.dto.response.SignResponseDto;
 
 @Service
 @Slf4j
@@ -44,6 +41,8 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final PasswordEncoder passwordEncoder;
     private final TeamQueryService teamQueryService;
     private final RefreshTokenService refreshTokenService;
+
+    private final BlackListService blackListService;
 
     @Override
     @Transactional
@@ -159,6 +158,20 @@ public class MemberCommandServiceImpl implements MemberCommandService {
             return jwtTokenProvider.recreateAccessToken(username, email, provider, roles);
         }
 
+    }
+
+    @Override
+    public SignResponseDto.SignOutResultDto signOut(SignRequestDto.SignOutDto signOutDto) {
+        String accessToken = signOutDto.getAccessToken();
+
+        blackListService.saveBlackList(accessToken);
+        SignResponseDto.SignOutResultDto resultDto = SignResponseDto.SignOutResultDto.builder()
+                .accessToken(accessToken)
+                .build();
+
+        refreshTokenService.deleteRefreshToken(accessToken);
+
+        return resultDto;
     }
 
     private void checkRefreshTokenExpire(String refreshToken) {

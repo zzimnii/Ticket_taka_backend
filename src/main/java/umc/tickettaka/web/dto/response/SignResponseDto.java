@@ -29,4 +29,13 @@ public class SignResponseDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
         LocalDateTime createdTime;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignOutResultDto {
+
+        private String accessToken;
+    }
 }

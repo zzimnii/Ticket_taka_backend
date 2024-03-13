@@ -48,4 +48,15 @@ public class SignRequestDto {
         private String email;
 
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(name = "sign out dto")
+    public static class SignOutDto {
+
+        private String accessToken;
+
+    }
 }
