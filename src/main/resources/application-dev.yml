@@ -5,9 +5,8 @@ server:
 spring:
   config:
     activate:
-      on-profile: dev # 환경이름설정
+      on-profile: dev
 
-  # below should be written with the aws RDS or something associated with develop environment
   jpa:
     open-in-view: false
     show-sql: true
@@ -19,6 +18,6 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL_DEV} # ticket is the name of my db not yours. so it can be different
+    url: ${DB_URL_DEV}
     username: ${DB_USERNAME_DEV}
     password: ${DB_PW_DEV}
